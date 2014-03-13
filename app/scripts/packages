@@ -1,0 +1,15 @@
+git
+curl
+apt-transport-https
+ssh
+sysstat
+python
+g++
+make
+pkg-config
+lxc
+man
+python-pip
+nginx
+nodejs
+tree

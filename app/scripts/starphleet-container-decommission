@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+### Usage:
+###   starphleet-container-decommission [--min_age=<minutes>] [--execute]
+### Options:
+###   --help
+###   --min_age=<minutes>  [default: 5] Minimum age a container has to be before it is ever stopped.
+###   --execute            Without this option, only the decommissioning plan will be displayed
+###
+### Decommission containers that are no longer in use (stop the containers and their related services)
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/tools
+help=$(grep "^### " "$0" | cut -c 5-)
+eval "$(${DIR}/docopts -h "$help" -V "$version" : "$@")"
+SCRIPT_NAME="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+
+CANDIDATES="$(starphleet-container-inspection --min_age="${min_age}" "$(containers_currently_running)")"
+
+# stop containers that qualify
+for CANDIDATE in ${CANDIDATES}; do
+  apply_crew_roster_exports "${CANDIDATE}"
+  status starphleet_serve_order name="${CREW_SERVICE_NAME}" > /dev/null 2>&1
+  if [[ $? -eq 0 ]]; then 
+    warn "${SCRIPT_NAME}: stopping starphleet_serve_order name=\"${CREW_SERVICE_NAME}\""
+    ${execute} && stop starphleet_serve_order name="${CREW_SERVICE_NAME}"
+  fi
+  warn "${SCRIPT_NAME}: stopping lxc ${CANDIDATE}"
+  ${execute} && lxc-stop --name "${CANDIDATE}"
+done
+exit 0

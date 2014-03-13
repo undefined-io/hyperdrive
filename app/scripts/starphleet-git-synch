@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+### Usage:
+###    starphleet-git-synch <remote> <local>
+### --help
+###
+### Make sure a git repo, with an option #[branch|tag] is pulled and merged into the specified local
+###
+### Exit 0 if a change was detected, Exit 1 if no change was detected
+### Changes could be: new repo, new commits, different branch.
+###
+### NOTE: When using this script w/o checking for these error codes, make sure to postfix it with || true
+###       to prevent the script not detecting a change to be considered script failure
+
+#--HEAD--
+set -o nounset; set -o errexit
+SCRIPT="$(test -L "$0" && readlink -e "$0" || readlink -e "$0")"
+SCRIPT_NAME="$(basename "${SCRIPT}")"
+SCRIPT_DIR="$(dirname "${SCRIPT}")"
+source "${SCRIPT_DIR}/starphleet-main.source"
+#--/HEAD--
+
+if ! parse_git_locator "${remote}"; then exit 1; fi
+if [[ -L "${local}" || -f "${local}" ]]; then
+  fatal "${SCRIPT_NAME}: <local> cannot be a file or symlink"
+fi
+
+if [ -d "${local}" ]; then
+  GIT_FLAGS="--git-dir=${local}/.git --work-tree=${local}"
+  ORIGIN_URL="$(git ${GIT_FLAGS} config remote.origin.url)"
+  if [ "${ORIGIN_URL}" != "${REMOTE_REPO}" ]; then
+    warn "${SCRIPT_NAME}: repository url differs, reclone needed"
+    "${SCRIPT_DIR}/starphleet-git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
+    exit 0
+  fi
+  git ${GIT_FLAGS} fetch --all || fatal "fetch error"
+  LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
+  if [[ -n "${REMOTE_BRANCH}" && "${REMOTE_BRANCH}" != "${LOCAL_BRANCH}" ]]; then
+    warn "${SCRIPT_NAME}: specified branch changed, checking out ${REMOTE_BRANCH}"
+    git ${GIT_FLAGS} checkout "${REMOTE_BRANCH}"
+  fi
+  LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
+  HAS_CHANGES="$(git ${GIT_FLAGS} diff HEAD...origin/${LOCAL_BRANCH} --raw)"
+  if [ "${HAS_CHANGES}x" != "x" ]; then
+    warn "${SCRIPT_NAME}: new code detected, pulling"
+    git ${GIT_FLAGS} pull
+    exit 0
+  fi
+else
+  warn "${SCRIPT_NAME}: ${local} not found, initial clone needed from ${REMOTE_REPO}#${REMOTE_BRANCH}"
+  "${SCRIPT_DIR}/starphleet-git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}"
+  exit 0
+fi
+
+exit 1

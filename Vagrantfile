@@ -5,20 +5,12 @@ VAGRANT_MEMSIZE = ENV['STARPHLEET_VAGRANT_MEMSIZE'] || '8192'
 SHIP_NAME = 'ship'
 
 Vagrant::Config.run do |config|
-# Setup virtual machine box. This VM configuration code is always executed.
-  system "test -d private_keys || mkdir private_keys"
-  system "test -n \"${STARPHLEET_PRIVATE_KEY}\" && cp \"${STARPHLEET_PRIVATE_KEY}\" \"private_keys/\""
-  system "test -d public_keys || mkdir public_keys"
-  system "test -n \"${STARPHLEET_PUBLIC_KEY}\" && cp \"${STARPHLEET_PUBLIC_KEY}\" \"public_keys/\""
-  system "test -n \"${STARPHLEET_HEADQUARTERS}\" && echo \"${STARPHLEET_HEADQUARTERS}\" > headquarters"
-  config.vm.provision :shell, :inline => "
-  /starphleet/scripts/starphleet-install;
-  [ -n \"#{ENV['STARPHLEET_HEADQUARTERS']}\" ] && starphleet-headquarters #{ENV['STARPHLEET_HEADQUARTERS']}"
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+  config.vm.provision :shell, :path => "bootstrap", :args => "\"#{ENV['STARPHLEET_ROOT']}\" \"#{ENV['STARPHLEET_DATA_ROOT']}\" \"#{ENV['STARPHLEET_GIT']}\" \"#{ENV['STARPHLEET_BRANCH']}\""
 end
 
 Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
   config.vm.hostname = SHIP_NAME
-  config.vm.synced_folder ".", "/starphleet"
   config.vm.synced_folder "~", "/hosthome"
 
   config.vm.provider :vmware_fusion do |f, override|

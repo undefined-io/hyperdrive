@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+## parse_git_locator ###########################################################
+
+function parse_git_locator() {
+local REMOTE="${1}"
+local REFERENCE="$(basename "$(test -L "${BASH_SOURCE[1]}" && readlink "${BASH_SOURCE[1]}" \
+  || echo "${BASH_SOURCE[1]}")") : parse_git_locator()"
+
+# make sure only one branch specification is given
+if [[ "${remote%#*}" != "${remote%%#*}" ]]; then
+  error "${REFERENCE}: invalid branch specification \"${remote#*#}\""
+  return 1
+fi
+
+REMOTE_REPO="$(echo "${REMOTE//$'\r'/}" | awk -F '#' '{print $1;}')"
+REMOTE_BRANCH="$(echo "${REMOTE//$'\r'/}" | awk -F '#' '{print $2;}')"
+
+# if the repo is local, prefix file:/// to treat it the same as a remote
+# (local repo clones would include non-commited changes and are undesired)
+if [[ ! "${REMOTE_REPO}" =~ ':' ]]; then
+  if [[ "${REMOTE_REPO[0]}" == "/" ]]; then
+    REMOTE_REPO="${REMOTE_REPO#*/}"
+  fi
+  REMOTE_REPO="file:///${REMOTE_REPO}"
+fi
+
+# validate http(s) repo validity
+# TODO: Allow user:pass@ for http(s) repos
+if [[ "${REMOTE_REPO:0:4}" == "http" && ! "$(curl --silent -w "%{http_code}" -o /dev/null "${REMOTE_REPO}")" == "200" ]]; 
+then
+  error "${REFERENCE}: repo \"${REMOTE_REPO}\" is unreachable or requires different credentials"
+  return 1
+fi
+# TODO: Add SSH check
+# TODO: Add local check
+# TODO: Make sure that at this point user/pass prompt will not hold up the script
+if ! git ls-remote "${REMOTE_REPO}" > /dev/null 2>&1; then
+  error "${REFERENCE}: could not find valid repo at \"${REMOTE_REPO}\""
+  return 1
+fi
+
+if [[ -z "${REMOTE_BRANCH}" ]]; then
+  info "${REFERENCE}: no branch provided, so looking up the default branch in the repo"
+  # extract the SHA of the HEAD tag
+  local REMOTE_HEAD_SHA="$(git ls-remote "${REMOTE_REPO}" | awk '$2 == "HEAD" {print $1}')"
+  # find a branch/tag of the HEAD SHA
+  local REMOTE_HEAD_BRANCH="$(git ls-remote "${REMOTE_REPO}" \
+    | awk -v SHA="${REMOTE_HEAD_SHA}" '$1 ~ SHA && $2 != "HEAD" {print $2}' | head -n 1)"
+  # strip the refs/heads or refs/tags
+  # TODO: Need to fix and make this work with branches that have / in the name.  ie: feature/go-111
+  REMOTE_HEAD_BRANCH="${REMOTE_HEAD_BRANCH##*/}"
+  REMOTE_BRANCH="${REMOTE_HEAD_BRANCH}"
+  trace "${REFERENCE}: REMOTE_HEAD_SHA: ${REMOTE_HEAD_SHA}, REMOTE_HEAD_BRANCH: ${REMOTE_HEAD_BRANCH}"
+fi
+trace "${REFERENCE}: REMOTE_REPO: ${REMOTE_REPO}, REMOTE_BRANCH: ${REMOTE_BRANCH}"
+return 0
+}

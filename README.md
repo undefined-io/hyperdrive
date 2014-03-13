@@ -1,10 +1,9 @@
 # Starphleet? What?
 The fully open container based continuous deployment PaaS.
 
-[Read the documentation](http://wballard.github.io/starphleet) when you
-get a chance.
+[Read the documentation](http://undefined-io.github.io/starphleet) 
 
-## Breaking Changes
- 
-* ENV['BOX_URI'] is now ENV['BOX_NAME'] in VagrantFile
-* Vagrant box names have changed from saucy to saucy-virtualbox, saucy-vmware, saucy-parallels
+# Overview
+
+This branch is currently not a working product.  Experimenting with making things
+a bit more modular, easily testable and hackable, and stable.

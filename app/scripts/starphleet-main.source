@@ -1,0 +1,64 @@
+# vim: set ft=sh : main include file for starphleet scripts
+
+set -o nounset; set -o errexit
+export STARPHLEET_VERSION="0.0.1"
+
+# import main config file
+export STARPHLEET_CONFIG_ROOT="/etc/starphleet"
+export STARPHLEET_CONFIG="${STARPHLEET_CONFIG_ROOT}/main.conf"
+source "${STARPHLEET_CONFIG}"
+
+# TODO: This might be adjustable or moved later if user upstart jobs are used
+export STARPHLEET_UPSTART_ROOT="/etc/init"
+
+# starphleet global application variables
+export STARPHLEET_LXC_ROOT="${STARPHLEET_DATA_ROOT}/lxc"
+export STARPHLEET_PRIVATE_KEYS="${STARPHLEET_ROOT}/private_keys"
+export STARPHLEET_PUBLIC_KEYS="${STARPHLEET_ROOT}/public_keys"
+export STARPHLEET_ADMIRAL="admiral"
+export STARPHLEET_DEBUG="true"
+export STARPHLEET_SOURCE="${STARPHLEET_DATA_ROOT}/git"
+export STARPHLEET_RECORDS="${STARPHLEET_DATA_ROOT}/records"
+export STARPHLEET_SCRIPTS="${STARPHLEET_ROOT}/scripts"
+export STARPHLEET_HQ_ROOT="${STARPHLEET_DATA_ROOT}/headquarters"
+export STARPHLEET_INCLUDES="${STARPHLEET_DATA_ROOT}/includes"
+export STARPHLEET_HQ_PULSE="60"
+
+STARPHLEET_SUDO=("starphleet-install")
+
+
+# import any config overrides for this machine
+[[ -f "${STARPHLEET_CONFIG_ROOT}/override.conf" ]] && source "${STARPHLEET_CONFIG_ROOT}/override.conf"
+
+if [ "${TERM}" == "unknown" ]; then
+  export TERM="xterm-256color"
+fi
+# TODO: need to address this, could be lower than current
+ulimit -n 4096
+
+# source support scripts
+source "${SCRIPT_DIR}/lib/logging.source"
+source "${SCRIPT_DIR}/lib/git.source"
+source "${SCRIPT_DIR}/lib/helper.source"
+
+if [[ -n "${SCRIPT_NAME}" && $(array_contains STARPHLEET_SUDO "${SCRIPT_NAME}") -eq "0" ]]; then
+  if [[ "$(id -u)" -ne "0" ]]; 
+    then fatal "${SCRIPT_NAME}: you must be root to run this this script";
+  fi
+fi
+
+if [[ "${#BASH_SOURCE[@]}" -gt "0" && "$(basename "${BASH_SOURCE[1]}")" =~ ^starphleet-.* ]]; then
+  eval "$(${SCRIPT_DIR}/docopts -h "$(grep "^### " "${BASH_SOURCE[1]}" | cut -c 5-)" -V "${STARPHLEET_VERSION}" : "$@")"
+fi
+
+function set_app_environment_vars() {
+[[ -d "${STARPHLEET_INCLUDES}" ]] || mkdir -p "${STARPHLEET_INCLUDES}"
+local IFS=$'\n'; local FILE
+for FILE in $(find "${STARPHLEET_INCLUDES}" -type f); do
+  eval $(awk '/^[ \t]*export[ \t]+/ {print $0}' "${FILE}")
+done
+}
+set_app_environment_vars
+
+# DO NOT ERASE THE LINE BELOW
+:

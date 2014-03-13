@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+if [[ "$(id -u)" -ne "0" ]]; then echo "you must be root to run this this script"; exit 1; fi
+
+function log() {
+echo "[.] $(date +"%y-%m-%d %H:%M:%S") : ${1}"
+}
+
+STARPHLEET_ROOT="${1:-/var/starphleet}"
+STARPHLEET_DATA_ROOT="${2:-/data/starphleet}"
+STARPHLEET_GIT="${3:-https://github.com/undefined-io/starphleet}"
+STARPHLEET_BRANCH="${4:-reset}"
+STARPHLEET_LOCAL="${STARPHLEET_DATA_ROOT}/git"
+STARPHLEET_CONFIG_ROOT="/etc/starphleet"
+STARPHLEET_BOOTSTRAP_LOG="${STARPHLEET_DATA_ROOT}/bootstrap.log"
+
+mkdir -p "${STARPHLEET_DATA_ROOT}"
+mkdir -p "${STARPHLEET_CONFIG_ROOT}"
+
+# set timezone to GMT
+echo "GMT" > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata
+
+# TODO: only do this if it does not exist already
+# make sure localhost is in the hostfile
+echo "127.0.0.1 localhost" >> /etc/hosts
+
+# install and update packages before installing starphleet
+log "updating apt-get repositories..."
+apt-get update -y > "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
+log "upgrading apt-get packages..."
+apt-get upgrade -y >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
+log "installing minimum starphleet required packages..."
+apt-get install -y git >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
+
+# create initial starphleet config file
+cat << EOF > "${STARPHLEET_CONFIG_ROOT}/main.conf"
+export STARPHLEET_ROOT="${STARPHLEET_ROOT}"
+export STARPHLEET_DATA_ROOT="${STARPHLEET_DATA_ROOT}"
+export STARPHLEET_REMOTE="${STARPHLEET_GIT}#${STARPHLEET_BRANCH}"
+:
+EOF
+
+rm -rf "${STARPHLEET_LOCAL}"
+log "cloning starphleet repository..."
+git clone --branch "${STARPHLEET_BRANCH}" --depth 1 "${STARPHLEET_GIT}" "${STARPHLEET_LOCAL}" >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
+
+log "installing starphleet..."
+"${STARPHLEET_LOCAL}/app/scripts/starphleet-install" 2>&1 | tee "${STARPHLEET_BOOTSTRAP_LOG}"

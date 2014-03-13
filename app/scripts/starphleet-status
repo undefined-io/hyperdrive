@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+### Usage:
+###    starphleet-status
+### --help
+###
+### Dump out handy statistics about your ship
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/tools
+help=$(grep "^### " "$0" | cut -c 5-)
+eval "$(${DIR}/docopts -h "$help" -V "$version" : "$@")"
+
+##basic computer stats
+[ -f "${STARPHLEET_CPU_STATS}" ] && source "${STARPHLEET_CPU_STATS}"
+FREE_RAM=$(free | grep Mem | awk '{ print (1 - ($3 / $2)) * 100 }')
+FREE_DISK=$(df "${LXC_ROOT}" | tail -1 | awk '{ print 100 - $5 }')
+
+cat << EOF
+hostname: $(hostname)
+free_ram: ${FREE_RAM:-0}
+free_cpu: ${FREE_CPU:-0}
+free_disk: ${FREE_DISK:-0}
+EOF
+
+cat << EOF
+headquarters: ${HEADQUARTERS_REMOTE:-no headquarters}
+EOF
+
+##starphleet service processes
+cat << EOF
+services:
+EOF
+IFS=$'\n'
+for service in $(initctl list | grep starphleet)
+do
+cat << EOF
+  - ${service}
+EOF
+done
+unset IFS
+
+### ORDERS status starts here
+if [ -d "${CURRENT_ORDERS}" ]; then
+cat << EOF
+orders:
+EOF
+  for status in $(find "${CURRENT_ORDERS}" -name '*.starphleetstatus' | sort)
+  do
+    LOCAL=$(dirname "${status}")/git
+    get_CURRENT_SHA "${LOCAL}"
+    SERVICE_SHA=${CURRENT_SHA}
+    get_SHASUM "${LOCAL}/../orders"
+    ORDERS_SHA=${SHASUM}
+    ORDER="$(dirname ${status} | sed -e "s[${CURRENT_ORDERS}/\?[[")"
+    CURRENT_ENV="$(dirname ${status})/.starphleetenv"
+    ENCODED_ORDER=$(urlencode "${ORDER}")
+    SERVICE_NAME=$(echo "${ENCODED_ORDER}.${ORDERS_SHA}.${SERVICE_SHA}.orders")
+    get_CONTAINER_NAME "${SERVICE_NAME}"
+    cd "$(dirname "${status}")/git"
+    AT=$(git log -1 --format='%at')
+    AUTHOR=$(git log -1 --format='%ae')
+    TEXT=$(git log -1 --format='%s')
+cat << EOF
+  -
+    order: ${ORDER}
+    log: ${STARPHLEET_ROOT}/logs/${ORDER}/service.log
+    sha: ${SERVICE_SHA}
+    at: ${AT}
+    author: ${AUTHOR}
+    text: >
+      ${TEXT}
+    container: ${CONTAINER_NAME}
+    status: $(cat "${status}")
+EOF
+
+  done
+  ### ORDERS status ends here
+fi

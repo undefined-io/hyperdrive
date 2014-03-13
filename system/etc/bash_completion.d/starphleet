@@ -1,0 +1,70 @@
+# toying with the idea of using this in the future
+have sp &&
+_starphleet_ship_status() {
+  find /tmp -type f -printf "%P "
+} &&
+_starphleet_captain() {
+  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+    compgen -W "command-officer" -- "${cur}"
+  fi
+  return 0
+} &&
+_starphleet_crew() {
+  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+    compgen -W "service dismiss" -- "${cur}"
+  fi
+  return 0
+} &&
+_starphleet_officer() {
+  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+    compgen -W "assign-crew execute-orders release-crew" -- "${cur}"
+  fi
+  return 0
+} &&
+_starphleet_ship() {
+  if [[ "${COMP_CWORD}" -eq 3 ]]; then
+    case "${COMP_WORDS[2]}" in
+      status)
+        compgen -W "$(_starphleet_ship_status)" -- "${COMP_WORDS[3]}"
+      ;;
+    esac
+  elif [[ "${COMP_CWORD}" -eq 2 ]]; then
+    compgen -W "status upgrade start stop" -- "${cur}"
+  fi
+  return 0
+} &&
+_starphleet_workstation() {
+  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+    compgen -W "assemble breakdown" -- "${cur}"
+  fi
+  return 0
+} &&
+_starphleet()
+{
+  COMPREPLY=()
+  _get_comp_words_by_ref cur prev
+
+  case "${COMP_WORDS[1]}" in
+    captain)
+      COMPREPLY=( $(_starphleet_captain) ); return 0
+    ;;
+    crew)
+      COMPREPLY=( $(_starphleet_crew) ); return 0
+    ;;
+    workstation)
+      COMPREPLY=( $(_starphleet_workstation) ); return 0
+    ;;
+    officer)
+      COMPREPLY=( $(_starphleet_officer) ); return 0
+    ;;
+    ship)
+      COMPREPLY=( $(_starphleet_ship) ); return 0
+    ;;
+  esac
+
+  if [[ "${COMP_CWORD}" -eq 1 ]]; then
+    COMPREPLY=( $(compgen -W "captain crew officer ship workstation" -- ${cur}) )
+    return 0
+  fi
+  return 0
+} && complete -F _starphleet sp

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+### Usage:
+###    starphleet-lxc-destroy <container_name>
+### --help
+###
+### This is a more thorough destroy that will:
+### * make sure the container is stopped
+### * destroy the container
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/tools
+help=$(grep "^### " "$0" | cut -c 5-)
+eval "$(${DIR}/docopts -h "$help" -V "$version" : "$@")"
+
+lxc-stop --name "${container_name}"
+while lxc-ls | grep "^${container_name}" > /dev/null; do
+  lxc-destroy --name "${container_name}" > /dev/null 2>&1
+  sleep 1
+done
+
