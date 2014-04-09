@@ -1,2 +1,2 @@
 all:
-	doc-n-toc index.md --title 'Starphleet' > index.html
+	doc-n-toc index.markdown --title 'Starphleet - (undefined-io expermental edition)' > index.html
