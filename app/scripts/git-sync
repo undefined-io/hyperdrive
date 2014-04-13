@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ### Usage:
-###    starphleet-git-synch <remote> <local>
+###    git-sync <remote> <local>
 ### --help
 ###
 ### Make sure a git repo, with an option #[branch|tag] is pulled and merged into the specified local
@@ -16,38 +16,47 @@ set -o nounset; set -o errexit
 SCRIPT="$(test -L "$0" && readlink -e "$0" || readlink -e "$0")"
 SCRIPT_NAME="$(basename "${SCRIPT}")"
 SCRIPT_DIR="$(dirname "${SCRIPT}")"
-source "${SCRIPT_DIR}/starphleet-main.source"
+source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
 if ! parse_git_locator "${remote}"; then exit 1; fi
 if [[ -L "${local}" || -f "${local}" ]]; then
-  fatal "${SCRIPT_NAME}: <local> cannot be a file or symlink"
+  fatal "<local> cannot be a file or symlink"
 fi
+
+function repo_change_count () {
+  git ${GIT_FLAGS} status --porcelain --untracked-files=no | wc -l
+}
 
 if [ -d "${local}" ]; then
   GIT_FLAGS="--git-dir=${local}/.git --work-tree=${local}"
   ORIGIN_URL="$(git ${GIT_FLAGS} config remote.origin.url)"
   if [ "${ORIGIN_URL}" != "${REMOTE_REPO}" ]; then
-    warn "${SCRIPT_NAME}: repository url differs, reclone needed"
-    "${SCRIPT_DIR}/starphleet-git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
+    warn "repository url differs, reclone needed"
+    "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
+    exit 0
+  fi
+  if [[ "$(repo_change_count)" != "0" ]]; then
+    warn "repository has modifications, reclone needed"
+    "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
     exit 0
   fi
   git ${GIT_FLAGS} fetch --all || fatal "fetch error"
   LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
   if [[ -n "${REMOTE_BRANCH}" && "${REMOTE_BRANCH}" != "${LOCAL_BRANCH}" ]]; then
-    warn "${SCRIPT_NAME}: specified branch changed, checking out ${REMOTE_BRANCH}"
+    warn "specified branch changed, checking out ${REMOTE_BRANCH}"
     git ${GIT_FLAGS} checkout "${REMOTE_BRANCH}"
   fi
   LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
   HAS_CHANGES="$(git ${GIT_FLAGS} diff HEAD...origin/${LOCAL_BRANCH} --raw)"
   if [ "${HAS_CHANGES}x" != "x" ]; then
-    warn "${SCRIPT_NAME}: new code detected, pulling"
+    warn "new code detected, pulling"
     git ${GIT_FLAGS} pull
     exit 0
   fi
 else
-  warn "${SCRIPT_NAME}: ${local} not found, initial clone needed from ${REMOTE_REPO}#${REMOTE_BRANCH}"
-  "${SCRIPT_DIR}/starphleet-git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}"
+  warn "${local} not found, initial clone needed from ${REMOTE_REPO}#${REMOTE_BRANCH}"
+  "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}"
   exit 0
 fi
 

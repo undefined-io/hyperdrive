@@ -1,12 +1,19 @@
 # vim: set ft=sh :
 
-array_contains () { 
-  local array="$1[@]"; local seeking=$2; local in=1
-  for element in "${!array}"; do
-    if [[ $element == $seeking ]]; then
-      in=0
-      break
-    fi
-  done
-  return $in
+function array_contains () { 
+# $1 - name of array $2 - value
+local array="$1[@]"; local seeking=$2; local in=1
+for element in "${!array}"; do
+  if [[ $element == $seeking ]]; then
+    in=0
+    break
+  fi
+done
+return $in
+}
+
+function safe_repo_name () {
+# https://github.com/undefined-io/starphleet#master > undefined-io..starphleet..master
+local REPO="${1}"
+awk -F'[/]' '{print $(NF-1) ".." $(NF)}' <<< "${REPO}" | sed 's/#/../g'
 }

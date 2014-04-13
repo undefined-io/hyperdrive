@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 ### Usage:
-###   starphleet-install
+###   install
 ### Options:
 ###   --help
 ###
 ### This will get starphleet on a base machine
 
 #--HEAD--
-# TODO: See if this can be added from a template
 set -o nounset; set -o errexit
 SCRIPT="$(test -L "$0" && readlink -e "$0" || readlink -e "$0")"
 SCRIPT_NAME="$(basename "${SCRIPT}")"
 SCRIPT_DIR="$(dirname "${SCRIPT}")"
-source "${SCRIPT_DIR}/starphleet-main.source"
+source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
 function make_admiral() {
@@ -25,55 +24,53 @@ if [[ ! "$(id -u "${ADMIRAL}" 2> /dev/null)" -gt "0" ]]; then
   adduser "${ADMIRAL}" admin
   mkdir -p "${ADMIRAL_HOME}/.ssh"
   chmod 700 "${ADMIRAL_HOME}/.ssh"
-  info "${SCRIPT_NAME}: Admiral Created"
+  info "Admiral Created"
 else
-  info "${SCRIPT_NAME}: Admiral Exists"
+  info "Admiral Exists"
 fi
 }
 
 function clone_starphleet_repo() {
 if [[ "${STARPHLEET_SOURCE}/app/scripts" != "${SCRIPT_DIR}" ]]; then
-  "${SCRIPT_DIR}/starphleet-git-clone" "${STARPHLEET_REMOTE}" "${STARPHLEET_SOURCE}" --shallow --force
+  "${SCRIPT_DIR}/git-clone" "${STARPHLEET_REMOTE}" "${STARPHLEET_SOURCE}" --shallow --force
 else
-  info "${SCRIPT_NAME}: skipping clone on initial install.  this is expected."
+  info "skipping clone on initial install.  this is expected."
 fi
 }
 
 function create_starphleet_directories() {
-DIRECTORIES=("${STARPHLEET_ROOT}" "${STARPHLEET_PRIVATE_KEYS}" "${STARPHLEET_PUBLIC_KEYS}" "${STARPHLEET_LXC_ROOT}" "${STARPHLEET_RECORDS}" "${STARPHLEET_INCLUDES}")
-for DIRECTORY in ${DIRECTORIES[@]}; do
-  mkdir -p "${DIRECTORY}"
-  chmod 755 "${DIRECTORY}"
-done
+  mkdir -p "${STARPHLEET_ROOT}" "${STARPHLEET_PRIVATE_KEYS}" "${STARPHLEET_PUBLIC_KEYS}" \
+    "${STARPHLEET_LXC_ROOT}" "${STARPHLEET_RECORDS}" "${STARPHLEET_INCLUDES}" "${STARPHLEET_DATA_ROOT}"
 }
 
 function apply_starphleet_overlay() {
 local SYSTEM_FILE_LEDGER="${STARPHLEET_RECORDS}/system.files"
 if [[ -f "${SYSTEM_FILE_LEDGER}" ]]; then
-  info "${SCRIPT_NAME}: cleaning up previous starphleet install"
+  info "cleaning up previous starphleet install"
   while read FILE; do
-    trace "${SCRIPT_NAME}: [.] remove ${FILE}"
+    trace "[.] remove ${FILE}"
     rm -f "${FILE}"
   done < "${SYSTEM_FILE_LEDGER}"
 fi
-info "${SCRIPT_NAME}: applying new system overlay"
+info "applying new system overlay"
 rsync -a "${STARPHLEET_SOURCE}/system/" "/"
 find "${STARPHLEET_SOURCE}/system/" -type f -printf "%P\n" > "${SYSTEM_FILE_LEDGER}"
-info "${SCRIPT_NAME}: applying new app overlay"
+info "applying new app overlay"
 # TODO: work in a directory swap for the install later
+# TODO: currently does not clean up old files
 rsync -a "${STARPHLEET_SOURCE}/app/" "${STARPHLEET_ROOT}"
 }
 
 function install_required_packages() {
 if [ -f "${STARPHLEET_ROOT}/.system" ]; then
-  warn "${SCRIPT_NAME}: base apt packages already installed. delete ${STARPHLEET_ROOT}/.system to force reinstall"
+  warn "base apt packages already installed. delete ${STARPHLEET_ROOT}/.system to force reinstall"
 else
-  info "${SCRIPT_NAME}: starting install of starphleet dependencies"
+  info "starting install of starphleet dependencies"
   apt-get -y install software-properties-common python-software-properties
   add-apt-repository -y ppa:nginx/stable
   apt-get -y update
   apt-get -y upgrade
-  apt-get -y install --force-yes $(< "${SCRIPT_DIR}/packages")
+  apt-get -y install --force-yes $(< "${STARPHLEET_ROOT}/setup/system.packages")
 
   # stop nginx, because apt-get package installs it turned on.
   /etc/init.d/nginx stop
@@ -112,6 +109,7 @@ create_starphleet_directories
 apply_starphleet_overlay
 install_required_packages
 configure_permissions
+"${SCRIPT_DIR}/buildpack-sync"
 
 # TODO: Eventually we want to support custom plugins for starphleet as well
 

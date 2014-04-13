@@ -5,7 +5,7 @@
 function parse_git_locator() {
 local REMOTE="${1}"
 local REFERENCE="$(basename "$(test -L "${BASH_SOURCE[1]}" && readlink "${BASH_SOURCE[1]}" \
-  || echo "${BASH_SOURCE[1]}")") : parse_git_locator()"
+  || echo "${BASH_SOURCE[1]}")"): parse_git_locator()"
 
 # make sure only one branch specification is given
 if [[ "${remote%#*}" != "${remote%%#*}" ]]; then

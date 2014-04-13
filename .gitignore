@@ -1,9 +1,8 @@
 .vagrant*
-node_modules
+/node_modules/
 *.swp
 .starphleet
-private_keys
-public_keys
-headquarters
+/private_keys/
+/public_keys/
 provision/ship.img.gz
 *.pyc
