@@ -77,17 +77,18 @@ and tell each Captain in the fleet what to do.
 
 ```bash
 .
-├── orders
 ├── authorized_keys
 │   └── john.doe@starphleet.com.pub
+├── _default_
+│   └── orders
 ├── nodejs-service
 │   └── orders
 ├── python-service
 └   └── orders
 ```
 
-* **/orders** - an order file for a service that will run at the starphleet root (more on that later below)
-* **/authorized_keys** - contains public keys for people that will have admiral access
+* **/\_default\_/orders** - an order file for a service that will run at the starphleet root (more on that later below)
+* **/authorized\_keys** - contains public keys for people that will have admiral access
 * **/nodejs-service/orders** - orders for a service called 'nodejs-service'
 * **/python-service/orders** - orders for a service called 'python-service'
 
