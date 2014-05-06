@@ -25,7 +25,7 @@ else
 fi
 # set the headquarters
 if [[ "${set}" == "true" ]]; then
-  echo "export STARPHLEET_HQ=\"${url}\"" > "${STARPHLEET_INCLUDES}/headquarters"
+  echo "export STARPHLEET_HQ='${url}'" > "${STARPHLEET_INCLUDES}/headquarters"
   export STARPHLEET_HQ="${url}"
   info "Headquarters set to ${url}"
 fi
@@ -36,4 +36,15 @@ if [[ "${sync}" == "true" ]]; then
   fi
   info "synching headquarters..."
   "${SCRIPT_DIR}/git-sync" "${STARPHLEET_HQ}" "${STARPHLEET_HQ_ROOT}" || true
+
+  # pull new and existing order details
+  for ORDER in $(orders_list); do
+    SERVICE=$(awk -F/ '{print $(NF-1)}' <<< "${ORDER}")
+    REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${ORDER}" | tail -1)"
+    # TODO: Need error checking here for empty vars
+    # TODO: Error check to handle invalid service repos, probably skip the update, but need to log it somehow
+    info "synching '${SERVICE}'..."
+    "${SCRIPT_DIR}/git-sync" "${REPO}" "${STARPHLEET_SERVICE_REPOS}/${SERVICE}" || true
+  done
+  # clean up orders that no longer exist
 fi

@@ -22,9 +22,10 @@ export STARPHLEET_RECORDS="${STARPHLEET_DATA_ROOT}/records"
 export STARPHLEET_SCRIPTS="${STARPHLEET_ROOT}/scripts"
 export STARPHLEET_HQ_ROOT="${STARPHLEET_DATA_ROOT}/headquarters"
 export STARPHLEET_INCLUDES="${STARPHLEET_DATA_ROOT}/includes"
-export STARPHLEET_HQ_PULSE="60"
 export STARPHLEET_BUILDPACK_MANIFEST="${STARPHLEET_SCRIPTS}/buildpacks"
 export STARPHLEET_BUILDPACK_ROOT="${STARPHLEET_DATA_ROOT}/buildpacks"
+export STARPHLEET_LOCKS="${STARPHLEET_ROOT}/locks"
+export STARPHLEET_SERVICE_REPOS="${STARPHLEET_DATA_ROOT}/service_repos"
 
 STARPHLEET_SUDO=("install" "test" "workstation-create")
 STARPHLEET_NO_PARALLEL=("install" "test" "workstation-create")
@@ -44,11 +45,14 @@ if [[ -n "${SCRIPT_NAME}" && $(array_contains STARPHLEET_SUDO "${SCRIPT_NAME}") 
   fi
 fi
 
-# TODO: Add message here if other script is running
-# check if the script is not suppoed to run in parallel
+# check if the script is not supposed to run in parallel
 if [[ -n "${SCRIPT_NAME}" && $(array_contains STARPHLEET_NO_PARALLEL "${SCRIPT_NAME}") -eq "0" ]]; then
   LOCK="/var/run/${SCRIPT_NAME}.pid"
-  [[ -f "${LOCK}" ]] && kill -0 $(< "${LOCK}") > /dev/null 2>&1 && exit 255
+  if [[ -f "${LOCK}" ]]; then
+    if kill -0 "$(< "${LOCK}")" > /dev/null 2>&1; then
+      fatal "${SCRIPT_NAME} is already running and only once instance is allowed at a time"
+    fi
+  fi
   echo "$$" > "${LOCK}"
 fi
 
@@ -58,8 +62,6 @@ fi
 # TODO: need to address this, could be lower than current
 ulimit -n 4096
 
-# see if we still need the starphleet- check after the rename
-#if [[ "${#BASH_SOURCE[@]}" -gt "0" && "$(basename "${BASH_SOURCE[1]}")" =~ ^starphleet-.* ]]; then
 if [[ "${#BASH_SOURCE[@]}" -gt "0" ]]; then
   eval "$(${SCRIPT_DIR}/docopts -h "$(grep "^### " "${BASH_SOURCE[1]}" | cut -c 5-)" -V "${STARPHLEET_VERSION}" : "$@")"
 fi

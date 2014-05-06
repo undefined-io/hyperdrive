@@ -11,7 +11,7 @@
 ### Creates a workstation
 
 #--HEAD--
-set -o nounset; set -o errexit; 
+set -o nounset; set -o errexit; set -o pipefail;
 SCRIPT="$(test -L "$0" && readlink -e "$0" || readlink -e "$0")"
 SCRIPT_NAME="$(basename "${SCRIPT}")"
 SCRIPT_DIR="$(dirname "${SCRIPT}")"
@@ -22,25 +22,31 @@ source "${SCRIPT_DIR}/main.source"
 LXC_ROOT="/var/lib/lxc"
 
 # TODO: Need to break this script up further
-# TODO: rename starphleet-workstation to starphleet-workstation
 # TODO: figure out which log file the clone messages should go into
 # TODO: lxc-attach failures are not sending out any messages
+# TODO: clean up the path mess in here
 
 #-- DEFAULT CONTAINER ----------------------------------------------------------
 
 if [[ "$(lxc-ls | grep -ce '^starphleet$')" == 0 ]]; then
-  warn "${SCRIPT_NAME}: container \"starphleet\" is missing and will now be created..."
-  trace "${SCRIPT_NAME}: log available at ${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log"
-  lxc-create --name="starphleet" --template="ubuntu" > "${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log" 2>&1
+  warn "container 'starphleet' is missing and will now be created..."
+  trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log"
+  (
+    flock -x 200
+    lxc-create --name="starphleet" --template="ubuntu" > "${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log" 2>&1
+  ) 200>"${STARPHLEET_LOCKS}/lxc"
 fi
-info "found base container \"starphleet\""
+info "container 'starphleet' ready"
 
 #-- SHARED FUNCTIONS -----------------------------------------------------------
 
 function workstation_open () {
 
 rm -rf "${WORKSTATION_ROOT}"
-lxc-clone --snapshot -B overlayfs -o "${WORKSTATION_BASE}" -n "${WORKSTATION_NAME}"
+(
+  flock -x 200
+  lxc-clone --snapshot -B overlayfs -o "${WORKSTATION_BASE}" -n "${WORKSTATION_NAME}"
+) 200>"${STARPHLEET_LOCKS}/lxc"
 local LXC_FS="${LXC_ROOT}/${WORKSTATION_NAME}"
 local WORKSTATION_FS="${WORKSTATION_ROOT}/filesystem"
 mkdir -p "${LXC_FS}/delta0/var/starphleet/share" "${LXC_FS}/delta0/var/starphleet/buildpacks" "${WORKSTATION_SHARE}"
@@ -57,9 +63,6 @@ lxc-wait --name="${WORKSTATION_NAME}" --state="RUNNING" --timeout="60"
 }
 
 function workstation_close () {
-if [[ "${running}" == "true" ]]; then
-  return 0
-fi
 lxc-stop --name="${WORKSTATION_NAME}"
 lxc-wait --name="${WORKSTATION_NAME}" --state="STOPPED" --timeout="60"
 }
@@ -67,7 +70,7 @@ lxc-wait --name="${WORKSTATION_NAME}" --state="STOPPED" --timeout="60"
 #-- BASE CONTAINER -------------------------------------------------------------
 
 if [[ "$(lxc-ls | grep -ce '^starphleet-workstation$')" == 0 ]]; then
-  warn "${SCRIPT_NAME}: container \"starphleet-workstation\" is missing and will now be created..."
+  warn "container 'starphleet-workstation' is missing and will now be created..."
   WORKSTATION_BASE="starphleet"
   WORKSTATION_NAME="starphleet-workstation"
   WORKSTATION_ROOT="${STARPHLEET_LXC_ROOT}/${WORKSTATION_NAME}"
@@ -82,28 +85,45 @@ if [[ "$(lxc-ls | grep -ce '^starphleet-workstation$')" == 0 ]]; then
   set +o xtrace
   workstation_close
 fi
-info "found workstation container \"starphleet-workstation\""
+info "container 'starphleet-workstation' ready"
 
 #-- SERVICE CONTAINER ----------------------------------------------------------
 
 if [[ "${service}" == "true" ]]; then
   WORKSTATION_NAME="starphleet-${service_name}"
   if [[ "$(lxc-ls | grep -ce "^${service_name}\$")" == 0 ]]; then
+    REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' /data/starphleet/headquarters/nodejs-service/orders | tail -1)"
+
+    #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${service_name}/" "${WORKSTATION_SHARE}/app"
     WORKSTATION_BASE="starphleet-workstation"
     WORKSTATION_ROOT="${STARPHLEET_LXC_ROOT}/${WORKSTATION_NAME}"
     WORKSTATION_SHARE="${WORKSTATION_ROOT}/share"
 
     if [[ ! -d "${STARPHLEET_HQ_ROOT}/${service_name}" ]]; then
-      fatal "invalid service name \"${service_name}\""
+      fatal "invalid service name '${service_name}'"
     fi
 
     workstation_open
     cp "${STARPHLEET_ROOT}/setup/service-workstation-install.sh" "${WORKSTATION_SHARE}/setup.sh"
-    rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${service_name}/" "${WORKSTATION_SHARE}/app"
+    cp "${STARPHLEET_HQ_ROOT}/${service_name}/orders" "${WORKSTATION_SHARE}/"
+    # TODO: make this an rsync from local updated git repo (need to figure out how to properly kick this off)
+    "${SCRIPT_DIR}/git-clone" "${REPO}" "${WORKSTATION_SHARE}/app" --shallow
     trace "log available at ${WORKSTATION_ROOT}/setup.log"
     lxc-attach --name="${WORKSTATION_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${WORKSTATION_ROOT}/setup.log" 2>&1 || true
-    echo "errorcode: $#"
-    workstation_close
+    if [[ -f "${WORKSTATION_SHARE}/setup.completed" ]]; then
+      info "setup completed"
+    else
+      fatal "setup failed"
+    fi
+    lxc-attach --name "${WORKSTATION_NAME}" -- sudo -H -u ubuntu -i bash -c "./build.sh" >> "${WORKSTATION_ROOT}/setup.log" 2>&1 || true
+    if [[ -f "${WORKSTATION_SHARE}/build.completed" ]]; then
+      info "build completed"
+    else
+      fatal "build failed"
+    fi
+    if [[ "${running}" != "true" ]]; then
+      workstation_close
+    fi
   fi
-  info "found workstation container \"${WORKSTATION_NAME}\""
+  info "workstation '${WORKSTATION_NAME}' ready"
 fi

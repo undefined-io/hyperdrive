@@ -9,7 +9,7 @@ local REFERENCE="$(basename "$(test -L "${BASH_SOURCE[1]}" && readlink "${BASH_S
 
 # make sure only one branch specification is given
 if [[ "${remote%#*}" != "${remote%%#*}" ]]; then
-  error "${REFERENCE}: invalid branch specification \"${remote#*#}\""
+  error "${REFERENCE}: invalid branch specification '${remote#*#}'"
   return 1
 fi
 
@@ -29,14 +29,14 @@ fi
 # TODO: Allow user:pass@ for http(s) repos
 if [[ "${REMOTE_REPO:0:4}" == "http" && ! "$(curl --silent -w "%{http_code}" -o /dev/null "${REMOTE_REPO}")" == "200" ]]; 
 then
-  error "${REFERENCE}: repo \"${REMOTE_REPO}\" is unreachable or requires different credentials"
+  error "${REFERENCE}: repo '${REMOTE_REPO}' is unreachable or requires different credentials"
   return 1
 fi
 # TODO: Add SSH check
 # TODO: Add local check
 # TODO: Make sure that at this point user/pass prompt will not hold up the script
 if ! git ls-remote "${REMOTE_REPO}" > /dev/null 2>&1; then
-  error "${REFERENCE}: could not find valid repo at \"${REMOTE_REPO}\""
+  error "${REFERENCE}: could not find valid repo at '${REMOTE_REPO}'"
   return 1
 fi
 
