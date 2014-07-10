@@ -9,7 +9,7 @@ local REFERENCE="$(basename "$(test -L "${BASH_SOURCE[1]}" && readlink "${BASH_S
 
 # make sure only one branch specification is given
 if [[ "${remote%#*}" != "${remote%%#*}" ]]; then
-  error "${REFERENCE}: invalid branch specification '${remote#*#}'"
+  error "invalid branch specification '${remote#*#}'"
   return 1
 fi
 
@@ -29,19 +29,19 @@ fi
 # TODO: Allow user:pass@ for http(s) repos
 if [[ "${REMOTE_REPO:0:4}" == "http" && ! "$(curl --silent -w "%{http_code}" -o /dev/null "${REMOTE_REPO}")" == "200" ]]; 
 then
-  error "${REFERENCE}: repo '${REMOTE_REPO}' is unreachable or requires different credentials"
+  error "repo '${REMOTE_REPO}' is unreachable or requires different credentials"
   return 1
 fi
 # TODO: Add SSH check
 # TODO: Add local check
 # TODO: Make sure that at this point user/pass prompt will not hold up the script
 if ! git ls-remote "${REMOTE_REPO}" > /dev/null 2>&1; then
-  error "${REFERENCE}: could not find valid repo at '${REMOTE_REPO}'"
+  error "could not find valid repo at '${REMOTE_REPO}'"
   return 1
 fi
 
 if [[ -z "${REMOTE_BRANCH}" ]]; then
-  info "${REFERENCE}: no branch provided, so looking up the default branch in the repo"
+  info "no branch provided, so looking up the default branch in the repo"
   # extract the SHA of the HEAD tag
   local REMOTE_HEAD_SHA="$(git ls-remote "${REMOTE_REPO}" | awk '$2 == "HEAD" {print $1}')"
   # find a branch/tag of the HEAD SHA
@@ -51,8 +51,8 @@ if [[ -z "${REMOTE_BRANCH}" ]]; then
   # TODO: Need to fix and make this work with branches that have / in the name.  ie: feature/go-111
   REMOTE_HEAD_BRANCH="${REMOTE_HEAD_BRANCH##*/}"
   REMOTE_BRANCH="${REMOTE_HEAD_BRANCH}"
-  trace "${REFERENCE}: REMOTE_HEAD_SHA: ${REMOTE_HEAD_SHA}, REMOTE_HEAD_BRANCH: ${REMOTE_HEAD_BRANCH}"
+  trace "REMOTE_HEAD_SHA: ${REMOTE_HEAD_SHA}, REMOTE_HEAD_BRANCH: ${REMOTE_HEAD_BRANCH}"
 fi
-trace "${REFERENCE}: REMOTE_REPO: ${REMOTE_REPO}, REMOTE_BRANCH: ${REMOTE_BRANCH}"
+trace "REMOTE_REPO: ${REMOTE_REPO}, REMOTE_BRANCH: ${REMOTE_BRANCH}"
 return 0
 }
