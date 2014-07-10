@@ -45,4 +45,4 @@ log "cloning starphleet repository..."
 git clone --branch "${STARPHLEET_BRANCH}" --depth 1 "${STARPHLEET_GIT}" "${STARPHLEET_LOCAL}" >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
 
 log "installing starphleet..."
-"${STARPHLEET_LOCAL}/app/scripts/install" 2>&1 | tee "${STARPHLEET_BOOTSTRAP_LOG}"
+"${STARPHLEET_LOCAL}/app/scripts/install" 2>&1 | tee -a "${STARPHLEET_BOOTSTRAP_LOG}"

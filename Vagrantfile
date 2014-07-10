@@ -32,7 +32,7 @@ Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
   config.vm.provider :parallels do |f, override|
     override.vm.box = ENV['BOX_NAME'] || 'saucy-parallels'
     override.vm.box_url = "https://s3.amazonaws.com/glg_starphleet/saucy-server-parallels-9-amd64-vagrant-1.4.3.box"
-    f.vmx["displayName"] = SHIP_NAME
+    f.name = SHIP_NAME
     f.customize ["set", :id, "--memsize", VAGRANT_MEMSIZE]
   end
 end

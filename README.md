@@ -1,9 +1,11 @@
-# Starphleet? What?
-The fully open container based continuous deployment PaaS.
+Starphleet? What?
+=================
 
-[Read the documentation](http://undefined-io.github.io/starphleet) 
+A fully open container based continuous deployment PaaS.
 
-# Overview
+[Read the documentation](http://undefined-io.github.io/starphleet)
 
-This branch is currently not a working product.  Experimenting with making things
-a bit more modular, easily testable and hackable, and stable.
+Overview
+========
+
+**NOTE:** This version of Starphleet is still not even alpha ready, but it aims at making the existing version in the original repo a more modular product

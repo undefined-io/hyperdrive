@@ -17,17 +17,17 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-# status messages
-if [ -n "${STARPHLEET_HQ:-}" ]; then
-  info "${SCRIPT_NAME}: Headquarters are set to ${STARPHLEET_HQ}"
-else
-  fatal "Headquarters have not been set"
-fi
 # set the headquarters
 if [[ "${set}" == "true" ]]; then
   echo "export STARPHLEET_HQ='${url}'" > "${STARPHLEET_INCLUDES}/headquarters"
   export STARPHLEET_HQ="${url}"
   info "Headquarters set to ${url}"
+fi
+# status messages
+if [ -n "${STARPHLEET_HQ:-}" ]; then
+  info "${SCRIPT_NAME}: Headquarters are set to ${STARPHLEET_HQ}"
+else
+  fatal "Headquarters have not been set"
 fi
 # sync the headquarters
 if [[ "${sync}" == "true" ]]; then
