@@ -30,9 +30,11 @@ bash <(curl https://raw.githubusercontent.com/undefined-io/starphleet/reset/boot
 
 The Vagrantfile that comes with the current version or starphleet should allow installation on parallels, vmware and virtualbox.
 
+**NOTE OSX/MAC USERS:** *If you have just installed Vagrant, and still have the "Vagrant" pkg mounted, your install of Starphleet will fail. You'll have to unmount the pkg first before you try to start up the image*
+
 ```bash
 # Run the following export(s), then choose the file that fit your vm software
-export STARPHLEET_VAGRANT_MEMSIZE=8192
+export STARPHLEET_VAGRANT_MEMSIZE=4096
 
 # Parallels
 ./parallels
@@ -40,7 +42,7 @@ export STARPHLEET_VAGRANT_MEMSIZE=8192
 # VMware
 ./vmware
 
-#Virtualbox
+# Virtualbox
 ./virtualbox
 ```
 
@@ -76,7 +78,7 @@ Headquarters are just GIT repositories that contain a starphleet specific direct
 ```
 |-- authorized_keys
 |   `-- john.doe@starphleet.com.pub
-|-- _default_
+|-- \_default_
 |   `-- orders
 |-- nodejs-service
 |   `--  orders
@@ -84,7 +86,7 @@ Headquarters are just GIT repositories that contain a starphleet specific direct
     `--orders
 ```
 
-- **/*default*/orders** - an order file for a service that will run at the starphleet root (more on that later below)
+- **/_default/orders** - an order file for a service that will run at the starphleet root (more on that later below)
 - **/authorized_keys** - contains public keys for people that will have admiral access
 - **/nodejs-service/orders** - orders for a service called 'nodejs-service'
 - **/python-service/orders** - orders for a service called 'python-service'
