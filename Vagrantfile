@@ -11,6 +11,7 @@ end
 
 Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
   config.vm.hostname = SHIP_NAME
+  config.vm.synced_folder "./", "/vagrant", id: "some_id"
   config.vm.synced_folder "~", "/hosthome"
 
   config.vm.provider :vmware_fusion do |f, override|
