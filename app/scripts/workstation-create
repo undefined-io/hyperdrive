@@ -18,112 +18,50 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-# TODO: hopefully this is the only place we use this.  check on this later.
-LXC_ROOT="/var/lib/lxc"
-
-# TODO: Need to break this script up further
 # TODO: figure out which log file the clone messages should go into
 # TODO: lxc-attach failures are not sending out any messages
 # TODO: clean up the path mess in here
 
-#-- DEFAULT CONTAINER ----------------------------------------------------------
+source "${SCRIPT_DIR}/lib/workstation.source"
 
-if [[ "$(lxc-ls | grep -ce '^starphleet$')" == 0 ]]; then
-  warn "container 'starphleet' is missing and will now be created..."
-  trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log"
-  (
-    flock -x 200
-    lxc-create --name="starphleet" --template="ubuntu" > "${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log" 2>&1
-  ) 200>"${STARPHLEET_LOCKS}/lxc"
-fi
-info "container 'starphleet' ready"
+"${SCRIPT_DIR}/container-create"
 
-#-- SHARED FUNCTIONS -----------------------------------------------------------
+[[ "${service}" != "true" ]] && exit 0
 
-function workstation_open () {
+WORKSTATION_NAME="starphleet-${service_name}"
+if [[ "$(lxc-ls | grep -ce "^${WORKSTATION_NAME}\$")" == 0 ]]; then
+  info "workstation '${WORKSTATION_NAME}' is missing and will now be created..."
+  REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' /data/starphleet/headquarters/nodejs-service/orders | tail -1)"
 
-rm -rf "${WORKSTATION_ROOT}"
-(
-  flock -x 200
-  lxc-clone --snapshot -B overlayfs -o "${WORKSTATION_BASE}" -n "${WORKSTATION_NAME}"
-) 200>"${STARPHLEET_LOCKS}/lxc"
-local LXC_FS="${LXC_ROOT}/${WORKSTATION_NAME}"
-local WORKSTATION_FS="${WORKSTATION_ROOT}/filesystem"
-mkdir -p "${LXC_FS}/delta0/var/starphleet/share" "${LXC_FS}/delta0/var/starphleet/buildpacks" "${WORKSTATION_SHARE}"
-ln -sf "${LXC_FS}" "${WORKSTATION_FS}"
+  if [[ ! -d "${STARPHLEET_HQ_ROOT}/${service_name}" ]]; then
+    fatal "invalid service name '${service_name}'"
+  fi
 
-cat << EOF >> "${WORKSTATION_FS}/config"
-lxc.mount.entry = ${WORKSTATION_SHARE} var/starphleet/share none defaults,bind 0 0
-lxc.mount.entry = ${STARPHLEET_BUILDPACK_ROOT} var/starphleet/buildpacks none bind,rw 0 0
-EOF
-
-lxc-start --name="${WORKSTATION_NAME}" -d
-lxc-wait --name="${WORKSTATION_NAME}" --state="RUNNING" --timeout="60"
-
-}
-
-function workstation_close () {
-lxc-stop --name="${WORKSTATION_NAME}"
-lxc-wait --name="${WORKSTATION_NAME}" --state="STOPPED" --timeout="60"
-}
-
-#-- BASE CONTAINER -------------------------------------------------------------
-
-if [[ "$(lxc-ls | grep -ce '^starphleet-workstation$')" == 0 ]]; then
-  warn "container 'starphleet-workstation' is missing and will now be created..."
-  WORKSTATION_BASE="starphleet"
-  WORKSTATION_NAME="starphleet-workstation"
+  #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${service_name}/" "${WORKSTATION_SHARE}/app"
+  WORKSTATION_BASE="starphleet-workstation"
   WORKSTATION_ROOT="${STARPHLEET_LXC_ROOT}/${WORKSTATION_NAME}"
   WORKSTATION_SHARE="${WORKSTATION_ROOT}/share"
 
   workstation_open
-  cp "${STARPHLEET_ROOT}/setup/base-workstation-install.sh" "${WORKSTATION_SHARE}/setup.sh"
-  cp "${STARPHLEET_ROOT}/setup/lxc-base.packages" "${WORKSTATION_SHARE}/lxc-base.packages"
-  # TODO: Add a check here to see if the mount is properly setup
+  cp "${STARPHLEET_ROOT}/setup/service-workstation-install.sh" "${WORKSTATION_SHARE}/setup.sh"
+  cp "${STARPHLEET_HQ_ROOT}/${service_name}/orders" "${WORKSTATION_SHARE}/"
+  # TODO: make this an rsync from local updated git repo (need to figure out how to properly kick this off)
+  "${SCRIPT_DIR}/git-clone" "${REPO}" "${WORKSTATION_SHARE}/app" --shallow
   trace "log available at ${WORKSTATION_ROOT}/setup.log"
-  lxc-attach --name="starphleet-workstation" -- bash -c '/var/starphleet/share/setup.sh' > "${WORKSTATION_ROOT}/setup.log" 2>&1
-  set +o xtrace
-  workstation_close
-fi
-info "container 'starphleet-workstation' ready"
-
-#-- SERVICE CONTAINER ----------------------------------------------------------
-
-if [[ "${service}" == "true" ]]; then
-  WORKSTATION_NAME="starphleet-${service_name}"
-  if [[ "$(lxc-ls | grep -ce "^${service_name}\$")" == 0 ]]; then
-    REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' /data/starphleet/headquarters/nodejs-service/orders | tail -1)"
-
-    #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${service_name}/" "${WORKSTATION_SHARE}/app"
-    WORKSTATION_BASE="starphleet-workstation"
-    WORKSTATION_ROOT="${STARPHLEET_LXC_ROOT}/${WORKSTATION_NAME}"
-    WORKSTATION_SHARE="${WORKSTATION_ROOT}/share"
-
-    if [[ ! -d "${STARPHLEET_HQ_ROOT}/${service_name}" ]]; then
-      fatal "invalid service name '${service_name}'"
-    fi
-
-    workstation_open
-    cp "${STARPHLEET_ROOT}/setup/service-workstation-install.sh" "${WORKSTATION_SHARE}/setup.sh"
-    cp "${STARPHLEET_HQ_ROOT}/${service_name}/orders" "${WORKSTATION_SHARE}/"
-    # TODO: make this an rsync from local updated git repo (need to figure out how to properly kick this off)
-    "${SCRIPT_DIR}/git-clone" "${REPO}" "${WORKSTATION_SHARE}/app" --shallow
-    trace "log available at ${WORKSTATION_ROOT}/setup.log"
-    lxc-attach --name="${WORKSTATION_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${WORKSTATION_ROOT}/setup.log" 2>&1 || true
-    if [[ -f "${WORKSTATION_SHARE}/setup.completed" ]]; then
-      info "setup completed"
-    else
-      fatal "setup failed"
-    fi
-    lxc-attach --name "${WORKSTATION_NAME}" -- sudo -H -u ubuntu -i bash -c "./build.sh" >> "${WORKSTATION_ROOT}/setup.log" 2>&1 || true
-    if [[ -f "${WORKSTATION_SHARE}/build.completed" ]]; then
-      info "build completed"
-    else
-      fatal "build failed"
-    fi
-    if [[ "${running}" != "true" ]]; then
-      workstation_close
-    fi
+  lxc-attach --name="${WORKSTATION_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${WORKSTATION_ROOT}/setup.log" 2>&1 || true
+  if [[ -f "${WORKSTATION_SHARE}/setup.completed" ]]; then
+    info "setup completed"
+  else
+    fatal "setup failed"
   fi
-  info "workstation '${WORKSTATION_NAME}' ready"
+  lxc-attach --name "${WORKSTATION_NAME}" -- sudo -H -u ubuntu -i bash -c "./build.sh" >> "${WORKSTATION_ROOT}/setup.log" 2>&1 || true
+  if [[ -f "${WORKSTATION_SHARE}/build.completed" ]]; then
+    info "build completed"
+  else
+    fatal "build failed"
+  fi
+  if [[ "${running}" != "true" ]]; then
+    workstation_close
+  fi
 fi
+info "workstation '${WORKSTATION_NAME}' ready"
