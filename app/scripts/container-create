@@ -20,7 +20,7 @@ source "${SCRIPT_DIR}/main.source"
 
 #-- DEFAULT CONTAINER ----------------------------------------------------------
 
-if [[ "$(lxc-ls | grep -ce '^starphleet$')" == 0 ]]; then
+if container_exists "starphleet"; then
   info "container 'starphleet' is missing and will now be created..."
   trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log"
   (
