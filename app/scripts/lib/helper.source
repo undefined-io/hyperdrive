@@ -14,7 +14,7 @@ return $in
 
 function container_exists () {
 local container_name="${1}"
-if [[ "$(lxc-ls | grep -ce "^${container_name}\$")" == 0 ]]; thne
+if [[ "$(lxc-ls | grep -ce "^${container_name}\$")" == 0 ]]; then
   return 0
 else
   return 1
