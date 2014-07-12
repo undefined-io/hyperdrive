@@ -20,7 +20,7 @@ source "${SCRIPT_DIR}/main.source"
 
 #-- DEFAULT CONTAINER ----------------------------------------------------------
 
-if container_exists "starphleet"; then
+if container_exists 'starphleet'; then
   info "container 'starphleet' is missing and will now be created..."
   trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log"
   (
@@ -34,7 +34,7 @@ source "${SCRIPT_DIR}/lib/workstation.source"
 
 #-- BASE CONTAINER -------------------------------------------------------------
 
-if [[ "$(lxc-ls | grep -ce '^starphleet-workstation$')" == 0 ]]; then
+if container_exists 'starphleet-workstation'; then
   info "container 'starphleet-workstation' is missing and will now be created..."
   WORKSTATION_BASE="starphleet"
   WORKSTATION_NAME="starphleet-workstation"

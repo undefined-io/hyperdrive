@@ -29,7 +29,7 @@ source "${SCRIPT_DIR}/lib/workstation.source"
 [[ "${service}" != "true" ]] && exit 0
 
 WORKSTATION_NAME="starphleet-${service_name}"
-if [[ "$(lxc-ls | grep -ce "^${WORKSTATION_NAME}\$")" == 0 ]]; then
+if container_exists "${WORKSTATION_NAME}"; then
   info "workstation '${WORKSTATION_NAME}' is missing and will now be created..."
   REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' /data/starphleet/headquarters/nodejs-service/orders | tail -1)"
 
