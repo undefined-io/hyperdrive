@@ -28,7 +28,7 @@ _starphleet_ship() {
   if [[ "${COMP_CWORD}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
       status)
-        compgen -W "$(_starphleet_workstation_list)" -- "${COMP_WORDS[3]}"
+        compgen -W "$(_starphleet_ship_status)" -- "${COMP_WORDS[3]}"
       ;;
     esac
   elif [[ "${COMP_CWORD}" -eq 2 ]]; then
@@ -40,7 +40,7 @@ _starphleet_workstation() {
   if [[ "${COMP_CWORD}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
       attach)
-        compgen -W "$(_starphleet_ship_status)" -- "${COMP_WORDS[3]}"
+        compgen -W "$(_starphleet_workstation_list)" -- "${COMP_WORDS[3]}"
       ;;
     esac
   elif [[ "${COMP_CWORD}" -eq 2 ]]; then
