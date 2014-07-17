@@ -14,19 +14,13 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-echo -e '\n/- HQ --------------------------------------------------------------------------'
-"${SCRIPT_DIR}/headquarters" || true
+"${SCRIPT_DIR}/headquarters" | awk '{print "hq   :",$(NF)}' || true
 
-echo -e '\n|- CONTAINERS ------------------------------------------------------------------'
-lxc-ls --fancy --active "^starphleet"
+lxc-ls --fancy --active "^starphleet" | tail -n +3 | awk '{print "lxc  :",$1,$2,$3}'
 
-echo -e '\n|- JOBS ------------------------------------------------------------------------'
-initctl list | grep -e "^starphleet"
+initctl list | grep -e "^starphleet" | awk '{print "job  :",$0}'
 
-echo -e '\n|- ORDERS ----------------------------------------------------------------------'
 if [[ -n "${STARPHLEET_HQ:-}" ]]; then
   find "${STARPHLEET_HQ_ROOT}" -name "orders" -exec \
-    bash -c 'grep -e '^autodeploy' {} | tail -1 | awk '"'"'{print $2}'"'" \;
+    bash -c 'grep -e '^autodeploy' {} | tail -1 | awk '"'"'{print "order:",$2}'"'" \;
 fi
-
-echo -e '\n\-------------------------------------------------------------------------------'
