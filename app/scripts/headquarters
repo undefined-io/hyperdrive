@@ -9,6 +9,8 @@
 ###
 ### Not specifying any parameters outputs the current headquarters or an error message
 
+# TODO: Try to make the order sync happen in parallel
+
 #--HEAD--
 set -o nounset; set -o errexit
 SCRIPT="$(test -L "$0" && readlink "$0" || echo "$0")"
