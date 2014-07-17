@@ -198,3 +198,32 @@ start starphleet-captain-obtain-orders
 # To see logs
 tail -F /var/log/upstart/starphleet*
 ```
+
+Hacking on Starphleet with Vagrant
+----------------------------------
+
+### Symlink Approach
+
+The easiest way to hack on Starphleet is usually to use Vagrant and then symlink the folders of files you are working on.
+
+```bash
+vagrant ssh
+sudo -
+cd /var/starphleet
+mv scripts scripts.bak
+ln -s /vagrant/app/scripts/
+```
+
+Then just work on the scripts in your local directories using your favorite editors, and test out the results immediately.
+
+### Github Approach
+
+If you prefer to check in all changes, use the push/install approach.
+
+```bash
+# On the Starphleet system or VM:
+cd /var/starphleet/scripts
+./install
+```
+
+This pulls the latest changes and upgrades starphleet. The repo that you pull from will come from the `/etc/starphleet/main.conf` file (STARPHLEET_REMOTE)
