@@ -3,6 +3,9 @@ have sp &&
 _starphleet_ship_status() {
   find /tmp -type f -printf "%P "
 } &&
+_starphleet_workstation_list() {
+  lxc-ls -1 --active | grep -e "^starphleet"
+} &&
 _starphleet_captain() {
   if [[ "${COMP_CWORD}" -eq 2 ]]; then
     compgen -W "command-officer" -- "${cur}"
@@ -25,7 +28,7 @@ _starphleet_ship() {
   if [[ "${COMP_CWORD}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
       status)
-        compgen -W "$(_starphleet_ship_status)" -- "${COMP_WORDS[3]}"
+        compgen -W "$(_starphleet_workstation_list)" -- "${COMP_WORDS[3]}"
       ;;
     esac
   elif [[ "${COMP_CWORD}" -eq 2 ]]; then
@@ -34,8 +37,14 @@ _starphleet_ship() {
   return 0
 } &&
 _starphleet_workstation() {
-  if [[ "${COMP_CWORD}" -eq 2 ]]; then
-    compgen -W "assemble breakdown" -- "${cur}"
+  if [[ "${COMP_CWORD}" -eq 3 ]]; then
+    case "${COMP_WORDS[2]}" in
+      attach)
+        compgen -W "$(_starphleet_ship_status)" -- "${COMP_WORDS[3]}"
+      ;;
+    esac
+  elif [[ "${COMP_CWORD}" -eq 2 ]]; then
+    compgen -W "assemble attach breakdown" -- "${cur}"
   fi
   return 0
 } &&

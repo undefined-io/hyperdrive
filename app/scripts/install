@@ -104,9 +104,14 @@ if [[ "$(id -u "vagrant" 2> /dev/null)" -gt "0" ]]; then
 fi
 }
 
+function stop_services() {
+  initctl list | grep -e "^starphleet" | awk '{print $1}' | xargs -n 1 stop 
+}
+
 make_admiral "${STARPHLEET_ADMIRAL}"
 clone_starphleet_repo
 create_starphleet_directories
+stop_services
 apply_starphleet_overlay
 install_required_packages
 configure_permissions
