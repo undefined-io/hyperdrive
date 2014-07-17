@@ -105,7 +105,12 @@ fi
 }
 
 function stop_services() {
-  initctl list | grep -e "^starphleet" | awk '{print $1}' | xargs -n 1 stop 
+  # TODO: improve this, the true is a shortcut to deal with already stopped services
+  initctl list | grep -e "^starphleet" | awk '{print $1}' | xargs -n 1 stop || true
+}
+
+function start_services() {
+  start starphleet-captain-obtain-orders
 }
 
 make_admiral "${STARPHLEET_ADMIRAL}"
@@ -116,6 +121,7 @@ apply_starphleet_overlay
 install_required_packages
 configure_permissions
 "${SCRIPT_DIR}/buildpack-sync"
+start_services
 
 # TODO: Eventually we want to support custom plugins for starphleet as well
 
