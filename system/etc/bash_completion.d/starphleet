@@ -39,12 +39,12 @@ _starphleet_ship() {
 _starphleet_workstation() {
   if [[ "${COMP_CWORD}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
-      attach)
+      use)
         compgen -W "$(_starphleet_workstation_list)" -- "${COMP_WORDS[3]}"
       ;;
     esac
   elif [[ "${COMP_CWORD}" -eq 2 ]]; then
-    compgen -W "assemble attach breakdown" -- "${cur}"
+    compgen -W "assemble use breakdown" -- "${cur}"
   fi
   return 0
 } &&

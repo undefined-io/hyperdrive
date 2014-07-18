@@ -3,8 +3,20 @@
 # NOTE: These are just the beginnings of experimenting with a central "router"
 # TODO: Need to make this source the main files, maybe this file should be generated on install?
 
-SCRIPT_NAME="${1}"
+SCRIPT="${1}"
+shift
+COMMAND="${1}"
 shift
 source "/etc/starphleet/main.conf" || exit 0
 SCRIPT_DIR="${STARPHLEET_ROOT}/scripts"
-"${SCRIPT_DIR}/${SCRIPT_NAME}" $@
+case "${SCRIPT}" in
+  workstation)
+    case "${COMMAND}" in
+      use)
+        lxc-attach --name="${1}"
+        ;;
+    esac
+    ;;
+
+esac
+#"${SCRIPT_DIR}/${SCRIPT_NAME}" $@
