@@ -216,6 +216,8 @@ ln -s /vagrant/app/scripts/
 
 Then just work on the scripts in your local directories using your favorite editors, and test out the results immediately.
 
+**NOTE:** Running `install` will wipe out all the symlinks.
+
 ### Github Approach
 
 If you prefer to check in all changes, use the push/install approach.

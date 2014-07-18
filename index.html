@@ -41,6 +41,6 @@ tail -F /var/log/upstart/starphleet*</code></pre> <h2>Hacking on Starphleet with
 sudo -
 cd /var/starphleet
 mv scripts scripts.bak
-ln -s /vagrant/app/scripts/</code></pre> <p>Then just work on the scripts in your local directories using your favorite editors, and test out the results immediately.</p> <h3>Github Approach</h3> <p>If you prefer to check in all changes, use the push/install approach.</p> <pre><code class="language-bash"># On the Starphleet system or VM:
+ln -s /vagrant/app/scripts/</code></pre> <p>Then just work on the scripts in your local directories using your favorite editors, and test out the results immediately.</p> <p><strong>NOTE:</strong> Running <code>install</code> will wipe out all the symlinks.</p> <h3>Github Approach</h3> <p>If you prefer to check in all changes, use the push/install approach.</p> <pre><code class="language-bash"># On the Starphleet system or VM:
 cd /var/starphleet/scripts
 ./install</code></pre> <p>This pulls the latest changes and upgrades starphleet. The repo that you pull from will come from the <code>/etc/starphleet/main.conf</code> file (STARPHLEET_REMOTE)</p> <footer><p>Copyright ©2014</p></footer></article></body></html>
