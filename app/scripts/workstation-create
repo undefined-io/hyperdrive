@@ -43,7 +43,7 @@ if container_exists "${WORKSTATION_NAME}"; then
   WORKSTATION_SHARE="${WORKSTATION_ROOT}/share"
 
   workstation_open
-  cp "${STARPHLEET_ROOT}/setup/service-workstation-install.sh" "${WORKSTATION_SHARE}/setup.sh"
+  cp "${STARPHLEET_ROOT}/setup/workstation-setup.sh" "${WORKSTATION_SHARE}/setup.sh"
   cp "${STARPHLEET_HQ_ROOT}/${service_name}/orders" "${WORKSTATION_SHARE}/"
   # TODO: make this an rsync from local updated git repo (need to figure out how to properly kick this off)
   "${SCRIPT_DIR}/git-clone" "${REPO}" "${WORKSTATION_SHARE}/app" --shallow

@@ -42,7 +42,7 @@ if container_exists 'starphleet-workstation'; then
   WORKSTATION_SHARE="${WORKSTATION_ROOT}/share"
 
   workstation_open
-  cp "${STARPHLEET_ROOT}/setup/base-workstation-install.sh" "${WORKSTATION_SHARE}/setup.sh"
+  cp "${STARPHLEET_ROOT}/setup/container-setup.sh" "${WORKSTATION_SHARE}/setup.sh"
   cp "${STARPHLEET_ROOT}/setup/lxc-base.packages" "${WORKSTATION_SHARE}/lxc-base.packages"
   # TODO: Add a check here to see if the mount is properly setup
   trace "log available at ${WORKSTATION_ROOT}/setup.log"

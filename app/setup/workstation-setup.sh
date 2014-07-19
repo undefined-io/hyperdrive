@@ -21,7 +21,9 @@ else
   exit 1
 fi
 
+# create the build script
 cat << EOF > /home/ubuntu/build.sh
+#!/usr/bin/env bash
 set -o nounset; set -o errexit
 cd
 sudo rm -rf ./app/
@@ -34,6 +36,21 @@ export REQUEST_ID=$(openssl rand -base64 32)
 
 sudo touch "/var/starphleet/share/build.completed"
 EOF
-chown ubuntu:ubuntu /home/ubuntu/build.sh
-chmod 744 /home/ubuntu/build.sh
+
+# TODO: Change the ruby to execute during the script generation. Want less moving parts on startup.
+cat << EOF >> /home/ubuntu/start.sh
+#!/usr/bin/env bash
+cd "/home/ubuntu/app"
+for FILE in .profile.d/*; do source "\$FILE"; done
+env | sort
+if [[ -f "./Procfile" ]]; then
+  ruby -e "require 'yaml';puts YAML.load_file('Procfile')['web']"
+else
+  ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['web']"
+fi
+EOF
+
+chown ubuntu:ubuntu /home/ubuntu/*.sh
+chmod 744 /home/ubuntu/*.sh
+
 touch  /var/starphleet/share/setup.completed
