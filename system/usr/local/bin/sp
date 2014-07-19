@@ -13,7 +13,13 @@ case "${SCRIPT}" in
   workstation)
     case "${COMMAND}" in
       use)
-        lxc-attach --name="${1}"
+        [[ -n "${1}" ]] && lxc-attach --name="${1}"
+        ;;
+      breakdown)
+        [[ -n "${1}" ]] && lxc-destroy -f --name="${1}"
+        ;;
+      assemble)
+        [[ -n "${1}" ]] && "${SCRIPT_DIR}/workstation-create" service "${1}" --running
         ;;
     esac
     ;;

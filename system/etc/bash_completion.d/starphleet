@@ -4,7 +4,10 @@ _starphleet_ship_status() {
   find /tmp -type f -printf "%P "
 } &&
 _starphleet_workstation_list() {
-  lxc-ls -1 --active | grep -e "^starphleet"
+  lxc-ls -1 | grep -e "^starphleet-" | grep -v "starphleet-workstation"
+} &&
+_starphleet_order_list() {
+  find "/data/starphleet/headquarters/" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n" | awk -F/ '{print $(NF-1)}'
 } &&
 _starphleet_captain() {
   if [[ "${COMP_CWORD}" -eq 2 ]]; then
@@ -39,8 +42,11 @@ _starphleet_ship() {
 _starphleet_workstation() {
   if [[ "${COMP_CWORD}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
-      use)
+      use|breakdown)
         compgen -W "$(_starphleet_workstation_list)" -- "${COMP_WORDS[3]}"
+      ;;
+      assemble)
+        compgen -W "$(_starphleet_order_list)" -- "${COMP_WORDS[3]}"
       ;;
     esac
   elif [[ "${COMP_CWORD}" -eq 2 ]]; then
