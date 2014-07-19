@@ -21,6 +21,7 @@ source "${SCRIPT_DIR}/main.source"
 # TODO: figure out which log file the clone messages should go into
 # TODO: lxc-attach failures are not sending out any messages
 # TODO: clean up the path mess in here
+# TODO: when a build/setup fails, there should be a max retry limit, so we don't endlessly build
 
 source "${SCRIPT_DIR}/lib/workstation.source"
 

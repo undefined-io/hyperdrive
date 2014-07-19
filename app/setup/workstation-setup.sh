@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# This script is meant to run inside of a starphleet workstation
+
 set -o nounset; set -o errexit
 until ifconfig | grep 'inet addr' | grep --invert '127.0.0.1' > /dev/null
 do
@@ -21,8 +24,11 @@ else
   exit 1
 fi
 
+APP_HOME="/home/ubuntu"
+APP_ROOT="${APP_HOME}/app"
+
 # create the build script
-cat << EOF > /home/ubuntu/build.sh
+cat << BUILDEOF > "${APP_HOME}/build.sh"
 #!/usr/bin/env bash
 set -o nounset; set -o errexit
 cd
@@ -32,25 +38,26 @@ sudo chown -R ubuntu:ubuntu ./app/
 
 # compile the buildpack for the application
 export REQUEST_ID=$(openssl rand -base64 32)
-"${SELECTED_BUILDPACK}/bin/compile" "/home/ubuntu/app" "/tmp/donotcache"
+"${SELECTED_BUILDPACK}/bin/compile" "${APP_ROOT}" "/tmp/donotcache"
+
+cat << STARTEOF > "${APP_HOME}/start.sh"
+#!/usr/bin/env bash
+cd "${APP_ROOT}"
+export HOME="${APP_ROOT}"
+for FILE in .profile.d/*; do source "\\\$FILE"; done
+env | sort
+STARTEOF
+if [[ -f "${APP_ROOT}/Procfile" ]]; then
+  ruby -e "require 'yaml';puts YAML.load_file('${APP_ROOT}/Procfile')['web']" >> "${APP_HOME}/start.sh"
+else
+  ruby -e "require 'yaml';puts (YAML.load_file('${APP_ROOT}/.release')['default_process_types'] || {})['web']" >> "${APP_HOME}/start.sh"
+fi
+chmod 744 "${APP_HOME}/start.sh"
 
 sudo touch "/var/starphleet/share/build.completed"
-EOF
+BUILDEOF
 
-# TODO: Change the ruby to execute during the script generation. Want less moving parts on startup.
-cat << EOF >> /home/ubuntu/start.sh
-#!/usr/bin/env bash
-cd "/home/ubuntu/app"
-for FILE in .profile.d/*; do source "\$FILE"; done
-env | sort
-if [[ -f "./Procfile" ]]; then
-  ruby -e "require 'yaml';puts YAML.load_file('Procfile')['web']"
-else
-  ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['web']"
-fi
-EOF
-
-chown ubuntu:ubuntu /home/ubuntu/*.sh
-chmod 744 /home/ubuntu/*.sh
+chown ubuntu:ubuntu "${APP_HOME}/build.sh"
+chmod 744 "${APP_HOME}/build.sh"
 
 touch  /var/starphleet/share/setup.completed
