@@ -14,9 +14,9 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-"${SCRIPT_DIR}/headquarters" | awk '{print "hq   :",$(NF)}' || true
+"${SCRIPT_DIR}/headquarters" | awk '{print "hq   :",$(NF)}'
 
-lxc-ls --fancy --active "^starphleet" | tail -n +3 | awk '{print "lxc  :",$1,$2,$3}'
+lxc-ls --fancy "^starphleet" | tail -n +3 | awk '{print "lxc  :",$1,$2,$3}'
 
 initctl list | grep -e "^starphleet" | awk '{print "job  :",$0}'
 

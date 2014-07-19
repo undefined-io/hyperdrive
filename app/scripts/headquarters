@@ -29,12 +29,12 @@ fi
 if [ -n "${STARPHLEET_HQ:-}" ]; then
   info "Headquarters are set to ${STARPHLEET_HQ}"
 else
-  fatal "Headquarters have not been set"
+  warn "Headquarters have not been set"
 fi
 # sync the headquarters
 if [[ "${sync}" == "true" ]]; then
   if [[ -z "${STARPHLEET_HQ:-}" ]]; then
-    fatal "Headquarters have to be set before sync can be performed"
+    warn "Headquarters have to be set before sync can be performed"
   fi
   info "synching headquarters..."
   "${SCRIPT_DIR}/git-sync" "${STARPHLEET_HQ}" "${STARPHLEET_HQ_ROOT}" || true
