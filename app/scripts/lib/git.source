@@ -4,8 +4,6 @@
 
 function parse_git_locator() {
 local REMOTE="${1}"
-local REFERENCE="$(basename "$(test -L "${BASH_SOURCE[1]}" && readlink "${BASH_SOURCE[1]}" \
-  || echo "${BASH_SOURCE[1]}")"): parse_git_locator()"
 
 # make sure only one branch specification is given
 if [[ "${remote%#*}" != "${remote%%#*}" ]]; then
@@ -41,7 +39,7 @@ if ! git ls-remote "${REMOTE_REPO}" > /dev/null 2>&1; then
 fi
 
 if [[ -z "${REMOTE_BRANCH}" ]]; then
-  info "no branch provided, so looking up the default branch in the repo"
+  trace "no branch provided, so looking up the default branch in the repo"
   # extract the SHA of the HEAD tag
   local REMOTE_HEAD_SHA="$(git ls-remote "${REMOTE_REPO}" | awk '$2 == "HEAD" {print $1}')"
   # find a branch/tag of the HEAD SHA
