@@ -15,4 +15,7 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
+if ! container_exists "${workstation_name}"; then
+  fatal "invalid container name '${workstation_name}'"
+fi
 lxc-attach --name "${workstation_name}" -- sudo -H -u ubuntu -i bash -c "./start.sh"
