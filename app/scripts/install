@@ -41,7 +41,7 @@ fi
 function create_starphleet_directories() {
   mkdir -p "${STARPHLEET_ROOT}" "${STARPHLEET_PRIVATE_KEYS}" "${STARPHLEET_PUBLIC_KEYS}" \
     "${STARPHLEET_LXC_ROOT}" "${STARPHLEET_RECORDS}" "${STARPHLEET_INCLUDES}" "${STARPHLEET_DATA_ROOT}" \
-    "${STARPHLEET_LOCKS}" "${STARPHLEET_SERVICE_REPOS}"
+    "${STARPHLEET_LOCKS}" "${STARPHLEET_SERVICE_REPOS}" "${STARPHLEET_HQ_ROOT}"
 }
 
 function apply_starphleet_overlay() {
@@ -110,6 +110,7 @@ function stop_services() {
 }
 
 function start_services() {
+  # TODO: make start optional
   start starphleet-captain-obtain-orders
 }
 

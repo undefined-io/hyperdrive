@@ -26,6 +26,10 @@ if [[ -L "${local}" || -f "${local}" ]]; then
 elif [[ ! -d "${local}" ]]; then
   info "cloning '${REMOTE_REPO}#${REMOTE_BRANCH}' for the first time to '${local}'"
   git clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}"
+elif [[ -d "${local}" && "$(find "${local}" -mindepth 1 -printf a | wc -c)" == 0 ]]; then
+  warn "replacing empty dir '${local}' with '${REMOTE_REPO}#${REMOTE_BRANCH}'"
+  rmdir "${local}"
+  git clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}"
 elif [[ -d "${local}" && ! "${force}" == "true" ]]; then
   fatal "--force is required in order to overwrite an existing repo"
 elif [[ -d "${local}" && "${force}" == "true" ]]; then

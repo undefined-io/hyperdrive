@@ -14,7 +14,7 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-"${SCRIPT_DIR}/headquarters" | awk '{print "hq   :",$(NF)}'
+echo "hq   : ${STARPHLEET_HQ:-<not set>}"
 
 lxc-ls --fancy "^starphleet" | tail -n +3 | awk '{print "lxc  :",$1,$2,$3}'
 

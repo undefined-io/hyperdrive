@@ -28,7 +28,7 @@ function repo_change_count () {
   git ${GIT_FLAGS} status --porcelain --untracked-files=no | wc -l
 }
 
-if [ -d "${local}" ]; then
+if [[ -d "${local}" && -d "${local}/.git" ]]; then
   GIT_FLAGS="--git-dir=${local}/.git --work-tree=${local}"
   ORIGIN_URL="$(git ${GIT_FLAGS} config remote.origin.url)"
   if [ "${ORIGIN_URL}" != "${REMOTE_REPO}" ]; then
