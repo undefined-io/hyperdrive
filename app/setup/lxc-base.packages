@@ -33,6 +33,7 @@ openjdk-6-jre-headless
 openssh-client
 openssh-server
 python-dev
+ruby
 socat
 sqlite3
 telnet
