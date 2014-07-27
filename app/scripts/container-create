@@ -46,7 +46,10 @@ if ! container_exists 'starphleet-workstation'; then
   cp "${STARPHLEET_ROOT}/setup/lxc-base.packages" "${WORKSTATION_SHARE}/lxc-base.packages"
   # TODO: Add a check here to see if the mount is properly setup
   trace "log available at ${WORKSTATION_ROOT}/setup.log"
-  lxc-attach --name="starphleet-workstation" -- bash -c '/var/starphleet/share/setup.sh' > "${WORKSTATION_ROOT}/setup.log" 2>&1
+  lxc-attach --name="starphleet-workstation" -- bash -c '/var/starphleet/share/setup.sh' > "${WORKSTATION_ROOT}/setup.log" 2>&1 || true
+  if [[ ! -f "${WORKSTATION_SHARE}/setup.completed" ]]; then
+    fatal "error during setup.  please check ${WORKSTATION_ROOT}/setup.log for more information."
+  fi
   set +o xtrace
   workstation_close
 fi
