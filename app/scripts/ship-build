@@ -27,25 +27,25 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 
 "${SCRIPT_DIR}/hull-build"
 
-[[ "${service}" != "true" ]] && exit 0
+[[ "${name}" != "true" ]] && exit 0
 
-HULL_NAME="starphleet-${service_name}"
+HULL_NAME="starphleet-${order_name}"
 if ! hull_exists "${HULL_NAME}"; then
   info "ship '${HULL_NAME}' is missing and will now be created..."
-  REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' /data/starphleet/headquarters/nodejs-service/orders | tail -1)"
+  REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${STARPHLEET_HQ_ROOT}/${order_name}/orders" | tail -1)"
 
-  if [[ ! -d "${STARPHLEET_HQ_ROOT}/${service_name}" ]]; then
-    fatal "invalid service name '${service_name}'"
+  if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
+    fatal "invalid order_name '${order_name}'"
   fi
 
-  #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${service_name}/" "${HULL_SHARE_DIR}/app"
+  #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
   HULL_BASE="starphleet-basic-hull"
   HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
   HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 
   hull_open
   cp "${STARPHLEET_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
-  cp "${STARPHLEET_HQ_ROOT}/${service_name}/orders" "${HULL_SHARE_DIR}/"
+  cp "${STARPHLEET_HQ_ROOT}/${order_name}/orders" "${HULL_SHARE_DIR}/"
   # TODO: make this an rsync from local updated git repo (need to figure out how to properly kick this off)
   "${SCRIPT_DIR}/git-clone" "${REPO}" "${HULL_SHARE_DIR}/app" --shallow
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
