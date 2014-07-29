@@ -3,8 +3,8 @@ have sp &&
 _starphleet_ship_status() {
   find /tmp -type f -printf "%P "
 } &&
-_starphleet_workstation_list() {
-  lxc-ls -1 | grep -e "^starphleet-" | grep -v "starphleet-basic-hull"
+_starphleet_ship_list() {
+  lxc-ls | grep -e "^starphleet-" | grep -v "starphleet-basic-hull"
 } &&
 _starphleet_order_list() {
   find "/data/starphleet/headquarters/" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n" | awk -F/ '{print $(NF-1)}'
@@ -43,7 +43,7 @@ _starphleet_workstation() {
   if [[ "${COMP_CWORD}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
       use|breakdown)
-        compgen -W "$(_starphleet_workstation_list)" -- "${COMP_WORDS[3]}"
+        compgen -W "$(_starphleet_ship_list)" -- "${COMP_WORDS[3]}"
       ;;
       assemble)
         compgen -W "$(_starphleet_order_list)" -- "${COMP_WORDS[3]}"
@@ -59,26 +59,24 @@ _starphleet()
   COMPREPLY=()
   _get_comp_words_by_ref cur prev
 
-  case "${COMP_WORDS[1]}" in
-    captain)
-      COMPREPLY=( $(_starphleet_captain) ); return 0
-    ;;
-    crew)
-      COMPREPLY=( $(_starphleet_crew) ); return 0
-    ;;
-    workstation)
-      COMPREPLY=( $(_starphleet_workstation) ); return 0
-    ;;
-    officer)
-      COMPREPLY=( $(_starphleet_officer) ); return 0
-    ;;
-    ship)
-      COMPREPLY=( $(_starphleet_ship) ); return 0
-    ;;
-  esac
-
+  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+    case "${COMP_WORDS[1]}" in
+      command|decommission)
+        COMPREPLY=( $(compgen -W "$(_starphleet_ship_list)" -- "${COMP_WORDS[2]}") )
+        return 0
+      ;;
+      assemble)
+        COMPREPLY=( $(compgen -W "$(_starphleet_order_list)" -- "${COMP_WORDS[2]}") )
+        return 0
+      ;;
+      status)
+        COMPREPLY=( $(compgen -W "$(_starphleet_ship_status)" -- "${COMP_WORDS[2]}") )
+        return 0
+      ;;
+    esac
+  fi
   if [[ "${COMP_CWORD}" -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "captain crew officer ship workstation" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "assemble decommission command status" -- ${cur}) )
     return 0
   fi
   return 0
