@@ -21,7 +21,7 @@ source "${SCRIPT_DIR}/main.source"
 #-- DEFAULT HULL ---------------------------------------------------------------
 
 HULL_NAME="starphleet"
-if ! hull_exists '${HULL_NAME}'; then
+if ! hull_exists "${HULL_NAME}"; then
   info "hull '${HULL_NAME}' is missing and will now be created..."
   trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log"
   (
@@ -37,7 +37,7 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 
 HULL_BASE="${HULL_NAME}"
 HULL_NAME="starphleet-basic-hull"
-if ! hull_exists '${HULL_NAME}'; then
+if ! hull_exists "${HULL_NAME}"; then
   info "hull '${HULL_NAME}' is missing and will now be created..."
   HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
   HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
