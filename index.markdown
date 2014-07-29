@@ -7,7 +7,7 @@ This is a fork of wballard/starphleet, and uses many of the original ideas, but 
 Requirements / OS Support
 =========================
 
-Currently Starphleet is only supported on Ubuntu Saucy 13.10.
+Currently Starphleet is only supported on Ubuntu 14.04.
 
 Overview
 ========
@@ -51,19 +51,14 @@ Terminology
 
 Starphleet uses a spaceship theme to describe the working environments. Here is a list of the different terms.
 
-- **Headquarters** - In charge of issuing orders to the fleet
-- **Fleet** - A collection of ships
-- **Ship** - An individual (virtual) machine
-- **Orders** - Instructions on deploying a service
-- **Service** - The application / service
-- **Container** - An LXC created by the loadmaster
-- **Workstation** - A container created by the loadmaster where engineering runs a service
-- **Engineering** - Responsible for running a service, and making sure it functions properly
-- **Loadmaster** - In charge of the cargo loading/unloading operations. Also keeps track of the ship's stores.
-- **Communications** - Facilitates dialog with the fleet
-- **Medical** - Making sure that everyone on the ship is healthy
-- **Captain** - Handles communications with headquarters and other departments on the ship
-- **Admiral** - Has special access to be able to enter any ship in the fleet
+- **Fleet** - A collection of squadarons
+- **Squadron** - A collection of ships. (*VM, Server, etc...*)
+- **Headquarters** - A place for squadrons to obtain orders
+- **Ship** - Ships are responsible for completing assignments. (*LXC*)
+- **Assignment** - Task assigned to a ship based on orders from the HQ. (*Application, Service, etc...*)
+- **Orders** - Contain all the information for a ship to complete an assignment.
+- **Admiral** - In charge of the fleet, and has full access to every squadron
+- **Hull** - Framework for a ship
 
 Getting Started
 ===============
@@ -80,19 +75,19 @@ Headquarters are just GIT repositories that contain a starphleet specific direct
 |   `-- john.doe@starphleet.com.pub
 |-- \_default_
 |   `-- orders
-|-- nodejs-service
+|-- nodejs-ship
 |   `--  orders
-`-- python-service
+`-- python-ship
     `--orders
 ```
 
-- **/_default/orders** - an order file for a service that will run at the starphleet root (more on that later below)
-- **/authorized_keys** - contains public keys for people that will have admiral access
-- **/nodejs-service/orders** - orders for a service called 'nodejs-service'
-- **/python-service/orders** - orders for a service called 'python-service'
+- **/_default/orders** - an order file for the lead ship (more on that later below)
+- **/authorized_keys** - contains public keys for admiral access
+- **/nodejs-ship/orders** - orders with an assignment called 'nodejs-ship'
+- **/python-ship/orders** - orders with an assignment called 'python-ship'
 
-Assign Ship to HQ
------------------
+Assign Squadron to HQ
+---------------------
 
 ```bash
 # This will setup a clone of the HQ in "/data/starphleet/headquarters" (default path)
@@ -148,8 +143,8 @@ The Starphleet data directory. The GIT repo lives here, and other files related 
 ```
 
 - **/containers/** - The actual images of the running LXC are stored here
-- **/nginx/direct/** - Configs to access service on individual port
-- **/nginx/mount/** - Configs to access service under starphleet root
+- **/nginx/direct/** - Configs to access ship on individual port
+- **/nginx/mount/** - Configs to access ship under starphleet root
 - **/nginx/upstream/** - Loadmaster config to have one access point for all workstations
 - **/private_keys/** - Private keys used to access remote GIT repos
 - **/public_keys/** - Public keys for admiral access
