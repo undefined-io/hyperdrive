@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+### Usage:
+###   hull-build
+### Options:
+###   --help
+###
+### Create the basic hulls used in all ship construction
+
+#--HEAD--
+set -o nounset; set -o errexit; set -o pipefail;
+SCRIPT="$(test -L "$0" && readlink -e "$0" || readlink -e "$0")"
+SCRIPT_NAME="$(basename "${SCRIPT}")"
+SCRIPT_DIR="$(dirname "${SCRIPT}")"
+source "${SCRIPT_DIR}/main.source"
+#--/HEAD--
+
+# TODO: figure out which log file the clone messages should go into
+# TODO: lxc-attach failures are not sending out any messages
+# TODO: clean up the path mess in here
+
+#-- DEFAULT HULL ---------------------------------------------------------------
+
+HULL_NAME="starphleet"
+if ! hull_exists '${HULL_NAME}'; then
+  info "hull '${HULL_NAME}' is missing and will now be created..."
+  trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log"
+  (
+    flock -x 200
+    lxc-create --name="starphleet" --template="ubuntu" > "${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log" 2>&1
+  ) 200>"${STARPHLEET_LOCKS}/lxc"
+fi
+info "hull '${HULL_NAME}' ready"
+
+source "${SCRIPT_DIR}/lib/hull.kit"
+
+#-- BASE HULL ------------------------------------------------------------------
+
+HULL_BASE="${HULL_NAME}"
+HULL_NAME="starphleet-basic-hull"
+if ! hull_exists '${HULL_NAME}'; then
+  info "hull '${HULL_NAME}' is missing and will now be created..."
+  HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
+  HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
+
+  hull_open
+  cp "${STARPHLEET_ROOT}/setup/hull-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
+  cp "${STARPHLEET_ROOT}/setup/starphleet-basic-hull.packages" "${HULL_SHARE_DIR}/hull.packages"
+  # TODO: Add a check here to see if the mount is properly setup
+  trace "log available at ${HULL_ROOT_DIR}/setup.log"
+  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
+  if [[ ! -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
+    fatal "error during setup.  please check ${HULL_ROOT_DIR}/setup.log for more information."
+  fi
+  set +o xtrace
+  hull_close
+fi
+info "hull '${HULL_NAME}' ready"

@@ -4,7 +4,7 @@ _starphleet_ship_status() {
   find /tmp -type f -printf "%P "
 } &&
 _starphleet_workstation_list() {
-  lxc-ls -1 | grep -e "^starphleet-" | grep -v "starphleet-workstation"
+  lxc-ls -1 | grep -e "^starphleet-" | grep -v "starphleet-basic-hull"
 } &&
 _starphleet_order_list() {
   find "/data/starphleet/headquarters/" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n" | awk -F/ '{print $(NF-1)}'

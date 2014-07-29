@@ -19,7 +19,7 @@ case "${SCRIPT}" in
         [[ -n "${1}" ]] && lxc-destroy -f --name="${1}"
         ;;
       assemble)
-        [[ -n "${1}" ]] && "${SCRIPT_DIR}/workstation-create" service "${1}" --running
+        [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-build" service "${1}" --running
         ;;
     esac
     ;;

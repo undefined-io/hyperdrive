@@ -12,7 +12,7 @@ done
 return $in
 }
 
-function container_exists () {
+function hull_exists () {
 local container_name="${1}"
 if [[ "$(lxc-ls | grep -ce "^${container_name}\$")" == 0 ]]; then
   return 1

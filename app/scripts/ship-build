@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+### Usage:
+###   ship-build
+###   ship-build name <order_name> [--running]
+### Options:
+###   --help
+###   --running        state of the ship after creation
+###   name
+###     <order_name>   name of the orders
+###
+### Creates a ship for a specfic assignment in the provided orders
+
+#--HEAD--
+set -o nounset; set -o errexit; set -o pipefail;
+SCRIPT="$(test -L "$0" && readlink -e "$0" || readlink -e "$0")"
+SCRIPT_NAME="$(basename "${SCRIPT}")"
+SCRIPT_DIR="$(dirname "${SCRIPT}")"
+source "${SCRIPT_DIR}/main.source"
+#--/HEAD--
+
+# TODO: figure out which log file the clone messages should go into
+# TODO: lxc-attach failures are not sending out any messages
+# TODO: clean up the path mess in here
+# TODO: when a build/setup fails, there should be a max retry limit, so we don't endlessly build
+
+source "${SCRIPT_DIR}/lib/hull.kit"
+
+"${SCRIPT_DIR}/hull-build"
+
+[[ "${service}" != "true" ]] && exit 0
+
+HULL_NAME="starphleet-${service_name}"
+if ! hull_exists "${HULL_NAME}"; then
+  info "ship '${HULL_NAME}' is missing and will now be created..."
+  REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' /data/starphleet/headquarters/nodejs-service/orders | tail -1)"
+
+  if [[ ! -d "${STARPHLEET_HQ_ROOT}/${service_name}" ]]; then
+    fatal "invalid service name '${service_name}'"
+  fi
+
+  #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${service_name}/" "${HULL_SHARE_DIR}/app"
+  HULL_BASE="starphleet-basic-hull"
+  HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
+  HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
+
+  hull_open
+  cp "${STARPHLEET_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
+  cp "${STARPHLEET_HQ_ROOT}/${service_name}/orders" "${HULL_SHARE_DIR}/"
+  # TODO: make this an rsync from local updated git repo (need to figure out how to properly kick this off)
+  "${SCRIPT_DIR}/git-clone" "${REPO}" "${HULL_SHARE_DIR}/app" --shallow
+  trace "log available at ${HULL_ROOT_DIR}/setup.log"
+  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
+  if [[ -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
+    info "setup completed"
+  else
+    fatal "setup failed"
+  fi
+  lxc-attach --name "${HULL_NAME}" -- sudo -H -u ubuntu -i bash -c "./build.sh" >> "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
+  if [[ -f "${HULL_SHARE_DIR}/build.completed" ]]; then
+    info "build completed"
+  else
+    fatal "build failed"
+  fi
+  if [[ "${running}" != "true" ]]; then
+    hull_close
+  fi
+fi
+info "ship '${HULL_NAME}' ready"
