@@ -11,7 +11,7 @@ case "${COMMAND}" in
   command)
     [[ -n "${1}" ]] && lxc-attach --name="${1}"
     ;;
-  decommision)
+  decommission)
     [[ -n "${1}" ]] && lxc-destroy -f --name="${1}"
     ;;
   assemble)
@@ -19,6 +19,9 @@ case "${COMMAND}" in
     ;;
   status)
     "${SCRIPT_DIR}/status"
+    ;;
+  *)
+    echo "sp: ERROR" || false
     ;;
 esac
 
