@@ -31,12 +31,12 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 
 HULL_NAME="starphleet-${order_name}"
 if ! hull_exists "${HULL_NAME}"; then
-  info "ship '${HULL_NAME}' is missing and will now be created..."
-  REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${STARPHLEET_HQ_ROOT}/${order_name}/orders" | tail -1)"
-
   if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
     fatal "invalid order_name '${order_name}'"
   fi
+
+  info "ship '${HULL_NAME}' is missing and will now be created..."
+  REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${STARPHLEET_HQ_ROOT}/${order_name}/orders" | tail -1)"
 
   #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
   HULL_BASE="starphleet-basic-hull"

@@ -54,3 +54,9 @@ fi
 trace "REMOTE_REPO: ${REMOTE_REPO}, REMOTE_BRANCH: ${REMOTE_BRANCH}"
 return 0
 }
+
+function order_revision () {
+  local DIRECTORY="${1}"
+  GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
+  LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
+}
