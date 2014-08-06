@@ -30,36 +30,41 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 [[ "${name}" != "true" ]] && exit 0
 
 HULL_NAME="starphleet-${order_name}"
+if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
+  fatal "invalid order_name '${order_name}'"
+fi
+
+info "ship '${HULL_NAME}' is missing and will now be created..."
+REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${STARPHLEET_HQ_ROOT}/${order_name}/orders" | tail -1)"
+
+#rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
+HULL_BASE="starphleet-basic-hull"
+HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
+HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
+
+TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
+"${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
+SHORT_SHA="$(order_sha "${TMP_REPO}")"
+HULL_NAME="${HULL_NAME}-${SHORT_SHA}"
+
 if ! hull_exists "${HULL_NAME}"; then
-  if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
-    fatal "invalid order_name '${order_name}'"
-  fi
-
-  info "ship '${HULL_NAME}' is missing and will now be created..."
-  REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${STARPHLEET_HQ_ROOT}/${order_name}/orders" | tail -1)"
-
-  #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
-  HULL_BASE="starphleet-basic-hull"
-  HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
-  HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
-
+  info "setup '${HULL_NAME}' starting"
   hull_open
   cp "${STARPHLEET_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
   cp "${STARPHLEET_HQ_ROOT}/${order_name}/orders" "${HULL_SHARE_DIR}/"
-  # TODO: make this an rsync from local updated git repo (need to figure out how to properly kick this off)
-  "${SCRIPT_DIR}/git-clone" "${REPO}" "${HULL_SHARE_DIR}/app" --shallow
+  mv "${TMP_REPO}" "${HULL_SHARE_DIR}/app"
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
   lxc-attach --name="${HULL_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
-    info "setup completed"
+    info "setup '${HULL_NAME}' completed... build starting"
   else
-    fatal "setup failed"
+    fatal "setup '${HULL_NAME}' failed"
   fi
   lxc-attach --name "${HULL_NAME}" -- sudo -H -u ubuntu -i bash -c "./build.sh" >> "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/build.completed" ]]; then
-    info "build completed"
+    info "build '${HULL_NAME}' completed"
   else
-    fatal "build failed"
+    fatal "build '${HULL_NAME}' failed"
   fi
   if [[ "${running}" != "true" ]]; then
     hull_close
