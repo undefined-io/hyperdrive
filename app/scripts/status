@@ -16,7 +16,12 @@ source "${SCRIPT_DIR}/main.source"
 
 echo "hq   : ${STARPHLEET_HQ:-<not set>}"
 
-lxc-ls --fancy "^starphleet" | tail -n +3 | awk '{print "lxc  :",$1,$2,$3}'
+while IFS=$'\n' read ROW; do
+  read NAME STATE IP <<< "${ROW}"
+  MSG="repo name"
+  echo "lxc  : ${NAME} [${STATE}] (${IP})"
+  echo "       - ${MSG}"
+done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^starphleet" | tail -n +3)"
 
 initctl list | grep -e "^starphleet" | awk '{print "job  :",$0}'
 
