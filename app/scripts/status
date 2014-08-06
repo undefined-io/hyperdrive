@@ -18,8 +18,12 @@ echo "hq   : ${STARPHLEET_HQ:-<not set>}"
 
 while IFS=$'\n' read ROW; do
   read NAME STATE IP <<< "${ROW}"
-  MSG="repo name"
+  MSG="message of last commit"
   echo "lxc  : ${NAME} [${STATE}] (${IP})"
+  case "${NAME}" in
+    starphleet|starphleet-basic-hull)
+      continue
+  esac
   echo "       - ${MSG}"
 done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^starphleet" | tail -n +3)"
 
