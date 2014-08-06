@@ -19,7 +19,14 @@ echo "hq   : ${STARPHLEET_HQ:-<not set>}"
 while IFS=$'\n' read ROW; do
   read NAME STATE IP <<< "${ROW}"
   MSG="message of last commit"
-  echo "lxc  : ${NAME} [${STATE}] (${IP})"
+  case "${STATE}" in
+    RUNNING)
+      echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP})"
+      ;;
+    STOPPED)
+      echo "lxc  : ${C_RED}${NAME}${C_RESET} [${STATE}] (${IP})"
+      ;;
+  esac
   case "${NAME}" in
     starphleet|starphleet-basic-hull)
       continue

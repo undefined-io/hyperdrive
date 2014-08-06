@@ -37,6 +37,7 @@ STARPHLEET_NO_PARALLEL=("install" "test" "ship-build")
 source "${SCRIPT_DIR}/lib/logging.source"
 source "${SCRIPT_DIR}/lib/git.source"
 source "${SCRIPT_DIR}/lib/helper.source"
+source "${SCRIPT_DIR}/lib/color.source"
 
 # check if the script only allows sudo to run it
 if [[ -n "${SCRIPT_NAME}" && $(array_contains STARPHLEET_SUDO "${SCRIPT_NAME}") -eq "0" ]]; then
