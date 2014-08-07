@@ -41,6 +41,7 @@ REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${STARPHLEET_HQ_ROOT}/${order_name
 TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
 SHORT_SHA="$(order_sha "${TMP_REPO}")"
+COMMIT_MSG="$(commit_msg "${TMP_REPO}")"
 HULL_NAME="${HULL_NAME}-${SHORT_SHA}"
 HULL_BASE="starphleet-basic-hull"
 HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
@@ -51,6 +52,8 @@ if ! hull_exists "${HULL_NAME}"; then
   hull_open
   cp "${STARPHLEET_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
   cp "${STARPHLEET_HQ_ROOT}/${order_name}/orders" "${HULL_SHARE_DIR}/"
+  echo "${SHORT_SHA}" > "${HULL_SHARE_DIR}/.sha"
+  echo "${COMMIT_MSG}" > "${HULL_SHARE_DIR}/.msg"
   mv "${TMP_REPO}" "${HULL_SHARE_DIR}/app"
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
   lxc-attach --name="${HULL_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true

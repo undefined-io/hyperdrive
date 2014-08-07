@@ -18,7 +18,7 @@ echo "hq   : ${STARPHLEET_HQ:-<not set>}"
 
 while IFS=$'\n' read ROW; do
   read NAME STATE IP <<< "${ROW}"
-  MSG="message of last commit"
+  
   case "${STATE}" in
     RUNNING)
       echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP})"
@@ -31,6 +31,7 @@ while IFS=$'\n' read ROW; do
     starphleet|starphleet-basic-hull)
       continue
   esac
+  MSG="$(< "${STARPHLEET_LXC_ROOT}/${NAME}/share/.msg")"
   echo "       - ${MSG}"
 done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^starphleet" | tail -n +3)"
 

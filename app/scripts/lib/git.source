@@ -57,7 +57,14 @@ return 0
 
 function order_sha () {
   local DIRECTORY="${1}"
-  GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
-  SHORT_SHA="$(git ${GIT_FLAGS} rev-parse --short HEAD)"
+  local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
+  local SHORT_SHA="$(git ${GIT_FLAGS} rev-parse --short HEAD)"
   echo "${SHORT_SHA}"
+}
+
+function commit_msg () {
+  local DIRECTORY="${1}"
+  local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
+  local COMMIT_MSG="$(git ${GIT_FLAGS} log -1 --pretty="[%ae] %B" | head -n 1)"
+  echo "${COMMIT_MSG}"
 }
