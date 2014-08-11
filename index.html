@@ -1,30 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>o_O</title>
+		<title>Starphleet</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/tomorrow-night.css">
+		<style>
+			.toc { counter-reset: h1 h2 h3 h4 h5 h6; }
+			.toc h1 { font-size: 1em; margin-left: 0px; counter-reset: h2 h3 h4 h5 h6; }
+			.toc h1:before { counter-increment: h1; content: counter(h1) ") "; }
+			.toc h2 { font-size: 1em; margin-left: 5px; counter-reset: h3 h4 h5 h6; }
+			.toc h2:before { counter-increment: h2; content: counter(h1) "." counter(h2) ") "; }
+			.toc h3 { font-size: 1em; margin-left: 10px; counter-reset: h4 h5 h6; }
+			.toc h3:before { counter-increment: h3; content: counter(h1) "." counter(h2) "." counter(h3)  ") "; }
+			.toc h4 { font-size: 1em; margin-left: 15px; counter-reset: h5 h6; }
+			.toc h4:before { counter-increment: h4; content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) ") "; }
+			.toc h5 { font-size: 1em; margin-left: 20px; counter-reset: h6; }
+			.toc h5:before { counter-increment: h5; content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) ") "; }
+			.toc h6 { font-size: 1em; margin-left: 25px; }
+			.toc h6:before { counter-increment: h6; content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) "." counter(h6) ") "; }
+		</style>
 		<script src="js/jquery-1.11.1.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 	</head>
 	<body>
 		<div class="container">
-			<p><h1>Starphleet</h1><div class="jumbotron"> Containers + Buildpacks + Repositories = Autodeploy Services</div></p>
+			<div class="row">
+				<div class="col-xs-3">
+					<div class="toc panel">
+						<div class="panel-body">
+							
+							<h1><a href="#toc-0">Starphleet</a></h1>
+							
+							<h1><a href="#toc-1">Requirements / OS Support</a></h1>
+							
+							<h1><a href="#toc-2">Overview</a></h1>
+							
+							<h2><a href="#toc-3">Installation</a></h2>
+							
+							<h3><a href="#toc-4">Saucy</a></h3>
+							
+							<h3><a href="#toc-5">Vagrant</a></h3>
+							
+							<h1><a href="#toc-6">Terminology</a></h1>
+							
+							<h1><a href="#toc-7">Getting Started</a></h1>
+							
+							<h2><a href="#toc-8">Setup Headquarters Repo</a></h2>
+							
+							<h3><a href="#toc-9">Example</a></h3>
+							
+							<h2><a href="#toc-10">Assign Squadron to HQ</a></h2>
+							
+							<h1><a href="#toc-11">Where Starphleet Lives</a></h1>
+							
+							<h2><a href="#toc-12">/data/starphleet</a></h2>
+							
+							<h2><a href="#toc-13">/var/starphleet</a></h2>
+							
+							<h2><a href="#toc-14">/etc/starphleet</a></h2>
+							
+							<h1><a href="#toc-15">Orders</a></h1>
+							
+							<h1><a href="#toc-16">Developer Notes</a></h1>
+							
+							<h2><a href="#toc-17">Step By Step (Just Notes)</a></h2>
+							
+							<h3><a href="#toc-18">Bootstrap</a></h3>
+							
+							<h3><a href="#toc-19">Running everything</a></h3>
+							
+							<h2><a href="#toc-20">Hacking on Starphleet with Vagrant</a></h2>
+							
+							<h3><a href="#toc-21">Symlink Approach</a></h3>
+							
+							<h3><a href="#toc-22">Github Approach</a></h3>
+							
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-9">
+					<h1 id="toc-0">Starphleet</h1>
+<div class="jumbotron"> Containers + Buildpacks + Repositories = Autodeploy Services</div>
+
 <p>Starphleet is a toolkit for turning a virtual or physical machine infrastructure into a continuous deployment stack.</p>
 <p>This is a fork of wballard/starphleet, and uses many of the original ideas, but a different approach to the implementation.</p>
-<h1 id="requirements-os-support">Requirements / OS Support</h1>
+<h1 id="toc-1">Requirements / OS Support</h1>
 <p>Currently Starphleet is only supported on Ubuntu 14.04.</p>
-<h1 id="overview">Overview</h1>
+<h1 id="toc-2">Overview</h1>
 <p>This version of starphleet is still under heavy development, and many critical pieces are missing. It is not meant for a production install anywhere.</p>
 <p>Installation is really only recommended to see the limited working features in action.</p>
-<h2 id="installation">Installation</h2>
-<h3 id="saucy">Saucy</h3>
+<h2 id="toc-3">Installation</h2>
+<h3 id="toc-4">Saucy</h3>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># On most systems, the following will suffice to install Starphleet</span>
 bash &lt;(curl https://raw.githubusercontent.com/undefined-io/starphleet/reset/bootstrap)
 </code></pre>
-<h3 id="vagrant">Vagrant</h3>
+<h3 id="toc-5">Vagrant</h3>
 <p>The Vagrantfile that comes with the current version or starphleet should allow installation on parallels, vmware and virtualbox.</p>
 <p><strong>NOTE OSX/MAC USERS:</strong> <em>If you have just installed Vagrant, and still have the &quot;Vagrant&quot; pkg mounted, your install of Starphleet will fail. You&#39;ll have to unmount the pkg first before you try to start up the image</em></p>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># Run the following export(s), then choose the file that fit your vm software</span>
@@ -39,7 +111,7 @@ bash &lt;(curl https://raw.githubusercontent.com/undefined-io/starphleet/reset/b
 <span class="hljs-comment"># Virtualbox</span>
 ./virtualbox
 </code></pre>
-<h1 id="terminology">Terminology</h1>
+<h1 id="toc-6">Terminology</h1>
 <p>Starphleet uses a spaceship theme to describe the working environments. Here is a list of the different terms.</p>
 <ul>
 <li><strong>Fleet</strong> - A collection of squadarons</li>
@@ -51,10 +123,10 @@ bash &lt;(curl https://raw.githubusercontent.com/undefined-io/starphleet/reset/b
 <li><strong>Admiral</strong> - In charge of the fleet, and has full access to every squadron</li>
 <li><strong>Hull</strong> - Framework for a ship</li>
 </ul>
-<h1 id="getting-started">Getting Started</h1>
-<h2 id="setup-headquarters-repo">Setup Headquarters Repo</h2>
+<h1 id="toc-7">Getting Started</h1>
+<h2 id="toc-8">Setup Headquarters Repo</h2>
 <p>Headquarters are just GIT repositories that contain a starphleet specific directory structure and tell each Captain in the fleet what to do.</p>
-<h3 id="example">Example</h3>
+<h3 id="toc-9">Example</h3>
 <pre><code class="hljs">|<span class="hljs-comment">-- authorized_keys</span>
 |   `<span class="hljs-comment">-- john.doe@starphleet.com.pub</span>
 |<span class="hljs-comment">-- \_default_</span>
@@ -69,7 +141,7 @@ bash &lt;(curl https://raw.githubusercontent.com/undefined-io/starphleet/reset/b
 <li><strong>/nodejs-ship/orders</strong> - orders with an assignment called &#39;nodejs-ship&#39;</li>
 <li><strong>/python-ship/orders</strong> - orders with an assignment called &#39;python-ship&#39;</li>
 </ul>
-<h2 id="assign-squadron-to-hq">Assign Squadron to HQ</h2>
+<h2 id="toc-10">Assign Squadron to HQ</h2>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># This will setup a clone of the HQ in "/data/starphleet/headquarters" (default path)</span>
 starphleet-headquarters &lt;REPO_URL&gt; --sync
 </code></pre>
@@ -77,9 +149,9 @@ starphleet-headquarters &lt;REPO_URL&gt; --sync
 <pre><code class="hljs lang-bash">start starphleet-captain-obtain-orders
 </code></pre>
 <p>This will make the captain check with the configured HQ every minute, to see if any updates or new orders are available.</p>
-<h1 id="where-starphleet-lives">Where Starphleet Lives</h1>
+<h1 id="toc-11">Where Starphleet Lives</h1>
 <p>These are the default locations. <strong>NOTE</strong> Many of these locations are still changing during the refactor.</p>
-<h2 id="-data-starphleet">/data/starphleet</h2>
+<h2 id="toc-12">/data/starphleet</h2>
 <p>The Starphleet data directory. The GIT repo lives here, and other files related to keeping track of Starphleet related stuff.</p>
 <pre><code class="hljs">|<span class="hljs-comment">-- git</span>
 |<span class="hljs-comment">-- includes</span>
@@ -94,7 +166,7 @@ starphleet-headquarters &lt;REPO_URL&gt; --sync
 <li><strong>/lxc/</strong> - The root of the container file system</li>
 <li><strong>/records/system.files</strong> - A list of files that were installed in system folders (/etc/ /usr/bin/ ...)</li>
 </ul>
-<h2 id="-var-starphleet">/var/starphleet</h2>
+<h2 id="toc-13">/var/starphleet</h2>
 <pre><code class="hljs">|<span class="hljs-comment">-- containers</span>
 |<span class="hljs-comment">-- nginx</span>
 |   |<span class="hljs-comment">-- direct</span>
@@ -114,22 +186,22 @@ starphleet-headquarters &lt;REPO_URL&gt; --sync
 <li><strong>/scripts/</strong> - The main starphleet scripts</li>
 <li><strong>/scripts/lib/</strong> - Support files for the main starphleet scripts</li>
 </ul>
-<h2 id="-etc-starphleet">/etc/starphleet</h2>
+<h2 id="toc-14">/etc/starphleet</h2>
 <pre><code class="hljs">`<span class="hljs-comment">-- main.conf</span>
 </code></pre><ul>
 <li><strong>/main.conf</strong> - Master settings for Starphleet intall</li>
 </ul>
-<h1 id="orders">Orders</h1>
+<h1 id="toc-15">Orders</h1>
 <p>The <code>orders</code> file is used to configure environment variables specific to the app and Starphleet.</p>
-<h1 id="developer-notes">Developer Notes</h1>
+<h1 id="toc-16">Developer Notes</h1>
 <p>If you are using the provided <code>Vagrantfile</code>, your box will have the working copy of starphleet located at <code>/vagrant</code> on your VM. This comes in handy, for testing changes prior to them being installed.</p>
-<h2 id="step-by-step-just-notes-">Step By Step (Just Notes)</h2>
+<h2 id="toc-17">Step By Step (Just Notes)</h2>
 <p>Much of this will be improved during the dev cycle, but trying to allow devs to understand what I&#39;m doing atm while developing.</p>
-<h3 id="bootstrap">Bootstrap</h3>
+<h3 id="toc-18">Bootstrap</h3>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># This sets up the basics</span>
 /vagrant/bootstrap <span class="hljs-string">""</span> <span class="hljs-string">""</span> <span class="hljs-string">"file:///vagrant"</span> <span class="hljs-string">""</span>
 </code></pre>
-<h3 id="running-everything">Running everything</h3>
+<h3 id="toc-19">Running everything</h3>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># Setup HQ, monitor for auto deploy</span>
 <span class="hljs-built_in">cd</span> /var/starphleet/scripts/
 ./starphleet-headquarters https://github.com/datfinesoul/starphleet-hq<span class="hljs-comment">#master</span>
@@ -138,8 +210,8 @@ start starphleet-captain-obtain-orders
 <span class="hljs-comment"># To see logs</span>
 <span class="hljs-built_in">tail</span> -F /var/log/upstart/starphleet*
 </code></pre>
-<h2 id="hacking-on-starphleet-with-vagrant">Hacking on Starphleet with Vagrant</h2>
-<h3 id="symlink-approach">Symlink Approach</h3>
+<h2 id="toc-20">Hacking on Starphleet with Vagrant</h2>
+<h3 id="toc-21">Symlink Approach</h3>
 <p>The easiest way to hack on Starphleet is usually to use Vagrant and then symlink the folders of files you are working on.</p>
 <pre><code class="hljs lang-bash">vagrant ssh
 <span class="hljs-built_in">sudo</span> su -
@@ -149,7 +221,7 @@ start starphleet-captain-obtain-orders
 </code></pre>
 <p>Then just work on the scripts in your local directories using your favorite editors, and test out the results immediately.</p>
 <p><strong>NOTE:</strong> Running <code>install</code> will wipe out all the symlinks.</p>
-<h3 id="github-approach">Github Approach</h3>
+<h3 id="toc-22">Github Approach</h3>
 <p>If you prefer to check in all changes, use the push/install approach.</p>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># On the Starphleet system or VM:</span>
 <span class="hljs-built_in">cd</span> /var/starphleet/scripts
@@ -157,6 +229,8 @@ start starphleet-captain-obtain-orders
 </code></pre>
 <p>This pulls the latest changes and upgrades starphleet. The repo that you pull from will come from the <code>/etc/starphleet/main.conf</code> file (STARPHLEET_REMOTE)</p>
 
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
