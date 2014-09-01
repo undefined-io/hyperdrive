@@ -8,7 +8,7 @@ shift
 source "/etc/starphleet/main.conf" || exit 0
 SCRIPT_DIR="${STARPHLEET_ROOT}/scripts"
 case "${COMMAND}" in
-  command)
+  pilot)
     [[ -n "${1}" ]] && lxc-attach --name="${1}"
     ;;
   decommission)

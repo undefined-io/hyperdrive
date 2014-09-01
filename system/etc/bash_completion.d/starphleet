@@ -9,25 +9,8 @@ _starphleet_ship_list() {
 _starphleet_order_list() {
   find "/data/starphleet/headquarters/" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n" | awk -F/ '{print $(NF-1)}'
 } &&
-_starphleet_captain() {
-  if [[ "${COMP_CWORD}" -eq 2 ]]; then
-    compgen -W "command-officer" -- "${cur}"
-  fi
-  return 0
-} &&
-_starphleet_crew() {
-  if [[ "${COMP_CWORD}" -eq 2 ]]; then
-    compgen -W "service dismiss" -- "${cur}"
-  fi
-  return 0
-} &&
-_starphleet_officer() {
-  if [[ "${COMP_CWORD}" -eq 2 ]]; then
-    compgen -W "assign-crew execute-orders release-crew" -- "${cur}"
-  fi
-  return 0
-} &&
 _starphleet_ship() {
+  # keeping this around as a sample
   if [[ "${COMP_CWORD}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
       status)
@@ -39,21 +22,6 @@ _starphleet_ship() {
   fi
   return 0
 } &&
-_starphleet_workstation() {
-  if [[ "${COMP_CWORD}" -eq 3 ]]; then
-    case "${COMP_WORDS[2]}" in
-      use|breakdown)
-        compgen -W "$(_starphleet_ship_list)" -- "${COMP_WORDS[3]}"
-      ;;
-      assemble)
-        compgen -W "$(_starphleet_order_list)" -- "${COMP_WORDS[3]}"
-      ;;
-    esac
-  elif [[ "${COMP_CWORD}" -eq 2 ]]; then
-    compgen -W "assemble use breakdown" -- "${cur}"
-  fi
-  return 0
-} &&
 _starphleet()
 {
   COMPREPLY=()
@@ -61,7 +29,7 @@ _starphleet()
 
   if [[ "${COMP_CWORD}" -eq 2 ]]; then
     case "${COMP_WORDS[1]}" in
-      command|decommission)
+      pilot|decommission)
         COMPREPLY=( $(compgen -W "$(_starphleet_ship_list)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
@@ -76,7 +44,7 @@ _starphleet()
     esac
   fi
   if [[ "${COMP_CWORD}" -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "assemble decommission command status" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "assemble decommission pilot status" -- ${cur}) )
     return 0
   fi
   return 0
