@@ -1,0 +1,28 @@
+{% extends '_frame.html' %}
+{% block content %}
+<div class="jumbotron">
+	<div class="container-fluid">
+		<h1>Starphleet</h1>
+		<p>Containers + Buildpacks + Repositories = Autodeploy Services</p>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row">
+		{% if toc %}
+		<div class="col-md-3">
+			<div class="toc">
+					{% for entry in toc %}
+					<h{{ entry.level }}><a href="#{{ entry.anchor }}">{{ entry.heading }}</a></h{{ entry.level }}>
+					{% endfor %}
+			</div>
+		</div>
+		<div class="col-md-9">
+		{% else %}
+		<div class="col-md-12">
+		{% endif %}
+			{{ content }}
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+html {
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: scroll;
+}
+div.row h1:first-child {
+  margin-top: 0;
+}
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: currentcolor;
+  border-bottom-color: currentcolor;
+}
+.toc {
+  counter-reset: h1 h2 h3 h4 h5 h6;
+  padding: 10px 10px 0 0;
+  border-right: 1px solid #ddd;
+}
+.toc h1 {
+  font-size: 1em;
+  margin-left: 0px;
+  counter-reset: h2 h3 h4 h5 h6;
+}
+.toc h1:before {
+  counter-increment: h1;
+  content: counter(h1) ") ";
+}
+.toc h2 {
+  font-size: 1em;
+  margin-left: 5px;
+  counter-reset: h3 h4 h5 h6;
+}
+.toc h2:before {
+  counter-increment: h2;
+  content: counter(h1) "." counter(h2) ") ";
+}
+.toc h3 {
+  font-size: 1em;
+  margin-left: 10px;
+  counter-reset: h4 h5 h6;
+}
+.toc h3:before {
+  counter-increment: h3;
+  content: counter(h1) "." counter(h2) "." counter(h3)  ") ";
+}
+.toc h4 {
+  font-size: 1em;
+  margin-left: 15px;
+  counter-reset: h5 h6;
+}
+.toc h4:before {
+  counter-increment: h4;
+  content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) ") ";
+}
+.toc h5 {
+  font-size: 1em;
+  margin-left: 20px;
+  counter-reset: h6;
+}
+.toc h5:before {
+  counter-increment: h5;
+  content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) ") ";
+}
+.toc h6 {
+  font-size: 1em;
+  margin-left: 25px;
+}
+.toc h6:before {
+  counter-increment: h6;
+  content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) "." counter(h6) ") ";
+}
