@@ -32,13 +32,14 @@ cat << BUILDEOF > "${APP_HOME}/build.sh"
 #!/usr/bin/env bash
 set -o nounset; set -o errexit
 cd
-sudo rm -rf ./app/
-sudo rsync -az --exclude '.git' "/var/starphleet/share/app/" app
-sudo chown -R ubuntu:ubuntu ./app/
+sudo rm -rf ${APP_ROOT}
+sudo rsync -az --exclude '.git' "/var/starphleet/share/app/" ${APP_ROOT}
+sudo chown -R ubuntu:ubuntu ${APP_ROOT}
 
 # compile the buildpack for the application
 export REQUEST_ID=$(openssl rand -base64 32)
 "${SELECTED_BUILDPACK}/bin/compile" "${APP_ROOT}" "/tmp/donotcache"
+"${SELECTED_BUILDPACK}/bin/release" > "${APP_ROOT}/.release"
 
 cat << STARTEOF > "${APP_HOME}/start.sh"
 #!/usr/bin/env bash
@@ -47,7 +48,6 @@ export HOME="${APP_ROOT}"
 for FILE in .profile.d/*; do source "\\\$FILE"; done
 env | sort
 STARTEOF
-touch '${APP_ROOT}/.release'
 if [[ -f "${APP_ROOT}/Procfile" ]]; then
   ruby -e "require 'yaml';puts YAML.load_file('${APP_ROOT}/Procfile')['web']" >> "${APP_HOME}/start.sh"
 else
