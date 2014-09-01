@@ -39,7 +39,7 @@ sudo chown -R ubuntu:ubuntu ${APP_ROOT}
 # compile the buildpack for the application
 export REQUEST_ID=$(openssl rand -base64 32)
 "${SELECTED_BUILDPACK}/bin/compile" "${APP_ROOT}" "/tmp/donotcache"
-"${SELECTED_BUILDPACK}/bin/release" > "${APP_ROOT}/.release"
+"${SELECTED_BUILDPACK}/bin/release" "${APP_ROOT}" > "${APP_ROOT}/.release"
 
 cat << STARTEOF > "${APP_HOME}/start.sh"
 #!/usr/bin/env bash
