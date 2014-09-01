@@ -47,6 +47,7 @@ export HOME="${APP_ROOT}"
 for FILE in .profile.d/*; do source "\\\$FILE"; done
 env | sort
 STARTEOF
+touch '${APP_ROOT}/.release'
 if [[ -f "${APP_ROOT}/Procfile" ]]; then
   ruby -e "require 'yaml';puts YAML.load_file('${APP_ROOT}/Procfile')['web']" >> "${APP_HOME}/start.sh"
 else
