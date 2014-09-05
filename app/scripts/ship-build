@@ -33,6 +33,7 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
   fatal "invalid order_name '${order_name}'"
 fi
+HULL_NAME="starphleet-${order_name}"
 
 # assert that autodeploy was provided
 ORDERS="${STARPHLEET_HQ_ROOT}/${order_name}/orders"
@@ -49,7 +50,7 @@ fi
 PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
 
 #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
-TMP_REPO=$(mktemp -d "/tmp/${order_name}.XXXXXXXX")
+TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
 SHORT_SHA="$(order_sha "${TMP_REPO}")"
 COMMIT_MSG="$(commit_msg "${TMP_REPO}")"
