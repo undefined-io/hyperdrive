@@ -29,14 +29,25 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 
 [[ "${name}" != "true" ]] && exit 0
 
-HULL_NAME="starphleet-${order_name}"
+# need to make sure that a valid order file is preset
 if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
   fatal "invalid order_name '${order_name}'"
 fi
 
-info "ship '${HULL_NAME}' is missing and will now be created..."
+# assert that autodeploy was provided
 REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${STARPHLEET_HQ_ROOT}/${order_name}/orders" | tail -1)"
+if [[ -z "${REPO}" ]]; then
+  fatal "missing 'autodeploy' for order '${order_name}'"
+fi
 
+# load primary setup variables and validate presence of required ones
+eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT)[ \t]*=/ {print $0}' "${1}")
+if [[ -z "${PORT}" ]]; then
+  fatal "missing 'PORT' for order '${order_name}'"
+fi
+PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
+
+info "ship '${HULL_NAME}' is missing and will now be created..."
 #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
 TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
