@@ -48,7 +48,6 @@ if [[ -z "${PORT:-}" ]]; then
 fi
 PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
 
-info "ship '${HULL_NAME}' is missing and will now be created..."
 #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
 TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
@@ -59,6 +58,7 @@ HULL_BASE="starphleet-basic-hull"
 HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 
+info "ship '${HULL_NAME}' is missing and will now be created..."
 if ! hull_exists "${HULL_NAME}"; then
   info "setup '${HULL_NAME}' starting"
   hull_open
