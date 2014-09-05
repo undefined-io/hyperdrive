@@ -35,14 +35,14 @@ if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
 fi
 
 # assert that autodeploy was provided
-announce "${STARPHLEET_HQ_ROOT}/${order_name}/orders"
-REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${STARPHLEET_HQ_ROOT}/${order_name}/orders" | tail -1)"
+ORDERS="${STARPHLEET_HQ_ROOT}/${order_name}/orders"
+REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${ORDERS}" | tail -1)"
 if [[ -z "${REPO:-}" ]]; then
   fatal "missing 'autodeploy' for order '${order_name}'"
 fi
 
 # load primary setup variables and validate presence of required ones
-eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT)[ \t]*=/ {print $0}' "${1}")
+eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT)[ \t]*=/ {print $0}' "${ORDERS}")
 if [[ -z "${PORT:-}" ]]; then
   fatal "missing 'PORT' for order '${order_name}'"
 fi
