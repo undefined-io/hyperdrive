@@ -21,9 +21,8 @@ while IFS=$'\n' read ROW; do
 
   case "${STATE}" in
     RUNNING)
-      PORT=$(awk -F'[\s=]' '/^PORT/ {port=$2} END {print port}' "${STARPHLEET_LXC_ROOT}/${NAME}/share/orders")
-      PUBLISH_PORT=$(awk -F'[\s=]' '/^PUBLISH_PORT/ {port=$2} END {print port}' "${STARPHLEET_LXC_ROOT}/${NAME}/share/orders")
-      echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT} ==> ${PUBLISH_PORT}'"
+      eval $(awk '/^[\s\t]*export[\s\t]+(PORT|PUBLISH_PORT)[\s\t]*=/ {print $0}' "${STARPHLEET_LXC_ROOT}/${NAME}/share/orders")
+      echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT:-} ==> ${PUBLISH_PORT:-}'"
       ;;
     STOPPED)
       echo "lxc  : ${C_RED}${NAME}${C_RESET} [${STATE}] (${IP})"
