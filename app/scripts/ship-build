@@ -49,7 +49,7 @@ fi
 PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
 
 #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
-TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
+TMP_REPO=$(mktemp -d "/tmp/${order_name}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
 SHORT_SHA="$(order_sha "${TMP_REPO}")"
 COMMIT_MSG="$(commit_msg "${TMP_REPO}")"
