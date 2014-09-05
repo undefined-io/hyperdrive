@@ -49,6 +49,7 @@ if [[ -z "${PORT:-}" ]]; then
 fi
 PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
 
+info "pulling specs for new '${HULL_NAME}' ship"
 #rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
 TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
