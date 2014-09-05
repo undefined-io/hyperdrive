@@ -42,7 +42,7 @@ if [[ -z "${REPO:-}" ]]; then
 fi
 
 # load primary setup variables and validate presence of required ones
-eval $(awk '/^[\s\t]*export[\s\t]+(PORT|PUBLISH_PORT)[\s\t]*=/ {print $0}' "${ORDERS}")
+eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT)[ \t]*=/ {print $0}' "${ORDERS}")
 if [[ -z "${PORT:-}" ]]; then
   fatal "missing 'PORT' for order '${order_name}'"
 fi
