@@ -13,6 +13,7 @@ return $in
 }
 
 function hull_exists () {
+# TODO: change variable case and see if we can use lxc-ls w/o the grep
 local container_name="${1}"
 if [[ "$(lxc-ls | grep -ce "^${container_name}\$")" == 0 ]]; then
   return 1
@@ -29,4 +30,9 @@ function safe_repo_name () {
 # https://github.com/undefined-io/starphleet#master > undefined-io..starphleet..master
 local REPO="${1}"
 awk -F'[/]' '{print $(NF-1) ".." $(NF)}' <<< "${REPO}" | sed 's/#/../g'
+}
+
+function ship_ip () {
+local HULL_NAME="${1}"
+lxc-ls --fancy --fancy-format ipv4 "^${HULL_NAME}\$" | tail -n +3
 }
