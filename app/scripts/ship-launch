@@ -17,7 +17,7 @@ if hull_exists "${hull_name}"; then
 
 IP_ADDRESS="$(ship_ip "${hull_name}")"
 eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT)[ \t]*=/ {print $0}' "${STARPHLEET_LXC_ROOT}/${hull_name}/share/orders")
-cat << EOF > "${UPSTREAM_CONF}"
+cat << EOF > "${STARPHLEET_NGINX}/upstream/${hull_name}.conf"
 upstream ${hull_name} {
 server ${IP_ADDRESS}:${PORT} max_fails=0;
 }
