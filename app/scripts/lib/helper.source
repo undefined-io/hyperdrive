@@ -33,6 +33,7 @@ awk -F'[/]' '{print $(NF-1) ".." $(NF)}' <<< "${REPO}" | sed 's/#/../g'
 }
 
 function ship_ip () {
+# TODO: Is there a better way to trim strings?
 local HULL_NAME="${1}"
-lxc-ls --fancy --fancy-format ipv4 "^${HULL_NAME}\$" | tail -n +3
+lxc-ls --fancy --fancy-format ipv4 "^${HULL_NAME}\$" | tail -n +3 | awk '{print $1}'
 }
