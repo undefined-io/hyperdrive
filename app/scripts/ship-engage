@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ### Usage:
-###   ship-engage <workstation_name>
+###   ship-engage <hull_name>
 ### Options:
 ###   --help
-###   <workstation_name>    name of the workstation
+###   <hull_name>    name of the ship
 ###
-### Starts service operations in a workstation
+### Starts service operations in a ship
 
 #--HEAD--
 set -o nounset; set -o errexit; set -o pipefail;
@@ -15,7 +15,7 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-if ! hull_exists "${workstation_name}"; then
-  fatal "invalid container name '${workstation_name}'"
+if ! hull_exists "${hull_name}"; then
+  fatal "invalid container name '${hull_name}'"
 fi
-lxc-attach --name "${workstation_name}" -- sudo -H -u ubuntu -i bash -c "./start.sh"
+lxc-attach --name "${hull_name}" -- sudo -H -u ubuntu -i bash -c "./start.sh"

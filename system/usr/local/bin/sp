@@ -14,6 +14,9 @@ case "${COMMAND}" in
   decommission)
     [[ -n "${1}" ]] && lxc-destroy -f --name="${1}"
     ;;
+  engage)
+    [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-engage" "${1}"
+    ;;
   launch)
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-launch" "${1}"
     ;;
