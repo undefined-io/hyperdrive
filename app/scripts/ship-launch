@@ -13,7 +13,7 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-if ! hull_exists "${hull_name}"; then
+if hull_exists "${hull_name}"; then
 
 IP_ADDRESS="$(ship_ip "${hull_name}")"
 eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT)[ \t]*=/ {print $0}' "${STARPHLEET_LXC_ROOT}/${hull_name}/share/orders")
