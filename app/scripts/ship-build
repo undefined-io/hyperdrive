@@ -70,7 +70,7 @@ if ! hull_exists "${HULL_NAME}"; then
   echo "${COMMIT_MSG}" > "${HULL_SHARE_DIR}/.msg"
   mv "${TMP_REPO}" "${HULL_APP_DIR}"
   mkdir "${HULL_APP_DIR}/.profile.d"
-  echo "${PORT}" > "${HULL_APP_DIR}/.profile.d/starphleet.env"
+  echo "export PORT=${PORT}" > "${HULL_APP_DIR}/.profile.d/starphleet.env"
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
   lxc-attach --name="${HULL_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
