@@ -50,7 +50,6 @@ fi
 PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
 
 info "pulling specs for new '${HULL_NAME}' ship"
-#rsync -az --exclude '.git' "${STARPHLEET_HQ_ROOT}/${order_name}/" "${HULL_SHARE_DIR}/app"
 TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
 SHORT_SHA="$(order_sha "${TMP_REPO}")"
@@ -59,6 +58,7 @@ HULL_NAME="${HULL_NAME}-${SHORT_SHA}"
 HULL_BASE="starphleet-basic-hull"
 HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
+HULL_APP_DIR="${HULL_ROOT_DIR}/app"
 
 info "ship '${HULL_NAME}' is missing and will now be created..."
 if ! hull_exists "${HULL_NAME}"; then
@@ -68,7 +68,9 @@ if ! hull_exists "${HULL_NAME}"; then
   cp "${STARPHLEET_HQ_ROOT}/${order_name}/orders" "${HULL_SHARE_DIR}/"
   echo "${SHORT_SHA}" > "${HULL_SHARE_DIR}/.sha"
   echo "${COMMIT_MSG}" > "${HULL_SHARE_DIR}/.msg"
-  mv "${TMP_REPO}" "${HULL_SHARE_DIR}/app"
+  mv "${TMP_REPO}" "${HULL_APP_DIR}"
+  mkdir "${HULL_APP_DIR}/.profile.d"
+  echo "${PORT}" > "${HULL_APP_DIR}/.profile.d/starphleet.env"
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
   lxc-attach --name="${HULL_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/setup.completed" ]]; then

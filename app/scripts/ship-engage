@@ -15,6 +15,7 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
+# TODO: the nginx buildpack seems to autostart nginx, we should fix that
 if ! hull_exists "${hull_name}"; then
   fatal "invalid container name '${hull_name}'"
 fi
