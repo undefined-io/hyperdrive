@@ -58,7 +58,7 @@ HULL_NAME="${HULL_NAME}-${SHORT_SHA}"
 HULL_BASE="starphleet-basic-hull"
 HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
-HULL_APP_DIR="${HULL_ROOT_DIR}/app"
+HULL_APP_DIR="${HULL_SHARE_DIR}/app"
 
 info "ship '${HULL_NAME}' is missing and will now be created..."
 if ! hull_exists "${HULL_NAME}"; then
