@@ -1,4 +1,4 @@
-https://github.com/heroku/heroku-buildpack-ruby
-https://github.com/heroku/heroku-buildpack-python
-https://github.com/heroku/heroku-buildpack-nodejs
-https://github.com/datfinesoul/nginx-buildpack
+https://github.com/heroku/heroku-buildpack-ruby#master
+https://github.com/heroku/heroku-buildpack-python#master
+https://github.com/heroku/heroku-buildpack-nodejs#master
+https://github.com/datfinesoul/nginx-buildpack#master
