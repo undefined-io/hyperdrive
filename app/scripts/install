@@ -121,7 +121,7 @@ stop_services
 apply_starphleet_overlay
 install_required_packages
 configure_permissions
-"${SCRIPT_DIR}/buildpack-sync"
+"${SCRIPT_DIR}/buildpack-sync" --force
 start_services
 
 # TODO: Eventually we want to support custom plugins for starphleet as well
