@@ -14,7 +14,7 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-echo "hq   : ${HYPERDRIVE_HQ:-<not set>}"
+echo "hq   : ${HYPERDRIVE_HQ:-${C_RED}<not set>${C_RESET}}"
 
 while IFS=$'\n' read ROW; do
   if [[ -z "${ROW}" ]]; then
