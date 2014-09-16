@@ -34,7 +34,7 @@ fi
 # sync the headquarters
 if [[ "${sync}" == "true" ]]; then
   if [[ -z "${HYPERDRIVE_HQ:-}" ]]; then
-    warn "Headquarters have to be set before sync can be performed"
+    fatal "Headquarters have to be set before sync can be performed"
   fi
   info "synching headquarters..."
   "${SCRIPT_DIR}/git-sync" "${HYPERDRIVE_HQ}" "${HYPERDRIVE_HQ_ROOT}" || true
