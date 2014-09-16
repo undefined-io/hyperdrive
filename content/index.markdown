@@ -6,41 +6,39 @@ markedDocs:
   toc: !!bool 'true'
 ...
 
-Starphleet is a toolkit for turning a virtual or physical machine infrastructure into a continuous deployment stack.
+Hyperdrive is a toolkit for turning a virtual or physical machine infrastructure into a continuous deployment stack.
 
-This is a fork of wballard/starphleet, and uses many of the original ideas, but a different approach to the implementation.
+This is a fork of wballard/hyperdrive, and uses many of the original ideas, but a different approach to the implementation.
 
-Requirements / OS Support
-=========================
+# Requirements / OS Support
 
-Currently Starphleet is only supported on Ubuntu 14.04.
+Currently Hyperdrive is only supported on Ubuntu 14.04.
 
-Overview
-========
+# Overview
 
-This version of starphleet is still under heavy development, and many critical pieces are missing. It is not meant for a production install anywhere.
+
+This version of hyperdrive is still under heavy development, and many critical pieces are missing. It is not meant for a production install anywhere.
 
 Installation is really only recommended to see the limited working features in action.
 
-Installation
-------------
+## Installation
 
 ### Saucy
 
 ```bash
-# On most systems, the following will suffice to install Starphleet
-bash <(curl https://raw.githubusercontent.com/undefined-io/starphleet/reset/bootstrap)
+# On most systems, the following will suffice to install Hyperdrive
+bash <(curl https://raw.githubusercontent.com/undefined-io/hyperdrive/reset/bootstrap)
 ```
 
 ### Vagrant
 
-The Vagrantfile that comes with the current version or starphleet should allow installation on parallels, vmware and virtualbox.
+The Vagrantfile that comes with the current version or hyperdrive should allow installation on parallels, vmware and virtualbox.
 
-**NOTE OSX/MAC USERS:** *If you have just installed Vagrant, and still have the "Vagrant" pkg mounted, your install of Starphleet will fail. You'll have to unmount the pkg first before you try to start up the image*
+**NOTE OSX/MAC USERS:** *If you have just installed Vagrant, and still have the "Vagrant" pkg mounted, your install of Hyperdrive will fail. You'll have to unmount the pkg first before you try to start up the image*
 
 ```bash
 # Run the following export(s), then choose the file that fit your vm software
-export STARPHLEET_VAGRANT_MEMSIZE=4096
+export HYPERDRIVE_VAGRANT_MEMSIZE=4096
 
 # Parallels
 ./parallels
@@ -52,10 +50,9 @@ export STARPHLEET_VAGRANT_MEMSIZE=4096
 ./virtualbox
 ```
 
-Terminology
-===========
+# Terminology
 
-Starphleet uses a spaceship theme to describe the working environments. Here is a list of the different terms.
+Hyperdrive uses a spaceship theme to describe the working environments. Here is a list of the different terms.
 
 - **Fleet** - A collection of squadarons
 - **Squadron** - A collection of ships. (*VM, Server, etc...*)
@@ -66,57 +63,49 @@ Starphleet uses a spaceship theme to describe the working environments. Here is 
 - **Admiral** - In charge of the fleet, and has full access to every squadron
 - **Hull** - Framework for a ship
 
-Getting Started
-===============
+# Getting Started
 
-Setup Headquarters Repo
------------------------
+## Setup Headquarters Repo
 
-Headquarters are just GIT repositories that contain a starphleet specific directory structure and tell each Captain in the fleet what to do.
+Headquarters are just GIT repositories that contain a hyperdrive specific directory structure and tell each Captain in the fleet what to do.
 
 ### Example
 
 ```
 |-- authorized_keys
-|   `-- john.doe@starphleet.com.pub
-|-- \_default_
-|   `-- orders
+|   `-- john.doe@hyperdrive.com.pub
 |-- nodejs-ship
-|   `--  orders
+|   `-- orders
 `-- python-ship
-    `--orders
+    `-- orders
 ```
 
-- **/_default/orders** - an order file for the lead ship (more on that later below)
 - **/authorized_keys** - contains public keys for admiral access
 - **/nodejs-ship/orders** - orders with an assignment called 'nodejs-ship'
 - **/python-ship/orders** - orders with an assignment called 'python-ship'
 
-Assign Squadron to HQ
----------------------
+## Assign Squadron to HQ
 
 ```bash
-# This will setup a clone of the HQ in "/data/starphleet/headquarters" (default path)
-starphleet-headquarters <REPO_URL> --sync
+# This will setup a clone of the HQ in "/data/hyperdrive/headquarters" (default path)
+hyperdrive-headquarters <REPO_URL> --sync
 ```
 
 If you want the Captain to obtain new orders from the HQ automatically, you can do that by:
 
 ```bash
-start starphleet-captain-obtain-orders
+start hyperdrive-captain-obtain-orders
 ```
 
 This will make the captain check with the configured HQ every minute, to see if any updates or new orders are available.
 
-Where Starphleet Lives
-======================
+# Where Hyperdrive Lives
 
 These are the default locations. **NOTE** Many of these locations are still changing during the refactor.
 
-/data/starphleet
-----------------
+## /data/hyperdrive
 
-The Starphleet data directory. The GIT repo lives here, and other files related to keeping track of Starphleet related stuff.
+The Hyperdrive data directory. The GIT repo lives here, and other files related to keeping track of Hyperdrive related stuff.
 
 ```
 |-- git
@@ -127,14 +116,13 @@ The Starphleet data directory. The GIT repo lives here, and other files related 
     `-- system.files
 ```
 
-- **/git/** - The Starphleet GIT repo
-- **/includes/** - Environment files that will be used as starphleet runs (after install, this is empty)
+- **/git/** - The Hyperdrive GIT repo
+- **/includes/** - Environment files that will be used as hyperdrive runs (after install, this is empty)
 - **/bootstrap.log** - Inital setup log from when the system was bootstrapped
 - **/lxc/** - The root of the container file system
 - **/records/system.files** - A list of files that were installed in system folders (/etc/ /usr/bin/ ...)
 
-/var/starphleet
----------------
+## /var/hyperdrive
 
 ```
 |-- containers
@@ -150,34 +138,30 @@ The Starphleet data directory. The GIT repo lives here, and other files related 
 
 - **/containers/** - The actual images of the running LXC are stored here
 - **/nginx/direct/** - Configs to access ship on individual port
-- **/nginx/mount/** - Configs to access ship under starphleet root
+- **/nginx/mount/** - Configs to access ship under hyperdrive root
 - **/nginx/upstream/** - Loadmaster config to have one access point for all workstations
 - **/private_keys/** - Private keys used to access remote GIT repos
 - **/public_keys/** - Public keys for admiral access
-- **/scripts/** - The main starphleet scripts
-- **/scripts/lib/** - Support files for the main starphleet scripts
+- **/scripts/** - The main hyperdrive scripts
+- **/scripts/lib/** - Support files for the main hyperdrive scripts
 
-/etc/starphleet
----------------
+## /etc/hyperdrive
 
 ```
 `-- main.conf
 ```
 
-- **/main.conf** - Master settings for Starphleet intall
+- **/main.conf** - Master settings for Hyperdrive intall
 
-Orders
-======
+# Orders
 
-The `orders` file is used to configure environment variables specific to the app and Starphleet.
+The `orders` file is used to configure environment variables specific to the app and Hyperdrive.
 
-Developer Notes
-===============
+# Developer Notes
 
-If you are using the provided `Vagrantfile`, your box will have the working copy of starphleet located at `/vagrant` on your VM. This comes in handy, for testing changes prior to them being installed.
+If you are using the provided `Vagrantfile`, your box will have the working copy of hyperdrive located at `/vagrant` on your VM. This comes in handy, for testing changes prior to them being installed.
 
-Step By Step (Just Notes)
--------------------------
+## Step By Step (Just Notes)
 
 Much of this will be improved during the dev cycle, but trying to allow devs to understand what I'm doing atm while developing.
 
@@ -192,25 +176,24 @@ Much of this will be improved during the dev cycle, but trying to allow devs to 
 
 ```bash
 # Setup HQ, monitor for auto deploy
-cd /var/starphleet/scripts/
-./starphleet-headquarters https://github.com/datfinesoul/starphleet-hq#master
-start starphleet-captain-obtain-orders
+cd /var/hyperdrive/scripts/
+./hyperdrive-headquarters https://github.com/datfinesoul/hyperdrive-hq#master
+start hyperdrive-captain-obtain-orders
 
 # To see logs
-tail -F /var/log/upstart/starphleet*
+tail -F /var/log/upstart/hyperdrive*
 ```
 
-Hacking on Starphleet with Vagrant
-----------------------------------
+## Hacking on Hyperdrive with Vagrant
 
 ### Symlink Approach
 
-The easiest way to hack on Starphleet is usually to use Vagrant and then symlink the folders of files you are working on.
+The easiest way to hack on Hyperdrive is usually to use Vagrant and then symlink the folders of files you are working on.
 
 ```bash
 vagrant ssh
 sudo su -
-cd /var/starphleet
+cd /var/hyperdrive
 mv scripts scripts.bak
 ln -s /vagrant/app/scripts/
 ```
@@ -224,9 +207,9 @@ Then just work on the scripts in your local directories using your favorite edit
 If you prefer to check in all changes, use the push/install approach.
 
 ```bash
-# On the Starphleet system or VM:
-cd /var/starphleet/scripts
+# On the Hyperdrive system or VM:
+cd /var/hyperdrive/scripts
 ./install
 ```
 
-This pulls the latest changes and upgrades starphleet. The repo that you pull from will come from the `/etc/starphleet/main.conf` file (STARPHLEET_REMOTE)
+This pulls the latest changes and upgrades hyperdrive. The repo that you pull from will come from the `/etc/hyperdrive/main.conf` file (HYPERDRIVE_REMOTE)
