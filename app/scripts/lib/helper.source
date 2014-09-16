@@ -23,11 +23,11 @@ fi
 }
 
 function orders_list () {
-find "${STARPHLEET_HQ_ROOT}" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n";
+find "${HYPERDRIVE_HQ_ROOT}" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n";
 }
 
 function safe_repo_name () {
-# https://github.com/undefined-io/starphleet#master > undefined-io..starphleet..master
+# https://github.com/undefined-io/hyperdrive#master > undefined-io..hyperdrive
 local REPO="${1}"
 awk -F'[/]' '{print $(NF-1) ".." $(NF)}' <<< "${REPO}" | sed 's/#/../g'
 }

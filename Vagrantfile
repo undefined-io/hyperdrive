@@ -1,12 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby tabstop=2 expandtab shiftwidth=2 softtabstop=2 :
 
-VAGRANT_MEMSIZE = ENV['STARPHLEET_VAGRANT_MEMSIZE'] || '4096'
-SQUADRON_NAME = ENV['STARPHLEET_SQUADRON_NAME'] || 'test.squadron'
+VAGRANT_MEMSIZE = ENV['HYPERDRIVE_VAGRANT_MEMSIZE'] || '4096'
+SQUADRON_NAME = ENV['HYPERDRIVE_SQUADRON_NAME'] || 'test.squadron'
 
 Vagrant::Config.run do |config|
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-  config.vm.provision :shell, :path => "bootstrap", :args => "\"#{ENV['STARPHLEET_ROOT']}\" \"#{ENV['STARPHLEET_DATA_ROOT']}\" \"#{ENV['STARPHLEET_GIT']}\" \"#{ENV['STARPHLEET_BRANCH']}\""
+  config.vm.provision :shell, :path => "bootstrap", :args => "\"#{ENV['HYPERDRIVE_ROOT']}\" \"#{ENV['HYPERDRIVE_DATA_ROOT']}\" \"#{ENV['HYPERDRIVE_GIT']}\" \"#{ENV['HYPERDRIVE_BRANCH']}\""
 end
 
 Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|

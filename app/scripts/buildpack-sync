@@ -18,9 +18,9 @@ while read REPO; do
   # TODO: Need to make sure github does not use double byte chars and if they do
   # create a safe filename from the repo
   BUILDPACK="$(safe_repo_name "${REPO}")"
-  BUILDPACK_PATH="${STARPHLEET_BUILDPACK_ROOT}/${BUILDPACK}"
+  BUILDPACK_PATH="${HYPERDRIVE_BUILDPACK_ROOT}/${BUILDPACK}"
   if [[ "${force}" == "true" || ! -d "${BUILDPACK_PATH}" ]]; then
     "${SCRIPT_DIR}/git-sync" "${REPO}" "${BUILDPACK_PATH}" || true
   fi
   trace "${REPO} available at ${BUILDPACK_PATH}"
-done < "${STARPHLEET_BUILDPACK_MANIFEST}"
+done < "${HYPERDRIVE_BUILDPACK_MANIFEST}"

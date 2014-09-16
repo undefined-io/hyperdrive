@@ -1,11 +1,9 @@
-Starphleet? What?
-=================
+# Hyperdrive
 
 A fully open container based continuous deployment PaaS.
 
-[Read the documentation](http://undefined-io.github.io/starphleet)
+[Read the documentation](http://undefined-io.github.io/hyperdrive)
 
-Overview
-========
+# Overview
 
-**NOTE:** This version of Starphleet is still not even alpha ready, but it aims at making the existing version in the original repo a more modular product
+**NOTE:** Still in development, and by no means production ready

@@ -1,38 +1,38 @@
-# vim: set ft=sh : main include file for starphleet scripts
+# vim: set ft=sh : main include file for hyperdrive scripts
 
 set -o nounset; set -o errexit
-export STARPHLEET_VERSION="0.0.1"
+export HYPERDRIVE_VERSION="0.0.1"
 
 # import main config file
-export STARPHLEET_CONFIG_ROOT="/etc/starphleet"
-export STARPHLEET_CONFIG="${STARPHLEET_CONFIG_ROOT}/main.conf"
-source "${STARPHLEET_CONFIG}"
+export HYPERDRIVE_CONFIG_ROOT="/etc/hyperdrive"
+export HYPERDRIVE_CONFIG="${HYPERDRIVE_CONFIG_ROOT}/main.conf"
+source "${HYPERDRIVE_CONFIG}"
 
 # TODO: This might be adjustable or moved later if user upstart jobs are used
-export STARPHLEET_UPSTART_ROOT="/etc/init"
+export HYPERDRIVE_UPSTART_ROOT="/etc/init"
 
-# starphleet global application variables
-export STARPHLEET_LXC_ROOT="${STARPHLEET_DATA_ROOT}/lxc"
-export STARPHLEET_PRIVATE_KEYS="${STARPHLEET_ROOT}/private_keys"
-export STARPHLEET_PUBLIC_KEYS="${STARPHLEET_ROOT}/public_keys"
-export STARPHLEET_ADMIRAL="admiral"
-export STARPHLEET_DEBUG="true"
-export STARPHLEET_SOURCE="${STARPHLEET_DATA_ROOT}/git"
-export STARPHLEET_RECORDS="${STARPHLEET_DATA_ROOT}/records"
-export STARPHLEET_SCRIPTS="${STARPHLEET_ROOT}/scripts"
-export STARPHLEET_HQ_ROOT="${STARPHLEET_DATA_ROOT}/headquarters"
-export STARPHLEET_INCLUDES="${STARPHLEET_DATA_ROOT}/includes"
-export STARPHLEET_BUILDPACK_MANIFEST="${STARPHLEET_SCRIPTS}/buildpacks"
-export STARPHLEET_BUILDPACK_ROOT="${STARPHLEET_DATA_ROOT}/buildpacks"
-export STARPHLEET_LOCKS="${STARPHLEET_ROOT}/locks"
-export STARPHLEET_SERVICE_REPOS="${STARPHLEET_DATA_ROOT}/service_repos"
-export STARPHLEET_NGINX="${STARPHLEET_ROOT}/nginx"
+# hyperdrive global application variables
+export HYPERDRIVE_LXC_ROOT="${HYPERDRIVE_DATA_ROOT}/lxc"
+export HYPERDRIVE_PRIVATE_KEYS="${HYPERDRIVE_ROOT}/private_keys"
+export HYPERDRIVE_PUBLIC_KEYS="${HYPERDRIVE_ROOT}/public_keys"
+export HYPERDRIVE_ADMIRAL="admiral"
+export HYPERDRIVE_DEBUG="true"
+export HYPERDRIVE_SOURCE="${HYPERDRIVE_DATA_ROOT}/git"
+export HYPERDRIVE_RECORDS="${HYPERDRIVE_DATA_ROOT}/records"
+export HYPERDRIVE_SCRIPTS="${HYPERDRIVE_ROOT}/scripts"
+export HYPERDRIVE_HQ_ROOT="${HYPERDRIVE_DATA_ROOT}/headquarters"
+export HYPERDRIVE_INCLUDES="${HYPERDRIVE_DATA_ROOT}/includes"
+export HYPERDRIVE_BUILDPACK_MANIFEST="${HYPERDRIVE_SCRIPTS}/buildpacks"
+export HYPERDRIVE_BUILDPACK_ROOT="${HYPERDRIVE_DATA_ROOT}/buildpacks"
+export HYPERDRIVE_LOCKS="${HYPERDRIVE_ROOT}/locks"
+export HYPERDRIVE_SERVICE_REPOS="${HYPERDRIVE_DATA_ROOT}/service_repos"
+export HYPERDRIVE_NGINX="${HYPERDRIVE_ROOT}/nginx"
 
-STARPHLEET_SUDO=("install" "test" "ship-build")
-STARPHLEET_NO_PARALLEL=("install" "test" "ship-build")
+HYPERDRIVE_SUDO=("install" "test" "ship-build")
+HYPERDRIVE_NO_PARALLEL=("install" "test" "ship-build")
 
 # import any config overrides for this machine
-[[ -f "${STARPHLEET_CONFIG_ROOT}/override.conf" ]] && source "${STARPHLEET_CONFIG_ROOT}/override.conf"
+[[ -f "${HYPERDRIVE_CONFIG_ROOT}/override.conf" ]] && source "${HYPERDRIVE_CONFIG_ROOT}/override.conf"
 
 # source support scripts
 source "${SCRIPT_DIR}/lib/logging.source"
@@ -41,14 +41,14 @@ source "${SCRIPT_DIR}/lib/helper.source"
 source "${SCRIPT_DIR}/lib/color.source"
 
 # check if the script only allows sudo to run it
-if [[ -n "${SCRIPT_NAME}" && $(array_contains STARPHLEET_SUDO "${SCRIPT_NAME}") -eq "0" ]]; then
+if [[ -n "${SCRIPT_NAME}" && $(array_contains HYPERDRIVE_SUDO "${SCRIPT_NAME}") -eq "0" ]]; then
   if [[ "$(id -u)" -ne "0" ]]; 
     then fatal "${SCRIPT_NAME}: you must be root to run this this script";
   fi
 fi
 
 # check if the script is not supposed to run in parallel
-if [[ -n "${SCRIPT_NAME}" && $(array_contains STARPHLEET_NO_PARALLEL "${SCRIPT_NAME}") -eq "0" ]]; then
+if [[ -n "${SCRIPT_NAME}" && $(array_contains HYPERDRIVE_NO_PARALLEL "${SCRIPT_NAME}") -eq "0" ]]; then
   LOCK="/var/run/${SCRIPT_NAME}.pid"
   if [[ -f "${LOCK}" ]]; then
     if kill -0 "$(< "${LOCK}")" > /dev/null 2>&1; then
@@ -65,13 +65,13 @@ fi
 ulimit -n 4096
 
 if [[ "${#BASH_SOURCE[@]}" -gt "0" && -f "${BASH_SOURCE[1]}" ]]; then
-  eval "$(${SCRIPT_DIR}/docopts -h "$(grep "^### " "${BASH_SOURCE[1]}" | cut -c 5-)" -V "${STARPHLEET_VERSION}" : "$@")"
+  eval "$(${SCRIPT_DIR}/docopts -h "$(grep "^### " "${BASH_SOURCE[1]}" | cut -c 5-)" -V "${HYPERDRIVE_VERSION}" : "$@")"
 fi
 
 function set_app_environment_vars() {
-[[ -d "${STARPHLEET_INCLUDES}" ]] || mkdir -p "${STARPHLEET_INCLUDES}"
+[[ -d "${HYPERDRIVE_INCLUDES}" ]] || mkdir -p "${HYPERDRIVE_INCLUDES}"
 local IFS=$'\n'; local FILE
-for FILE in $(find "${STARPHLEET_INCLUDES}" -type f); do
+for FILE in $(find "${HYPERDRIVE_INCLUDES}" -type f); do
   eval $(awk '/^[ \t]*export[ \t]+/ {print $0}' "${FILE}")
 done
 }

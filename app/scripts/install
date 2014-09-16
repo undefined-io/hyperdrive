@@ -4,7 +4,7 @@
 ### Options:
 ###   --help
 ###
-### This will get starphleet on a base machine
+### This will get hyperdrive on a base machine
 
 #--HEAD--
 set -o nounset; set -o errexit
@@ -20,7 +20,7 @@ local ADMIRAL_HOME="/home/${ADMIRAL}"
 if [[ ! "$(id -u "${ADMIRAL}" 2> /dev/null)" -gt "0" ]]; then
   # create the admiral if if has not yet been created
   useradd "${ADMIRAL}" -m -d "${ADMIRAL_HOME}"
-  # on the ubuntu installs starphleet is using, admin should allow nopasswd sudo
+  # on the ubuntu installs hyperdrive is using, admin should allow nopasswd sudo
   adduser "${ADMIRAL}" admin
   mkdir -p "${ADMIRAL_HOME}/.ssh"
   chmod 700 "${ADMIRAL_HOME}/.ssh"
@@ -30,64 +30,64 @@ else
 fi
 }
 
-function clone_starphleet_repo() {
-if [[ "${STARPHLEET_SOURCE}/app/scripts" != "${SCRIPT_DIR}" ]]; then
-  "${SCRIPT_DIR}/git-clone" "${STARPHLEET_REMOTE}" "${STARPHLEET_SOURCE}" --shallow --force
+function clone_hyperdrive_repo() {
+if [[ "${HYPERDRIVE_SOURCE}/app/scripts" != "${SCRIPT_DIR}" ]]; then
+  "${SCRIPT_DIR}/git-clone" "${HYPERDRIVE_REMOTE}" "${HYPERDRIVE_SOURCE}" --shallow --force
 else
   info "skipping clone on initial install.  this is expected."
 fi
 }
 
-function create_starphleet_directories() {
-  mkdir -p "${STARPHLEET_ROOT}" "${STARPHLEET_PRIVATE_KEYS}" "${STARPHLEET_PUBLIC_KEYS}" \
-    "${STARPHLEET_LXC_ROOT}" "${STARPHLEET_RECORDS}" "${STARPHLEET_INCLUDES}" "${STARPHLEET_DATA_ROOT}" \
-    "${STARPHLEET_LOCKS}" "${STARPHLEET_SERVICE_REPOS}" "${STARPHLEET_HQ_ROOT}"
+function create_hyperdrive_directories() {
+  mkdir -p "${HYPERDRIVE_ROOT}" "${HYPERDRIVE_PRIVATE_KEYS}" "${HYPERDRIVE_PUBLIC_KEYS}" \
+    "${HYPERDRIVE_LXC_ROOT}" "${HYPERDRIVE_RECORDS}" "${HYPERDRIVE_INCLUDES}" "${HYPERDRIVE_DATA_ROOT}" \
+    "${HYPERDRIVE_LOCKS}" "${HYPERDRIVE_SERVICE_REPOS}" "${HYPERDRIVE_HQ_ROOT}"
 }
 
-function apply_starphleet_overlay() {
-local SYSTEM_FILE_LEDGER="${STARPHLEET_RECORDS}/system.files"
+function apply_hyperdrive_overlay() {
+local SYSTEM_FILE_LEDGER="${HYPERDRIVE_RECORDS}/system.files"
 if [[ -f "${SYSTEM_FILE_LEDGER}" ]]; then
-  info "cleaning up previous starphleet install"
+  info "cleaning up previous hyperdrive install"
   while read FILE; do
     trace "[.] remove ${FILE}"
     rm -f "${FILE}"
   done < "${SYSTEM_FILE_LEDGER}"
 fi
 info "applying new system overlay"
-rsync -a "${STARPHLEET_SOURCE}/system/" "/"
-find "${STARPHLEET_SOURCE}/system/" -type f -printf "%P\n" > "${SYSTEM_FILE_LEDGER}"
+rsync -a "${HYPERDRIVE_SOURCE}/system/" "/"
+find "${HYPERDRIVE_SOURCE}/system/" -type f -printf "%P\n" > "${SYSTEM_FILE_LEDGER}"
 info "applying new app overlay"
 # TODO: work in a directory swap for the install later
 # TODO: currently does not clean up old files
-rsync -a "${STARPHLEET_SOURCE}/app/" "${STARPHLEET_ROOT}"
+rsync -a "${HYPERDRIVE_SOURCE}/app/" "${HYPERDRIVE_ROOT}"
 }
 
 function install_required_packages() {
-if [ -f "${STARPHLEET_ROOT}/.system" ]; then
-  warn "base apt packages already installed. delete ${STARPHLEET_ROOT}/.system to force reinstall"
+if [ -f "${HYPERDRIVE_ROOT}/.system" ]; then
+  warn "base apt packages already installed. delete ${HYPERDRIVE_ROOT}/.system to force reinstall"
 else
-  info "starting install of starphleet dependencies"
+  info "starting install of hyperdrive dependencies"
   apt-get -y install software-properties-common python-software-properties
   add-apt-repository -y ppa:nginx/stable
   apt-get -y update
   apt-get -y upgrade
-  apt-get -y install --force-yes $(< "${STARPHLEET_ROOT}/setup/system.packages")
+  apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages")
 
   # stop nginx, because apt-get package installs it turned on.
   /etc/init.d/nginx stop
   find /etc/rc*/*nginx | xargs -I {} rm "{}"
 
-  # starphleet is using bash for everything
+  # hyperdrive is using bash for everything
   ln -f /bin/bash /bin/sh
 fi
 }
 
-function setup_starphleet_repo_keys() {
+function setup_hyperdrive_repo_keys() {
 # TODO: Need to also have something for non-vagrant installs
 # copy private and public keys from vagrant folder if they exist
 # TODO: Going to rework the private/public key setup after the rest of the product works
-#find /vagrant/private_keys/* 2> /dev/null | xargs -I {} cp "{}" "${STARPHLEET_PRIVATE_KEYS}"
-#find /vagrant/public_keys/* 2> /dev/null | xargs -I {} cp "{}" "${STARPHLEET_PUBLIC_KEYS}"
+#find /vagrant/private_keys/* 2> /dev/null | xargs -I {} cp "{}" "${HYPERDRIVE_PRIVATE_KEYS}"
+#find /vagrant/public_keys/* 2> /dev/null | xargs -I {} cp "{}" "${HYPERDRIVE_PUBLIC_KEYS}"
 :
 }
 
@@ -106,27 +106,27 @@ fi
 
 function stop_services() {
   # TODO: improve this, the true is a shortcut to deal with already stopped services
-  initctl list | grep -e "^starphleet" | awk '{print $1}' | xargs -n 1 stop || true
+  initctl list | grep -e "^hyperdrive" | awk '{print $1}' | xargs -n 1 stop || true
 }
 
 function start_services() {
   # TODO: make start optional
-  start starphleet-captain-obtain-orders
+  start hyperdrive-captain-obtain-orders
 }
 
-make_admiral "${STARPHLEET_ADMIRAL}"
-clone_starphleet_repo
-create_starphleet_directories
+make_admiral "${HYPERDRIVE_ADMIRAL}"
+clone_hyperdrive_repo
+create_hyperdrive_directories
 stop_services
-apply_starphleet_overlay
+apply_hyperdrive_overlay
 install_required_packages
 configure_permissions
 "${SCRIPT_DIR}/buildpack-sync" --force
 start_services
 
-# TODO: Eventually we want to support custom plugins for starphleet as well
+# TODO: Eventually we want to support custom plugins for hyperdrive as well
 
-touch "${STARPHLEET_ROOT}/.system"
+touch "${HYPERDRIVE_ROOT}/.system"
 
 echo ""
-announce "*Welcome to Starphleet*"
+announce "*Welcome to Hyperdrive*"

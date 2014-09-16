@@ -9,6 +9,6 @@ function error() { echo -e "$(date +"%y-%m-%d %H:%M:%S") \E[31m\033[1m${SCRIPT_N
 function warn() { echo -e "$(date +"%y-%m-%d %H:%M:%S") \E[33m\033[1m${SCRIPT_NAME}: $*\033[0m"; }
 function announce() { echo -e "$(date +"%y-%m-%d %H:%M:%S") \E[34m\033[1m${SCRIPT_NAME}: $*\033[0m"; }
 function info() { echo -e "$(date +"%y-%m-%d %H:%M:%S") \E[32m\033[1m${SCRIPT_NAME}: $*\033[0m"; }
-function trace() { [[ "${STARPHLEET_DEBUG}" == "true" ]] && echo -e "$(date +"%y-%m-%d %H:%M:%S") \E[30m\033[1m${SCRIPT_NAME}: $*\033[0m"; }
+function trace() { [[ "${HYPERDRIVE_DEBUG}" == "true" ]] && echo -e "$(date +"%y-%m-%d %H:%M:%S") \E[30m\033[1m${SCRIPT_NAME}: $*\033[0m"; }
 function log() { echo -e "$(date +"%y-%m-%d %H:%M:%S") ${SCRIPT_NAME}: $*"; }
 function code() { echo -e "CODE $*"; exit $*; }
