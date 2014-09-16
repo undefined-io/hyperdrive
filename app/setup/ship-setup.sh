@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script is meant to run inside of a starphleet workstation
+# This script is meant to run inside of a hyperdrive workstation
 
 set -o nounset; set -o errexit
 until ifconfig | grep 'inet addr' | grep --invert '127.0.0.1' > /dev/null
@@ -12,9 +12,9 @@ echo -e "\n127.0.0.1    $(< /etc/hostname)" >> /etc/hosts
 # determine correct buildpack for the application
 SELECTED_BUILDPACK=""
 echo "[.] running buildpack detect"
-for BUILDPACK in $(find /var/starphleet/buildpacks -mindepth 1 -maxdepth 1 -type d); do
+for BUILDPACK in $(find /var/hyperdrive/buildpacks -mindepth 1 -maxdepth 1 -type d); do
   echo "[.] .. ${BUILDPACK}"
-  $BUILDPACK/bin/detect "/var/starphleet/share/app" > /dev/null 2>&1 || continue
+  $BUILDPACK/bin/detect "/var/hyperdrive/share/app" > /dev/null 2>&1 || continue
   SELECTED_BUILDPACK=$BUILDPACK && break
 done
 if [[ -n "${SELECTED_BUILDPACK}" ]]; then
@@ -33,7 +33,7 @@ cat << BUILDEOF > "${APP_HOME}/build.sh"
 set -o nounset; set -o errexit
 cd
 sudo rm -rf ${APP_ROOT}
-sudo rsync -az --exclude '.git' "/var/starphleet/share/app/" ${APP_ROOT}
+sudo rsync -az --exclude '.git' "/var/hyperdrive/share/app/" ${APP_ROOT}
 sudo chown -R ubuntu:ubuntu ${APP_ROOT}
 
 # compile the buildpack for the application
@@ -55,10 +55,10 @@ else
 fi
 chmod 744 "${APP_HOME}/start.sh"
 
-sudo touch "/var/starphleet/share/build.completed"
+sudo touch "/var/hyperdrive/share/build.completed"
 BUILDEOF
 
 chown ubuntu:ubuntu "${APP_HOME}/build.sh"
 chmod 744 "${APP_HOME}/build.sh"
 
-touch  /var/starphleet/share/setup.completed
+touch  /var/hyperdrive/share/setup.completed

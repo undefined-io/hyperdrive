@@ -3,7 +3,7 @@ Starphleet? What?
 
 A fully open container based continuous deployment PaaS.
 
-[Read the documentation](http://undefined-io.github.io/starphleet)
+[Read the documentation](http://undefined-io.github.io/hyperdrive)
 
 Overview
 ========

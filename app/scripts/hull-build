@@ -20,13 +20,13 @@ source "${SCRIPT_DIR}/main.source"
 
 #-- DEFAULT HULL ---------------------------------------------------------------
 
-HULL_NAME="starphleet"
+HULL_NAME="hyperdrive"
 if ! hull_exists "${HULL_NAME}"; then
   info "hull '${HULL_NAME}' is missing and will now be created..."
-  trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log"
+  trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-hyperdrive-create.log"
   (
     flock -x 200
-    lxc-create --name="starphleet" --template="ubuntu" > "${STARPHLEET_DATA_ROOT}/lxc-starphleet-create.log" 2>&1
+    lxc-create --name="hyperdrive" --template="ubuntu" > "${STARPHLEET_DATA_ROOT}/lxc-hyperdrive-create.log" 2>&1
   ) 200>"${STARPHLEET_LOCKS}/lxc"
 fi
 info "hull '${HULL_NAME}' ready"
@@ -36,7 +36,7 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 #-- BASE HULL ------------------------------------------------------------------
 
 HULL_BASE="${HULL_NAME}"
-HULL_NAME="starphleet-basic-hull"
+HULL_NAME="hyperdrive-basic-hull"
 if ! hull_exists "${HULL_NAME}"; then
   info "hull '${HULL_NAME}' is missing and will now be created..."
   HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
@@ -44,10 +44,10 @@ if ! hull_exists "${HULL_NAME}"; then
 
   hull_open
   cp "${STARPHLEET_ROOT}/setup/hull-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
-  cp "${STARPHLEET_ROOT}/setup/starphleet-basic-hull.packages" "${HULL_SHARE_DIR}/hull.packages"
+  cp "${STARPHLEET_ROOT}/setup/hyperdrive-basic-hull.packages" "${HULL_SHARE_DIR}/hull.packages"
   # TODO: Add a check here to see if the mount is properly setup
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
-  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
+  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
   if [[ ! -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
     fatal "error during setup.  please check ${HULL_ROOT_DIR}/setup.log for more information."
   fi

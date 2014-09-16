@@ -1,17 +1,17 @@
-# vim: set ft=sh : main include file for starphleet scripts
+# vim: set ft=sh : main include file for hyperdrive scripts
 
 set -o nounset; set -o errexit
 export STARPHLEET_VERSION="0.0.1"
 
 # import main config file
-export STARPHLEET_CONFIG_ROOT="/etc/starphleet"
+export STARPHLEET_CONFIG_ROOT="/etc/hyperdrive"
 export STARPHLEET_CONFIG="${STARPHLEET_CONFIG_ROOT}/main.conf"
 source "${STARPHLEET_CONFIG}"
 
 # TODO: This might be adjustable or moved later if user upstart jobs are used
 export STARPHLEET_UPSTART_ROOT="/etc/init"
 
-# starphleet global application variables
+# hyperdrive global application variables
 export STARPHLEET_LXC_ROOT="${STARPHLEET_DATA_ROOT}/lxc"
 export STARPHLEET_PRIVATE_KEYS="${STARPHLEET_ROOT}/private_keys"
 export STARPHLEET_PUBLIC_KEYS="${STARPHLEET_ROOT}/public_keys"

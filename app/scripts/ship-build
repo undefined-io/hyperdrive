@@ -33,7 +33,7 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
   fatal "invalid order_name '${order_name}'"
 fi
-HULL_NAME="starphleet-${order_name}"
+HULL_NAME="hyperdrive-${order_name}"
 
 # assert that autodeploy was provided
 ORDERS="${STARPHLEET_HQ_ROOT}/${order_name}/orders"
@@ -55,7 +55,7 @@ TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 SHORT_SHA="$(order_sha "${TMP_REPO}")"
 COMMIT_MSG="$(commit_msg "${TMP_REPO}")"
 HULL_NAME="${HULL_NAME}-${SHORT_SHA}"
-HULL_BASE="starphleet-basic-hull"
+HULL_BASE="hyperdrive-basic-hull"
 HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 HULL_APP_DIR="${HULL_SHARE_DIR}/app"
@@ -70,9 +70,9 @@ if ! hull_exists "${HULL_NAME}"; then
   echo "${COMMIT_MSG}" > "${HULL_SHARE_DIR}/.msg"
   mv "${TMP_REPO}" "${HULL_APP_DIR}"
   mkdir "${HULL_APP_DIR}/.profile.d"
-  echo "export PORT=${PORT}" > "${HULL_APP_DIR}/.profile.d/starphleet.env"
+  echo "export PORT=${PORT}" > "${HULL_APP_DIR}/.profile.d/hyperdrive.env"
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
-  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/starphleet/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
+  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
     info "setup '${HULL_NAME}' completed... build starting"
   else

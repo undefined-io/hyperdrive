@@ -5,12 +5,12 @@ function log() {
 echo "[.] $(date +"%y-%m-%d %H:%M:%S") : ${1}"
 }
 
-STARPHLEET_ROOT="${1:-/var/starphleet}"
-STARPHLEET_DATA_ROOT="${2:-/data/starphleet}"
-STARPHLEET_GIT="${3:-https://github.com/undefined-io/starphleet}"
+STARPHLEET_ROOT="${1:-/var/hyperdrive}"
+STARPHLEET_DATA_ROOT="${2:-/data/hyperdrive}"
+STARPHLEET_GIT="${3:-https://github.com/undefined-io/hyperdrive}"
 STARPHLEET_BRANCH="${4:-master}"
 STARPHLEET_LOCAL="${STARPHLEET_DATA_ROOT}/git"
-STARPHLEET_CONFIG_ROOT="/etc/starphleet"
+STARPHLEET_CONFIG_ROOT="/etc/hyperdrive"
 STARPHLEET_BOOTSTRAP_LOG="${STARPHLEET_DATA_ROOT}/bootstrap.log"
 
 mkdir -p "${STARPHLEET_DATA_ROOT}"
@@ -24,15 +24,15 @@ dpkg-reconfigure -f noninteractive tzdata
 # make sure localhost is in the hostfile
 echo "127.0.0.1 localhost" >> /etc/hosts
 
-# install and update packages before installing starphleet
+# install and update packages before installing hyperdrive
 log "updating apt-get repositories..."
 apt-get update -y > "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
 log "upgrading apt-get packages..."
 apt-get upgrade -y >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
-log "installing minimum starphleet required packages..."
+log "installing minimum hyperdrive required packages..."
 apt-get install -y git >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
 
-# create initial starphleet config file
+# create initial hyperdrive config file
 cat << EOF > "${STARPHLEET_CONFIG_ROOT}/main.conf"
 export STARPHLEET_ROOT="${STARPHLEET_ROOT}"
 export STARPHLEET_DATA_ROOT="${STARPHLEET_DATA_ROOT}"
@@ -41,8 +41,8 @@ export STARPHLEET_REMOTE="${STARPHLEET_GIT}#${STARPHLEET_BRANCH}"
 EOF
 
 rm -rf "${STARPHLEET_LOCAL}"
-log "cloning starphleet repository..."
+log "cloning hyperdrive repository..."
 git clone --branch "${STARPHLEET_BRANCH}" --depth 1 "${STARPHLEET_GIT}" "${STARPHLEET_LOCAL}" >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
 
-log "installing starphleet..."
+log "installing hyperdrive..."
 "${STARPHLEET_LOCAL}/app/scripts/install" 2>&1 | tee -a "${STARPHLEET_BOOTSTRAP_LOG}"

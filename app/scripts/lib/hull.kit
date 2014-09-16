@@ -8,12 +8,12 @@ rm -rf "${HULL_ROOT_DIR}"
 ) 200>"${STARPHLEET_LOCKS}/lxc"
 local LXC_FS="/var/lib/lxc/${HULL_NAME}"
 local HULL_FS="${HULL_ROOT_DIR}/filesystem"
-mkdir -p "${LXC_FS}/delta0/var/starphleet/share" "${LXC_FS}/delta0/var/starphleet/buildpacks" "${HULL_SHARE_DIR}"
+mkdir -p "${LXC_FS}/delta0/var/hyperdrive/share" "${LXC_FS}/delta0/var/hyperdrive/buildpacks" "${HULL_SHARE_DIR}"
 ln -sf "${LXC_FS}" "${HULL_FS}"
 
 cat << EOF >> "${HULL_FS}/config"
-lxc.mount.entry = ${HULL_SHARE_DIR} var/starphleet/share none defaults,bind 0 0
-lxc.mount.entry = ${STARPHLEET_BUILDPACK_ROOT} var/starphleet/buildpacks none bind,rw 0 0
+lxc.mount.entry = ${HULL_SHARE_DIR} var/hyperdrive/share none defaults,bind 0 0
+lxc.mount.entry = ${STARPHLEET_BUILDPACK_ROOT} var/hyperdrive/buildpacks none bind,rw 0 0
 EOF
 
 lxc-start --name="${HULL_NAME}" -d

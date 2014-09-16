@@ -29,14 +29,14 @@ while IFS=$'\n' read ROW; do
       ;;
   esac
   case "${NAME}" in
-    starphleet|starphleet-basic-hull)
+    hyperdrive|hyperdrive-basic-hull)
       continue
   esac
   MSG="$(< "${STARPHLEET_LXC_ROOT}/${NAME}/share/.msg")"
   echo "       ${C_BBLACK}- ${MSG}${C_RESET}"
-done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^starphleet" | tail -n +3)"
+done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^hyperdrive" | tail -n +3)"
 
-initctl list | grep -e "^starphleet" | awk '{print "job  :",$0}'
+initctl list | grep -e "^hyperdrive" | awk '{print "job  :",$0}'
 
 if [[ -n "${STARPHLEET_HQ:-}" ]]; then
   find "${STARPHLEET_HQ_ROOT}" -name "orders" -printf "%P " -exec \

@@ -1,20 +1,20 @@
 # toying with the idea of using this in the future
 have sp &&
-_starphleet_ship_status() {
+_hyperdrive_ship_status() {
   find /tmp -type f -printf "%P "
 } &&
-_starphleet_ship_list() {
-  lxc-ls | grep -e "^starphleet-" | grep -v "starphleet-basic-hull"
+_hyperdrive_ship_list() {
+  lxc-ls | grep -e "^hyperdrive-" | grep -v "hyperdrive-basic-hull"
 } &&
-_starphleet_order_list() {
-  find "/data/starphleet/headquarters/" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n" | awk -F/ '{print $(NF-1)}'
+_hyperdrive_order_list() {
+  find "/data/hyperdrive/headquarters/" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n" | awk -F/ '{print $(NF-1)}'
 } &&
-_starphleet_ship() {
+_hyperdrive_ship() {
   # keeping this around as a sample
   if [[ "${COMP_CWORD}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
       status)
-        compgen -W "$(_starphleet_ship_status)" -- "${COMP_WORDS[3]}"
+        compgen -W "$(_hyperdrive_ship_status)" -- "${COMP_WORDS[3]}"
       ;;
     esac
   elif [[ "${COMP_CWORD}" -eq 2 ]]; then
@@ -22,7 +22,7 @@ _starphleet_ship() {
   fi
   return 0
 } &&
-_starphleet()
+_hyperdrive()
 {
   COMPREPLY=()
   _get_comp_words_by_ref cur prev
@@ -30,15 +30,15 @@ _starphleet()
   if [[ "${COMP_CWORD}" -eq 2 ]]; then
     case "${COMP_WORDS[1]}" in
       engage|pilot|decommission|launch)
-        COMPREPLY=( $(compgen -W "$(_starphleet_ship_list)" -- "${COMP_WORDS[2]}") )
+        COMPREPLY=( $(compgen -W "$(_hyperdrive_ship_list)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
       assemble)
-        COMPREPLY=( $(compgen -W "$(_starphleet_order_list)" -- "${COMP_WORDS[2]}") )
+        COMPREPLY=( $(compgen -W "$(_hyperdrive_order_list)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
       status)
-        COMPREPLY=( $(compgen -W "$(_starphleet_ship_status)" -- "${COMP_WORDS[2]}") )
+        COMPREPLY=( $(compgen -W "$(_hyperdrive_ship_status)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
     esac
@@ -48,4 +48,4 @@ _starphleet()
     return 0
   fi
   return 0
-} && complete -F _starphleet sp
+} && complete -F _hyperdrive sp
