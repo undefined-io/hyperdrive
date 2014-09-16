@@ -121,7 +121,7 @@ stop_services
 apply_hyperdrive_overlay
 install_required_packages
 configure_permissions
-"${SCRIPT_DIR}/buildpack-sync" --force
+"${SCRIPT_DIR}/buildpack-sync"
 start_services
 
 # TODO: Eventually we want to support custom plugins for hyperdrive as well
