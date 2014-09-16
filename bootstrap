@@ -5,16 +5,16 @@ function log() {
 echo "[.] $(date +"%y-%m-%d %H:%M:%S") : ${1}"
 }
 
-STARPHLEET_ROOT="${1:-/var/hyperdrive}"
-STARPHLEET_DATA_ROOT="${2:-/data/hyperdrive}"
-STARPHLEET_GIT="${3:-https://github.com/undefined-io/hyperdrive}"
-STARPHLEET_BRANCH="${4:-master}"
-STARPHLEET_LOCAL="${STARPHLEET_DATA_ROOT}/git"
-STARPHLEET_CONFIG_ROOT="/etc/hyperdrive"
-STARPHLEET_BOOTSTRAP_LOG="${STARPHLEET_DATA_ROOT}/bootstrap.log"
+HYPERDRIVE_ROOT="${1:-/var/hyperdrive}"
+HYPERDRIVE_DATA_ROOT="${2:-/data/hyperdrive}"
+HYPERDRIVE_GIT="${3:-https://github.com/undefined-io/hyperdrive}"
+HYPERDRIVE_BRANCH="${4:-master}"
+HYPERDRIVE_LOCAL="${HYPERDRIVE_DATA_ROOT}/git"
+HYPERDRIVE_CONFIG_ROOT="/etc/hyperdrive"
+HYPERDRIVE_BOOTSTRAP_LOG="${HYPERDRIVE_DATA_ROOT}/bootstrap.log"
 
-mkdir -p "${STARPHLEET_DATA_ROOT}"
-mkdir -p "${STARPHLEET_CONFIG_ROOT}"
+mkdir -p "${HYPERDRIVE_DATA_ROOT}"
+mkdir -p "${HYPERDRIVE_CONFIG_ROOT}"
 
 # set timezone to GMT
 echo "GMT" > /etc/timezone
@@ -26,23 +26,23 @@ echo "127.0.0.1 localhost" >> /etc/hosts
 
 # install and update packages before installing hyperdrive
 log "updating apt-get repositories..."
-apt-get update -y > "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
+apt-get update -y > "${HYPERDRIVE_BOOTSTRAP_LOG}" 2>&1
 log "upgrading apt-get packages..."
-apt-get upgrade -y >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
+apt-get upgrade -y >> "${HYPERDRIVE_BOOTSTRAP_LOG}" 2>&1
 log "installing minimum hyperdrive required packages..."
-apt-get install -y git >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
+apt-get install -y git >> "${HYPERDRIVE_BOOTSTRAP_LOG}" 2>&1
 
 # create initial hyperdrive config file
-cat << EOF > "${STARPHLEET_CONFIG_ROOT}/main.conf"
-export STARPHLEET_ROOT="${STARPHLEET_ROOT}"
-export STARPHLEET_DATA_ROOT="${STARPHLEET_DATA_ROOT}"
-export STARPHLEET_REMOTE="${STARPHLEET_GIT}#${STARPHLEET_BRANCH}"
+cat << EOF > "${HYPERDRIVE_CONFIG_ROOT}/main.conf"
+export HYPERDRIVE_ROOT="${HYPERDRIVE_ROOT}"
+export HYPERDRIVE_DATA_ROOT="${HYPERDRIVE_DATA_ROOT}"
+export HYPERDRIVE_REMOTE="${HYPERDRIVE_GIT}#${HYPERDRIVE_BRANCH}"
 :
 EOF
 
-rm -rf "${STARPHLEET_LOCAL}"
+rm -rf "${HYPERDRIVE_LOCAL}"
 log "cloning hyperdrive repository..."
-git clone --branch "${STARPHLEET_BRANCH}" --depth 1 "${STARPHLEET_GIT}" "${STARPHLEET_LOCAL}" >> "${STARPHLEET_BOOTSTRAP_LOG}" 2>&1
+git clone --branch "${HYPERDRIVE_BRANCH}" --depth 1 "${HYPERDRIVE_GIT}" "${HYPERDRIVE_LOCAL}" >> "${HYPERDRIVE_BOOTSTRAP_LOG}" 2>&1
 
 log "installing hyperdrive..."
-"${STARPHLEET_LOCAL}/app/scripts/install" 2>&1 | tee -a "${STARPHLEET_BOOTSTRAP_LOG}"
+"${HYPERDRIVE_LOCAL}/app/scripts/install" 2>&1 | tee -a "${HYPERDRIVE_BOOTSTRAP_LOG}"

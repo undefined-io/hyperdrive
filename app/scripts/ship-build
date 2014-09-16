@@ -30,13 +30,13 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 [[ "${name}" != "true" ]] && exit 0
 
 # need to make sure that a valid order file is preset
-if [[ ! -d "${STARPHLEET_HQ_ROOT}/${order_name}" ]]; then
+if [[ ! -d "${HYPERDRIVE_HQ_ROOT}/${order_name}" ]]; then
   fatal "invalid order_name '${order_name}'"
 fi
 HULL_NAME="hyperdrive-${order_name}"
 
 # assert that autodeploy was provided
-ORDERS="${STARPHLEET_HQ_ROOT}/${order_name}/orders"
+ORDERS="${HYPERDRIVE_HQ_ROOT}/${order_name}/orders"
 REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${ORDERS}" | tail -1)"
 if [[ -z "${REPO:-}" ]]; then
   fatal "missing 'autodeploy' for order '${order_name}'"
@@ -56,7 +56,7 @@ SHORT_SHA="$(order_sha "${TMP_REPO}")"
 COMMIT_MSG="$(commit_msg "${TMP_REPO}")"
 HULL_NAME="${HULL_NAME}-${SHORT_SHA}"
 HULL_BASE="hyperdrive-basic-hull"
-HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
+HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 HULL_APP_DIR="${HULL_SHARE_DIR}/app"
 
@@ -64,8 +64,8 @@ info "ship '${HULL_NAME}' is missing and will now be created..."
 if ! hull_exists "${HULL_NAME}"; then
   info "setup '${HULL_NAME}' starting"
   hull_open
-  cp "${STARPHLEET_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
-  cp "${STARPHLEET_HQ_ROOT}/${order_name}/orders" "${HULL_SHARE_DIR}/"
+  cp "${HYPERDRIVE_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
+  cp "${HYPERDRIVE_HQ_ROOT}/${order_name}/orders" "${HULL_SHARE_DIR}/"
   echo "${SHORT_SHA}" > "${HULL_SHARE_DIR}/.sha"
   echo "${COMMIT_MSG}" > "${HULL_SHARE_DIR}/.msg"
   mv "${TMP_REPO}" "${HULL_APP_DIR}"

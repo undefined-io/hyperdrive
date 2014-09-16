@@ -23,11 +23,11 @@ source "${SCRIPT_DIR}/main.source"
 HULL_NAME="hyperdrive"
 if ! hull_exists "${HULL_NAME}"; then
   info "hull '${HULL_NAME}' is missing and will now be created..."
-  trace "log available at ${STARPHLEET_DATA_ROOT}/lxc-hyperdrive-create.log"
+  trace "log available at ${HYPERDRIVE_DATA_ROOT}/lxc-hyperdrive-create.log"
   (
     flock -x 200
-    lxc-create --name="hyperdrive" --template="ubuntu" > "${STARPHLEET_DATA_ROOT}/lxc-hyperdrive-create.log" 2>&1
-  ) 200>"${STARPHLEET_LOCKS}/lxc"
+    lxc-create --name="hyperdrive" --template="ubuntu" > "${HYPERDRIVE_DATA_ROOT}/lxc-hyperdrive-create.log" 2>&1
+  ) 200>"${HYPERDRIVE_LOCKS}/lxc"
 fi
 info "hull '${HULL_NAME}' ready"
 
@@ -39,12 +39,12 @@ HULL_BASE="${HULL_NAME}"
 HULL_NAME="hyperdrive-basic-hull"
 if ! hull_exists "${HULL_NAME}"; then
   info "hull '${HULL_NAME}' is missing and will now be created..."
-  HULL_ROOT_DIR="${STARPHLEET_LXC_ROOT}/${HULL_NAME}"
+  HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
   HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 
   hull_open
-  cp "${STARPHLEET_ROOT}/setup/hull-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
-  cp "${STARPHLEET_ROOT}/setup/hyperdrive-basic-hull.packages" "${HULL_SHARE_DIR}/hull.packages"
+  cp "${HYPERDRIVE_ROOT}/setup/hull-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
+  cp "${HYPERDRIVE_ROOT}/setup/hyperdrive-basic-hull.packages" "${HULL_SHARE_DIR}/hull.packages"
   # TODO: Add a check here to see if the mount is properly setup
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
   lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true

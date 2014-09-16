@@ -21,23 +21,23 @@ source "${SCRIPT_DIR}/main.source"
 
 # set the headquarters
 if [[ "${set}" == "true" ]]; then
-  echo "export STARPHLEET_HQ='${url}'" > "${STARPHLEET_INCLUDES}/headquarters"
-  export STARPHLEET_HQ="${url}"
+  echo "export HYPERDRIVE_HQ='${url}'" > "${HYPERDRIVE_INCLUDES}/headquarters"
+  export HYPERDRIVE_HQ="${url}"
   info "Headquarters set to ${url}"
 fi
 # status messages
-if [ -n "${STARPHLEET_HQ:-}" ]; then
-  info "Headquarters are set to ${STARPHLEET_HQ}"
+if [ -n "${HYPERDRIVE_HQ:-}" ]; then
+  info "Headquarters are set to ${HYPERDRIVE_HQ}"
 else
   warn "Headquarters have not been set"
 fi
 # sync the headquarters
 if [[ "${sync}" == "true" ]]; then
-  if [[ -z "${STARPHLEET_HQ:-}" ]]; then
+  if [[ -z "${HYPERDRIVE_HQ:-}" ]]; then
     warn "Headquarters have to be set before sync can be performed"
   fi
   info "synching headquarters..."
-  "${SCRIPT_DIR}/git-sync" "${STARPHLEET_HQ}" "${STARPHLEET_HQ_ROOT}" || true
+  "${SCRIPT_DIR}/git-sync" "${HYPERDRIVE_HQ}" "${HYPERDRIVE_HQ_ROOT}" || true
 
   # pull new and existing order details
   for ORDER in $(orders_list); do
@@ -46,7 +46,7 @@ if [[ "${sync}" == "true" ]]; then
     # TODO: Need error checking here for empty vars
     # TODO: Error check to handle invalid service repos, probably skip the update, but need to log it somehow
     info "synching '${SERVICE}'..."
-    "${SCRIPT_DIR}/git-sync" "${REPO}" "${STARPHLEET_SERVICE_REPOS}/${SERVICE}" || true
+    "${SCRIPT_DIR}/git-sync" "${REPO}" "${HYPERDRIVE_SERVICE_REPOS}/${SERVICE}" || true
   done
   # clean up orders that no longer exist
 fi
