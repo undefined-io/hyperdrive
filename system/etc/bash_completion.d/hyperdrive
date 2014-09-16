@@ -1,5 +1,5 @@
 # toying with the idea of using this in the future
-have sp &&
+have hd &&
 _hyperdrive_ship_status() {
   find /tmp -type f -printf "%P "
 } &&
@@ -48,4 +48,4 @@ _hyperdrive()
     return 0
   fi
   return 0
-} && complete -F _hyperdrive sp
+} && complete -F _hyperdrive hd
