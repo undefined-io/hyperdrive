@@ -17,6 +17,9 @@ source "${SCRIPT_DIR}/main.source"
 echo "hq   : ${HYPERDRIVE_HQ:-<not set>}"
 
 while IFS=$'\n' read ROW; do
+  if [[ -z "${ROW}" ]]; then
+    continue
+  fi
   read NAME STATE IP <<< "${ROW}"
 
   case "${STATE}" in
