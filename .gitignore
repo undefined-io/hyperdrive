@@ -1,7 +1,7 @@
 .vagrant*
 /node_modules/
 *.swp
-.starphleet
+.hyperdrive
 /private_keys/
 /public_keys/
 provision/ship.img.gz
