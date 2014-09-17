@@ -23,7 +23,6 @@ source "${SCRIPT_DIR}/main.source"
 if [[ "${set}" == "true" ]]; then
   echo "export HYPERDRIVE_HQ='${url}'" > "${HYPERDRIVE_INCLUDES}/headquarters"
   export HYPERDRIVE_HQ="${url}"
-  info "Headquarters set to ${url}"
 fi
 # status messages
 if [ -n "${HYPERDRIVE_HQ:-}" ]; then
