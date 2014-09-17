@@ -94,7 +94,7 @@ tell each Captain in the fleet what to do.
 
 ```bash
 # This will setup a clone of the HQ in "/data/hyperdrive/headquarters" (default path)
-hyperdrive-headquarters <REPO_URL> --sync
+headquarters set <REPO_URL> --sync
 ```
 
 If you want the Captain to obtain new orders from the HQ automatically, you can do that by:

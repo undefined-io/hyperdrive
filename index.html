@@ -137,7 +137,7 @@ tell each Captain in the fleet what to do.</p>
 </ul>
 <h2 class="anchor" id="toc-9">Assign Squadron to HQ</h2>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># This will setup a clone of the HQ in "/data/hyperdrive/headquarters" (default path)</span>
-hyperdrive-headquarters &lt;REPO_URL&gt; --sync
+headquarters <span class="hljs-keyword">set</span> &lt;REPO_URL&gt; --sync
 </code></pre>
 <p>If you want the Captain to obtain new orders from the HQ automatically, you can do that by:</p>
 <pre><code class="hljs lang-bash">start hyperdrive-captain-obtain-orders
