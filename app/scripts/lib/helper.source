@@ -2,14 +2,13 @@
 
 function array_contains () { 
 # $1 - name of array $2 - value
-local array="$1[@]"; local seeking=$2; local in=1
+local array="$1[@]"; local seeking=$2
 for element in "${!array}"; do
-  if [[ $element == $seeking ]]; then
-    in=0
-    break
+  if [[ "${element}" == "${seeking}" ]]; then
+    return 0
   fi
 done
-return $in
+return 1
 }
 
 function hull_exists () {

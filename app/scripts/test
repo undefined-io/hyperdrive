@@ -17,3 +17,5 @@ source "${SCRIPT_DIR}/main.source"
 
 info "name: ${name}"
 info "word: ${word}"
+
+sleep 10

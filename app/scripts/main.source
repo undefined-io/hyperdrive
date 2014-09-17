@@ -52,7 +52,7 @@ if [[ -n "${SCRIPT_NAME}" && $(array_contains HYPERDRIVE_NO_PARALLEL "${SCRIPT_N
   LOCK="/var/run/${SCRIPT_NAME}.pid"
   if [[ -f "${LOCK}" ]]; then
     if kill -0 "$(< "${LOCK}")" > /dev/null 2>&1; then
-      fatal "${SCRIPT_NAME} is already running and only once instance is allowed at a time"
+      fatal "${SCRIPT_NAME} is already running and only one instance is allowed at a time"
     fi
   fi
   echo "$$" > "${LOCK}"
