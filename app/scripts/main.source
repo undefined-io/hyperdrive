@@ -41,21 +41,25 @@ source "${SCRIPT_DIR}/lib/helper.source"
 source "${SCRIPT_DIR}/lib/color.source"
 
 # check if the script only allows sudo to run it
-if [[ -n "${SCRIPT_NAME}" && $(array_contains HYPERDRIVE_SUDO "${SCRIPT_NAME}") -eq "0" ]]; then
-  if [[ "$(id -u)" -ne "0" ]]; 
-    then fatal "${SCRIPT_NAME}: you must be root to run this this script";
+if [[ -n "${SCRIPT_NAME}" ]]; then
+  if array_contains HYPERDRIVE_SUDO "${SCRIPT_NAME}"; then
+    if [[ "$(id -u)" -ne "0" ]]; 
+      then fatal "${SCRIPT_NAME}: you must be root to run this this script";
+    fi
   fi
 fi
 
 # check if the script is not supposed to run in parallel
-if [[ -n "${SCRIPT_NAME}" && $(array_contains HYPERDRIVE_NO_PARALLEL "${SCRIPT_NAME}") -eq "0" ]]; then
-  LOCK="/var/run/${SCRIPT_NAME}.pid"
-  if [[ -f "${LOCK}" ]]; then
-    if kill -0 "$(< "${LOCK}")" > /dev/null 2>&1; then
-      fatal "${SCRIPT_NAME} is already running and only one instance is allowed at a time"
+if [[ -n "${SCRIPT_NAME}" ]]; then
+  if array_contains HYPERDRIVE_NO_PARALLEL "${SCRIPT_NAME}"; then
+    LOCK="/var/run/${SCRIPT_NAME}.pid"
+    if [[ -f "${LOCK}" ]]; then
+      if kill -0 "$(< "${LOCK}")" > /dev/null 2>&1; then
+        fatal "${SCRIPT_NAME} is already running and only one instance is allowed at a time"
+      fi
     fi
+    echo "$$" > "${LOCK}"
   fi
-  echo "$$" > "${LOCK}"
 fi
 
 if [ "${TERM}" == "unknown" ]; then
