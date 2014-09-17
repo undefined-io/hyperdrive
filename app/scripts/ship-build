@@ -60,8 +60,8 @@ HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 HULL_APP_DIR="${HULL_SHARE_DIR}/app"
 
-info "ship '${HULL_NAME}' is missing and will now be created..."
 if ! hull_exists "${HULL_NAME}"; then
+  info "ship '${HULL_NAME}' is missing and will now be created..."
   info "setup '${HULL_NAME}' starting"
   hull_open
   cp "${HYPERDRIVE_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
@@ -87,5 +87,9 @@ if ! hull_exists "${HULL_NAME}"; then
   if [[ "${running}" != "true" ]]; then
     hull_close
   fi
+fi
+if [[ -n "${TMP_REPO}" && -d "${TMP_REPO}" ]]; then
+  trace "cleaning up '${TMP_REPO}'"
+  rm -rf "${TMP_REPO}"
 fi
 info "ship '${HULL_NAME}' ready"
