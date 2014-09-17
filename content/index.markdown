@@ -238,8 +238,7 @@ hd assemble "example"
 # ship-build: build 'hyperdrive-example-9025762' completed
 # ship-build: ship 'hyperdrive-example-9025762' ready
 
-# engage will use the upstart job once it is working
-hd engage "hyperdrive-example-9025762"
+start hyperdrive-engage-ship name="hyperdrive-example-9025762"
 
 hd launch "hyperdrive-example-9025762"
 ```
