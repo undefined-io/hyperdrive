@@ -58,24 +58,31 @@
 					
 					<h3><a href="#toc-17">Bootstrap</a></h3>
 					
-					<h3><a href="#toc-18">Running everything</a></h3>
+					<h3><a href="#toc-18">Setting up HQ</a></h3>
 					
-					<h2><a href="#toc-19">Hacking on Hyperdrive with Vagrant</a></h2>
+					<h3><a href="#toc-19">Setup the Base Hulls</a></h3>
 					
-					<h3><a href="#toc-20">Symlink Approach</a></h3>
+					<h3><a href="#toc-20">Launch a Ship</a></h3>
 					
-					<h3><a href="#toc-21">Github Approach</a></h3>
+					<h2><a href="#toc-21">Hacking on Hyperdrive with Vagrant</a></h2>
+					
+					<h3><a href="#toc-22">Symlink Approach</a></h3>
+					
+					<h3><a href="#toc-23">Github Approach</a></h3>
 					
 			</div>
 		</div>
 		<div class="col-md-9">
 		
-			<p>Hyperdrive is a toolkit for turning a virtual or physical machine infrastructure into a continuous deployment stack.</p>
-<p>This is a fork of wballard/hyperdrive, and uses many of the original ideas, but a different approach to the implementation.</p>
+			<p>Hyperdrive is a toolkit for turning a virtual or physical machine infrastructure into a continuous
+deployment stack.</p>
+<p>This is a fork of <code>wballard/starphleet</code>, and uses many of the original ideas, but a different
+approach to the implementation.</p>
 <h1 class="anchor" id="toc-0">Requirements / OS Support</h1>
 <p>Currently Hyperdrive is only supported on Ubuntu 14.04.</p>
 <h1 class="anchor" id="toc-1">Overview</h1>
-<p>This version of hyperdrive is still under heavy development, and many critical pieces are missing. It is not meant for a production install anywhere.</p>
+<p>This version of hyperdrive is still under heavy development, and many critical pieces are missing.
+It is not meant for a production install anywhere.</p>
 <p>Installation is really only recommended to see the limited working features in action.</p>
 <h2 class="anchor" id="toc-2">Installation</h2>
 <h3 class="anchor" id="toc-3">Saucy</h3>
@@ -83,8 +90,11 @@
 bash &lt;(curl https://raw.githubusercontent.com/undefined-io/hyperdrive/reset/bootstrap)
 </code></pre>
 <h3 class="anchor" id="toc-4">Vagrant</h3>
-<p>The Vagrantfile that comes with the current version or hyperdrive should allow installation on parallels, vmware and virtualbox.</p>
-<p><strong>NOTE OSX/MAC USERS:</strong> <em>If you have just installed Vagrant, and still have the &quot;Vagrant&quot; pkg mounted, your install of Hyperdrive will fail. You&#39;ll have to unmount the pkg first before you try to start up the image</em></p>
+<p>The Vagrantfile that comes with the current version or hyperdrive should allow installation on
+parallels, vmware and virtualbox.</p>
+<p><strong>NOTE OSX/MAC USERS:</strong> <em>If you have just installed Vagrant, and still have the &quot;Vagrant&quot; pkg
+mounted, your install of Hyperdrive will fail. You&#39;ll have to unmount the pkg first before you try
+to start up the image</em></p>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># Run the following export(s), then choose the file that fit your vm software</span>
 <span class="hljs-keyword">export</span> HYPERDRIVE_VAGRANT_MEMSIZE=<span class="hljs-number">4096</span>
 
@@ -111,7 +121,8 @@ bash &lt;(curl https://raw.githubusercontent.com/undefined-io/hyperdrive/reset/b
 </ul>
 <h1 class="anchor" id="toc-6">Getting Started</h1>
 <h2 class="anchor" id="toc-7">Setup Headquarters Repo</h2>
-<p>Headquarters are just GIT repositories that contain a hyperdrive specific directory structure and tell each Captain in the fleet what to do.</p>
+<p>Headquarters are just GIT repositories that contain a hyperdrive specific directory structure and
+tell each Captain in the fleet what to do.</p>
 <h3 class="anchor" id="toc-8">Example</h3>
 <pre><code class="hljs">|<span class="hljs-comment">-- authorized_keys</span>
 |   `<span class="hljs-comment">-- john.doe@hyperdrive.com.pub</span>
@@ -131,11 +142,14 @@ hyperdrive-headquarters &lt;REPO_URL&gt; --sync
 <p>If you want the Captain to obtain new orders from the HQ automatically, you can do that by:</p>
 <pre><code class="hljs lang-bash">start hyperdrive-captain-obtain-orders
 </code></pre>
-<p>This will make the captain check with the configured HQ every minute, to see if any updates or new orders are available.</p>
+<p>This will make the captain check with the configured HQ every minute, to see if any updates or new
+orders are available.</p>
 <h1 class="anchor" id="toc-10">Where Hyperdrive Lives</h1>
-<p>These are the default locations. <strong>NOTE</strong> Many of these locations are still changing during the refactor.</p>
+<p>These are the default locations. <strong>NOTE</strong> Many of these locations are still changing during the
+refactor.</p>
 <h2 class="anchor" id="toc-11">/data/hyperdrive</h2>
-<p>The Hyperdrive data directory. The GIT repo lives here, and other files related to keeping track of Hyperdrive related stuff.</p>
+<p>The Hyperdrive data directory. The GIT repo lives here, and other files related to keeping track of
+Hyperdrive related stuff.</p>
 <pre><code class="hljs">|<span class="hljs-comment">-- git</span>
 |<span class="hljs-comment">-- includes</span>
 |<span class="hljs-comment">-- bootstrap.log</span>
@@ -177,24 +191,68 @@ hyperdrive-headquarters &lt;REPO_URL&gt; --sync
 <h1 class="anchor" id="toc-14">Orders</h1>
 <p>The <code>orders</code> file is used to configure environment variables specific to the app and Hyperdrive.</p>
 <h1 class="anchor" id="toc-15">Developer Notes</h1>
-<p>If you are using the provided <code>Vagrantfile</code>, your box will have the working copy of hyperdrive located at <code>/vagrant</code> on your VM. This comes in handy, for testing changes prior to them being installed.</p>
+<p>If you are using the provided <code>Vagrantfile</code>, your box will have the working copy of hyperdrive
+located at <code>/vagrant</code> on your VM. This comes in handy, for testing changes prior to them being installed.</p>
 <h2 class="anchor" id="toc-16">Step By Step (Just Notes)</h2>
-<p>Much of this will be improved during the dev cycle, but trying to allow devs to understand what I&#39;m doing atm while developing.</p>
+<p>Much of this will be improved during the dev cycle, but trying to allow devs to understand what I&#39;m
+doing atm while developing.</p>
 <h3 class="anchor" id="toc-17">Bootstrap</h3>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># This sets up the basics</span>
 /vagrant/bootstrap <span class="hljs-string">""</span> <span class="hljs-string">""</span> <span class="hljs-string">"file:///vagrant"</span> <span class="hljs-string">""</span>
 </code></pre>
-<h3 class="anchor" id="toc-18">Running everything</h3>
-<pre><code class="hljs lang-bash"><span class="hljs-comment"># Setup HQ, monitor for auto deploy</span>
+<h3 class="anchor" id="toc-18">Setting up HQ</h3>
+<pre><code class="hljs lang-bash"><span class="hljs-comment"># Setup HQ and monitor for updated orders</span>
 <span class="hljs-built_in">cd</span> /var/hyperdrive/scripts/
-./hyperdrive-headquarters https://github.com/datfinesoul/hyperdrive-hq<span class="hljs-comment">#master</span>
+./headquarters <span class="hljs-keyword">set</span> https://github.com/datfinesoul/hyperdrive-hq<span class="hljs-comment">#master</span>
 start hyperdrive-captain-obtain-orders
 
 <span class="hljs-comment"># To see logs</span>
 <span class="hljs-built_in">tail</span> -F /var/log/upstart/hyperdrive*
 </code></pre>
-<h2 class="anchor" id="toc-19">Hacking on Hyperdrive with Vagrant</h2>
-<h3 class="anchor" id="toc-20">Symlink Approach</h3>
+<h3 class="anchor" id="toc-19">Setup the Base Hulls</h3>
+<p>All Ships use some standard Hulls, which need to be assembled once, when a Hyperdrive
+Squadron is created.  This process is rather lengthy, but rarely (if ever) needs to be repeated.</p>
+<pre><code class="hljs lang-bash">hd assemble
+
+<span class="hljs-comment"># hull-build: hull 'hyperdrive' is missing and will now be created...</span>
+<span class="hljs-comment"># hull-build: log available at /data/hyperdrive/lxc-hyperdrive-create.log</span>
+<span class="hljs-comment"># hull-build: hull 'hyperdrive' ready</span>
+<span class="hljs-comment"># hull-build: hull 'hyperdrive-basic-hull' is missing and will now be created...</span>
+<span class="hljs-comment"># Created container hyperdrive-basic-hull as snapshot of hyperdrive</span>
+<span class="hljs-comment"># hull-build: log available at /data/hyperdrive/lxc/hyperdrive-basic-hull/setup.log</span>
+<span class="hljs-comment"># hull-build: hull 'hyperdrive-basic-hull' ready</span>
+</code></pre>
+<h3 class="anchor" id="toc-20">Launch a Ship</h3>
+<pre><code class="hljs lang-bash"><span class="hljs-comment"># "example" is the name of an order in the HQ</span>
+hd assemble <span class="hljs-string">"example"</span>
+
+<span class="hljs-comment"># hull-build: hull 'hyperdrive' ready</span>
+<span class="hljs-comment"># hull-build: hull 'hyperdrive-basic-hull' ready</span>
+<span class="hljs-comment"># ship-build: pulling specs for new 'hyperdrive-example' ship</span>
+<span class="hljs-comment"># git-clone: no branch provided, so looking up the default branch in the repo</span>
+<span class="hljs-comment"># git-clone: REMOTE_HEAD_SHA: 9025762f734b1eb4d4314473e3dd03cf89130a23, REMOTE_HEAD_BRANCH: master</span>
+<span class="hljs-comment"># git-clone: REMOTE_REPO: https://github.com/undefined-io/website, REMOTE_BRANCH: master</span>
+<span class="hljs-comment"># git-clone: replacing empty dir '/tmp/hyperdrive-example.vZvFVx19' with 'https://github.com/undefined-io/website#master'</span>
+<span class="hljs-comment"># Cloning into '/tmp/hyperdrive-example.vZvFVx19'...</span>
+<span class="hljs-comment"># remote: Counting objects: 21, done.</span>
+<span class="hljs-comment"># remote: Compressing objects: 100% (17/17), done.</span>
+<span class="hljs-comment"># remote: Total 21 (delta 0), reused 19 (delta 0)</span>
+<span class="hljs-comment"># Checking connectivity... done.</span>
+<span class="hljs-comment"># ship-build: ship 'hyperdrive-example-9025762' is missing and will now be created...</span>
+<span class="hljs-comment"># ship-build: setup 'hyperdrive-example-9025762' starting</span>
+<span class="hljs-comment"># Created container hyperdrive-example-9025762 as snapshot of hyperdrive-basic-hull</span>
+<span class="hljs-comment"># ship-build: log available at /data/hyperdrive/lxc/hyperdrive-example-9025762/setup.log</span>
+<span class="hljs-comment"># ship-build: setup 'hyperdrive-example-9025762' completed... build starting</span>
+<span class="hljs-comment"># ship-build: build 'hyperdrive-example-9025762' completed</span>
+<span class="hljs-comment"># ship-build: ship 'hyperdrive-example-9025762' ready</span>
+
+<span class="hljs-comment"># engage will use the upstart job once it is working</span>
+hd engage <span class="hljs-string">"hyperdrive-example-9025762"</span>
+
+hd launch <span class="hljs-string">"hyperdrive-example-9025762"</span>
+</code></pre>
+<h2 class="anchor" id="toc-21">Hacking on Hyperdrive with Vagrant</h2>
+<h3 class="anchor" id="toc-22">Symlink Approach</h3>
 <p>The easiest way to hack on Hyperdrive is usually to use Vagrant and then symlink the folders of files you are working on.</p>
 <pre><code class="hljs lang-bash">vagrant ssh
 <span class="hljs-built_in">sudo</span> su -
@@ -204,7 +262,7 @@ start hyperdrive-captain-obtain-orders
 </code></pre>
 <p>Then just work on the scripts in your local directories using your favorite editors, and test out the results immediately.</p>
 <p><strong>NOTE:</strong> Running <code>install</code> will wipe out all the symlinks.</p>
-<h3 class="anchor" id="toc-21">Github Approach</h3>
+<h3 class="anchor" id="toc-23">Github Approach</h3>
 <p>If you prefer to check in all changes, use the push/install approach.</p>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># On the Hyperdrive system or VM:</span>
 <span class="hljs-built_in">cd</span> /var/hyperdrive/scripts
