@@ -36,3 +36,8 @@ function ship_ip () {
 local HULL_NAME="${1}"
 lxc-ls --fancy --fancy-format ipv4 "^${HULL_NAME}\$" | tail -n +3 | awk '{print $1}'
 }
+
+function apply_order_exports () {
+  local ORDERS="${1}"
+  eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT|PUBLISH_HOST|PUBLISH_ROOT|PUBLISH_PORT_SSL)[ \t]*=/ {print $0}' "${ORDERS}")
+}

@@ -24,7 +24,7 @@ while IFS=$'\n' read ROW; do
 
   case "${STATE}" in
     RUNNING)
-      eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT)[ \t]*=/ {print $0}' "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/orders")
+      apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/orders"
       echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT:-} ==> ${PUBLISH_PORT:-}'"
       ;;
     STOPPED)
