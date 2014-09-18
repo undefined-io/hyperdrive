@@ -44,10 +44,6 @@ fi
 
 # load primary setup variables and validate presence of required ones
 apply_order_exports "${ORDERS}"
-if [[ -z "${PORT:-}" ]]; then
-  fatal "missing 'PORT' for order '${order_name}'"
-fi
-PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
 
 info "pulling specs for new '${HULL_NAME}' ship"
 TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")

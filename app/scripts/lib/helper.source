@@ -40,4 +40,8 @@ lxc-ls --fancy --fancy-format ipv4 "^${HULL_NAME}\$" | tail -n +3 | awk '{print 
 function apply_order_exports () {
   local ORDERS="${1}"
   eval $(awk '/^[ \t]*export[ \t]+(PORT|PUBLISH_PORT|PUBLISH_HOST|PUBLISH_ROOT|PUBLISH_PORT_SSL)[ \t]*=/ {print $0}' "${ORDERS}")
+  if [[ -z "${PORT:-}" ]]; then
+      fatal "missing 'PORT' for order '${ORDERS}'"
+  fi
+  export PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
 }
