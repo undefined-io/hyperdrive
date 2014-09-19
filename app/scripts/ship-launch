@@ -23,4 +23,45 @@ server ${IP_ADDRESS}:${PORT} max_fails=0;
 }
 EOF
 
+cat << EOF
+# need to move this to a different place
+server {
+  listen      8000;
+  server_name "";
+  return      444;
+}
+server {
+  server_name blog.codevariety.com;
+
+  # START PORTS
+  listen 8000;
+  # END PORTS
+
+  location / {
+    gzip on;
+    gzip_types *;
+    gzip_proxied any;
+    gzip_comp_level 6;
+
+    include cors.conf;
+
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Server $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    # forward host header
+    proxy_set_header Host $http_host;
+
+    # WebSocket support (nginx 1.4)
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+
+    # START SHIP PROXY
+    proxy_pass http://hyperdrive-codevariety-3293c1c;
+    # END SHIP PROXY
+  }
+}
+EOF
+
 fi
