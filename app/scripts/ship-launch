@@ -17,25 +17,30 @@ if hull_exists "${hull_name}"; then
 
 IP_ADDRESS="$(ship_ip "${hull_name}")"
 apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/orders"
+
+# create the upstream for the ship
 cat << EOF > "${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf"
 upstream ${hull_name} {
 server ${IP_ADDRESS}:${PORT} max_fails=0;
 }
 EOF
 
-cat << EOF
-# need to move this to a different place
+# if a specific host is requested, we need to disable the default routing in nginx for that port
+if [[ -n "${PUBLISH_HOST:-}" ]]; then
+cat << EOF >> "${HYPERDRIVE_NGINX}/ports/${PUBLISH_PORT}.conf"
 server {
-  listen      8000;
+  listen      ${PUBLISH_PORT};
   server_name "";
   return      444;
 }
-server {
-  server_name blog.codevariety.com;
+EOF
+fi
 
-  # START PORTS
-  listen 8000;
-  # END PORTS
+cat << EOF >> "${HYPERDRIVE_NGINX}/hosts/${PUBLISH_HOST}.conf"
+server {
+  server_name "${PUBLISH_HOST}";
+
+  listen ${PUBLISH_PORT};
 
   location / {
     gzip on;
@@ -45,21 +50,19 @@ server {
 
     include cors.conf;
 
-    proxy_set_header X-Forwarded-Host $host;
-    proxy_set_header X-Forwarded-Server $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Host \$host;
+    proxy_set_header X-Forwarded-Server \$host;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
 
     # forward host header
-    proxy_set_header Host $http_host;
+    proxy_set_header Host \$http_host;
 
     # WebSocket support (nginx 1.4)
     proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Upgrade \$http_upgrade;
     proxy_set_header Connection "upgrade";
 
-    # START SHIP PROXY
-    proxy_pass http://hyperdrive-codevariety-3293c1c;
-    # END SHIP PROXY
+    proxy_pass http://${hull_name};
   }
 }
 EOF
