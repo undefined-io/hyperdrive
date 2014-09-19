@@ -166,8 +166,9 @@ Hyperdrive related stuff.</p>
 <h2 class="anchor" id="toc-12">/var/hyperdrive</h2>
 <pre><code class="hljs">|<span class="hljs-comment">-- containers</span>
 |<span class="hljs-comment">-- nginx</span>
-|   |<span class="hljs-comment">-- direct</span>
-|   |<span class="hljs-comment">-- mount</span>
+|   |<span class="hljs-comment">-- hosts</span>
+|   |<span class="hljs-comment">-- proxies</span>
+|   |<span class="hljs-comment">-- overrides</span>
 |   `<span class="hljs-comment">-- upstream</span>
 |<span class="hljs-comment">-- private_keys</span>
 |<span class="hljs-comment">-- public_keys</span>
@@ -175,8 +176,9 @@ Hyperdrive related stuff.</p>
     `<span class="hljs-comment">-- lib</span>
 </code></pre><ul>
 <li><strong>/containers/</strong> - The actual images of the running LXC are stored here</li>
-<li><strong>/nginx/direct/</strong> - Configs to access ship on individual port</li>
-<li><strong>/nginx/mount/</strong> - Configs to access ship under hyperdrive root</li>
+<li><strong>/nginx/hosts/</strong> -</li>
+<li><strong>/nginx/proxies/</strong> -</li>
+<li><strong>/nginx/overrides/</strong> -</li>
 <li><strong>/nginx/upstream/</strong> - Loadmaster config to have one access point for all workstations</li>
 <li><strong>/private_keys/</strong> - Private keys used to access remote GIT repos</li>
 <li><strong>/public_keys/</strong> - Public keys for admiral access</li>
@@ -190,6 +192,36 @@ Hyperdrive related stuff.</p>
 </ul>
 <h1 class="anchor" id="toc-14">Orders</h1>
 <p>The <code>orders</code> file is used to configure environment variables specific to the app and Hyperdrive.</p>
+<table>
+<thead>
+<tr>
+<th>setting</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>autodeploy <repo></td>
+<td>monitored repo</td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+</tr>
+<tr>
+<td>export PORT=<n></td>
+<td>port of application</td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+</tr>
+<tr>
+<td>export PUBLISH_PORT=<n></td>
+<td>external port of app</td>
+</tr>
+</tbody>
+</table>
 <h1 class="anchor" id="toc-15">Developer Notes</h1>
 <p>If you are using the provided <code>Vagrantfile</code>, your box will have the working copy of hyperdrive
 located at <code>/vagrant</code> on your VM. This comes in handy, for testing changes prior to them being installed.</p>

@@ -136,8 +136,9 @@ Hyperdrive related stuff.
 ```
 |-- containers
 |-- nginx
-|   |-- direct
-|   |-- mount
+|   |-- hosts
+|   |-- proxies
+|   |-- overrides
 |   `-- upstream
 |-- private_keys
 |-- public_keys
@@ -146,8 +147,9 @@ Hyperdrive related stuff.
 ```
 
 - **/containers/** - The actual images of the running LXC are stored here
-- **/nginx/direct/** - Configs to access ship on individual port
-- **/nginx/mount/** - Configs to access ship under hyperdrive root
+- **/nginx/hosts/** -
+- **/nginx/proxies/** -
+- **/nginx/overrides/** -
 - **/nginx/upstream/** - Loadmaster config to have one access point for all workstations
 - **/private_keys/** - Private keys used to access remote GIT repos
 - **/public_keys/** - Public keys for admiral access
@@ -165,6 +167,14 @@ Hyperdrive related stuff.
 # Orders
 
 The `orders` file is used to configure environment variables specific to the app and Hyperdrive.
+
+| setting| description |
+|---|---|
+| autodeploy <repo> | monitored repo |
+|---|---|
+| export PORT=<n> | port of application |
+|---|---|
+| export PUBLISH_PORT=<n> | external port of app |
 
 # Developer Notes
 
