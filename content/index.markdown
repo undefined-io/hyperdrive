@@ -171,9 +171,7 @@ The `orders` file is used to configure environment variables specific to the app
 | setting| description |
 |---|---|
 | autodeploy <repo> | monitored repo |
-|---|---|
 | export PORT=<n> | port of application |
-|---|---|
 | export PUBLISH_PORT=<n> | external port of app |
 
 # Developer Notes
