@@ -17,7 +17,6 @@ if hull_exists "${hull_name}"; then
 
 IP_ADDRESS="$(ship_ip "${hull_name}")"
 apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/orders"
-env
 
 # create the upstream for the ship
 cat << EOF > "${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf"
