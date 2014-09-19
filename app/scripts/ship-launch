@@ -27,7 +27,7 @@ EOF
 
 # if a specific host is requested, we need to disable the default routing in nginx for that port
 if [[ -n "${PUBLISH_HOST:-}" ]]; then
-cat << EOF >> "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
+cat << EOF > "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
 server {
   listen      ${PUBLISH_PORT};
   server_name "";
@@ -36,7 +36,7 @@ server {
 EOF
 fi
 
-cat << EOF >> "${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
+cat << EOF > "${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
 server {
   server_name "${PUBLISH_HOST:-}";
 
