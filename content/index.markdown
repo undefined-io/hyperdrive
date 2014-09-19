@@ -171,8 +171,10 @@ The `orders` file is used to configure environment variables specific to the app
 | setting| description |
 |---|---|
 | autodeploy <repo> | monitored repo |
-| export PORT=<n> | port of application |
-| export PUBLISH_PORT=<n> | external port of app |
+| export **PORT**=<n> | port of application |
+| export **PUBLISH_PORT**=<n> | port on which the app will respond to external requests (defaults to PORT) |
+| export **PUBLISH_HOST**=<host> | If specified, app will only respond for the specified host headers (eg. `*.undefined.io undefined.io`) |
+| export **PUBLISH_ROOT**=<path> | The path on the domain which will serve as the root for the app |
 
 # Developer Notes
 
