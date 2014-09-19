@@ -37,9 +37,9 @@ server {
 EOF
 fi
 
-cat << EOF >> "${HYPERDRIVE_NGINX}/hosts/${PUBLISH_HOST}.conf"
+cat << EOF >> "${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
 server {
-  server_name "${PUBLISH_HOST}";
+  server_name "${PUBLISH_HOST:-}";
 
   listen ${PUBLISH_PORT};
 
