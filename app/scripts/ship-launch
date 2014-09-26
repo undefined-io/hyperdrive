@@ -44,7 +44,7 @@ fi
 trace "creating '${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf'"
 cat << EOF > "${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
 server {
-  server_name "${PUBLISH_HOST:-}";
+  server_name ${PUBLISH_HOST:-};
 
   listen ${PUBLISH_PORT};
 
