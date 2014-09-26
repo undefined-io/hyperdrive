@@ -29,7 +29,7 @@ Installation is really only recommended to see the limited working features in a
 
 ```bash
 # On most systems, the following will suffice to install Hyperdrive
-bash <(curl https://raw.githubusercontent.com/undefined-io/hyperdrive/reset/bootstrap)
+bash <(curl https://raw.githubusercontent.com/undefined-io/hyperdrive/master/bootstrap)
 ```
 
 ### Vagrant
