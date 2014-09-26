@@ -252,7 +252,7 @@ hd assemble "example"
 # ship-build: build 'hyperdrive-example-9025762' completed
 # ship-build: ship 'hyperdrive-example-9025762' ready
 
-start hyperdrive-engage-ship name="hyperdrive-example-9025762"
+hd engage "hyperdrive-example-9025762"
 
 hd launch "hyperdrive-example-9025762"
 ```
