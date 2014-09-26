@@ -20,7 +20,10 @@ local ADMIRAL_HOME="/home/${ADMIRAL}"
 if [[ ! "$(id -u "${ADMIRAL}" 2> /dev/null)" -gt "0" ]]; then
   # create the admiral if if has not yet been created
   useradd "${ADMIRAL}" -m -d "${ADMIRAL_HOME}"
-  # on the ubuntu installs hyperdrive is using, admin should allow nopasswd sudo
+  if ! egrep -iq '^admin:' /etc/group; then 
+    echo groupadd admin
+  fi
+  # on the ubuntu installs which hyperdrive is using, admin should allow nopasswd sudo
   adduser "${ADMIRAL}" admin
   mkdir -p "${ADMIRAL_HOME}/.ssh"
   chmod 700 "${ADMIRAL_HOME}/.ssh"
