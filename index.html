@@ -244,7 +244,9 @@ start hyperdrive-captain-obtain-orders
 <h3 class="anchor" id="toc-19">Setup the Base Hulls</h3>
 <p>All Ships use some standard Hulls, which need to be assembled once, when a Hyperdrive
 Squadron is created.  This process is rather lengthy, but rarely (if ever) needs to be repeated.</p>
-<pre><code class="hljs lang-bash">hd assemble
+<p><em>This would also happen automatically when hd assemble is used (see below), this is how it&#39;s done
+explicitly</em></p>
+<pre><code class="hljs lang-bash">/var/hyperdrive/scripts/hull-build
 
 <span class="hljs-comment"># hull-build: hull 'hyperdrive' is missing and will now be created...</span>
 <span class="hljs-comment"># hull-build: log available at /data/hyperdrive/lxc-hyperdrive-create.log</span>

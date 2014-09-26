@@ -1,3 +1,4 @@
+
 ---
 author:
 - name: datfinesoul
@@ -210,8 +211,11 @@ tail -F /var/log/upstart/hyperdrive*
 All Ships use some standard Hulls, which need to be assembled once, when a Hyperdrive
 Squadron is created.  This process is rather lengthy, but rarely (if ever) needs to be repeated.
 
+*This would also happen automatically when hd assemble is used (see below), this is how it's done
+explicitly*
+
 ```bash
-hd assemble
+/var/hyperdrive/scripts/hull-build
 
 # hull-build: hull 'hyperdrive' is missing and will now be created...
 # hull-build: log available at /data/hyperdrive/lxc-hyperdrive-create.log
