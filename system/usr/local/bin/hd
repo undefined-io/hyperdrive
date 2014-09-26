@@ -28,7 +28,7 @@ case "${COMMAND}" in
     "${SCRIPT_DIR}/status"
     ;;
   *)
-    echo "sp: ERROR" || false
+    echo "hd: ERROR" || false
     ;;
 esac
 
