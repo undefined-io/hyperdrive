@@ -211,7 +211,7 @@ tail -F /var/log/upstart/hyperdrive*
 All Ships use some standard Hulls, which need to be assembled once, when a Hyperdrive
 Squadron is created.  This process is rather lengthy, but rarely (if ever) needs to be repeated.
 
-*This would also happen automatically when hd assemble is used (see below), this is how it's done
+*This automatically happens when `hd assemble` is used (see below), but this is how it's done
 explicitly*
 
 ```bash
