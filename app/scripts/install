@@ -109,7 +109,10 @@ fi
 }
 
 function stop_services() {
-  initctl list | awk '/^hyperdrive-/ {print $1}' | egrep -v "hyperdrive-(nginx|engage-ship)" | xargs -n 1 stop || true
+  local SERVICE
+  for SERVICE in $(initctl list | awk '/^hyperdrive-/ {print $1}' | egrep -v "hyperdrive-(nginx|engage-ship)"); do
+    stop "${SERVICE}" 2>&1 | timestampit || true
+  done
 }
 
 function start_services() {
