@@ -102,7 +102,9 @@ function configure_permissions() {
 
 # if the vagrant user exists, make sure he's in the admin group for nopasswd sudo
 if [[ "$(id -u "vagrant" 2> /dev/null)" -gt "0" ]]; then
-  adduser vagrant admin
+  if id vagrant | grep -qi '(admin)'; then
+    adduser vagrant admin
+  fi
 fi
 }
 
