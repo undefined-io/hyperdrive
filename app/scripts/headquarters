@@ -12,7 +12,6 @@
 # TODO: Try to make the order sync happen in parallel
 
 #--HEAD--
-set -o nounset; set -o errexit
 SCRIPT="$(test -L "$0" && readlink "$0" || echo "$0")"
 SCRIPT_NAME="$(basename "${SCRIPT}")"
 SCRIPT_DIR="$(dirname "${SCRIPT}")"

@@ -1,7 +1,7 @@
 # vim: set ft=sh : main include file for hyperdrive scripts
+set -o nounset; set -o errexit; set -o pipefail;
 
-set -o nounset; set -o errexit
-export HYPERDRIVE_VERSION="0.0.1"
+export HYPERDRIVE_VERSION="0.1.0"
 
 # import main config file
 export HYPERDRIVE_CONFIG_ROOT="/etc/hyperdrive"

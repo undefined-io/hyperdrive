@@ -5,8 +5,6 @@
 ###   --help
 
 #--HEAD--
-# TODO: See if this can be added from a template
-set -o nounset; set -o errexit; set -o pipefail
 SCRIPT="$(test -L "$0" && readlink -e "$0" || readlink -e "$0")"
 SCRIPT_NAME="$(basename "${SCRIPT}")"
 SCRIPT_DIR="$(dirname "${SCRIPT}")"
