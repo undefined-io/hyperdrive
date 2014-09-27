@@ -117,7 +117,7 @@ function stop_services() {
 
 function start_services() {
   # TODO: make start optional
-  start hyperdrive-captain-obtain-orders
+  start hyperdrive-captain-obtain-orders | timestampit
 }
 
 make_admiral "${HYPERDRIVE_ADMIRAL}"
