@@ -51,7 +51,7 @@ local SYSTEM_FILE_LEDGER="${HYPERDRIVE_RECORDS}/system.files"
 if [[ -f "${SYSTEM_FILE_LEDGER}" ]]; then
   info "cleaning up previous hyperdrive install"
   while read FILE; do
-    trace "[.] remove ${FILE}"
+    trace "remove ${FILE}"
     rm -f "${FILE}"
   done < "${SYSTEM_FILE_LEDGER}"
 fi
