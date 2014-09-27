@@ -107,8 +107,7 @@ fi
 }
 
 function stop_services() {
-  # TODO: improve this, the true is a shortcut to deal with already stopped services
-  initctl list | grep -e "^hyperdrive" | awk '{print $1}' | xargs -n 1 stop || true
+  initctl list | awk '/^hyperdrive-/ {print $1}' | egrep -v "hyperdrive-(nginx|engage-ship)" | xargs -n 1 stop || true
 }
 
 function start_services() {
