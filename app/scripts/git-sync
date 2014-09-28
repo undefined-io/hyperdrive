@@ -40,7 +40,9 @@ if [[ -d "${local}" && -d "${local}/.git" ]]; then
     "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
     exit 0
   fi
-  git ${GIT_FLAGS} fetch --all || fatal "fetch error"
+  if ! git ${GIT_FLAGS} fetch --all | timestampit; then
+    fatal "fetch error"
+  fi
   LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
   if [[ -n "${REMOTE_BRANCH}" && "${REMOTE_BRANCH}" != "${LOCAL_BRANCH}" ]]; then
     warn "specified branch changed, checking out ${REMOTE_BRANCH}"
