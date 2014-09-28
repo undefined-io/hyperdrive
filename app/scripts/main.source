@@ -1,6 +1,10 @@
 # vim: set ft=sh : main include file for hyperdrive scripts
 set -o nounset; set -o errexit; set -o pipefail;
 
+if [[ "${0}" == "${BASH_SOURCE}" ]]; then
+  fatal "${BASH_SOURCE} should be sourced, not executed"
+fi
+
 export HYPERDRIVE_VERSION="0.1.0"
 
 # import main config file
