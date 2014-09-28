@@ -25,6 +25,10 @@ function orders_list () {
 find "${HYPERDRIVE_HQ_ROOT}" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n";
 }
 
+function local_order_repos () {
+find "${HYPERDRIVE_ORDER_REPOS}" -mindepth 1 -maxdepth 1 -type d -printf "%p\n";
+}
+
 function ship_ip () {
 # TODO: Is there a better way to trim strings?
 local HULL_NAME="${1}"

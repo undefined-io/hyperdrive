@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ### Usage:
-###   test word <name>
+###   test
 ### Options:
 ###   --help
 ###
@@ -13,7 +13,5 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-info "name: ${name}"
-info "word: ${word}"
-
-sleep 10
+orders_list | awk -F/ '{print $(NF-1)}'
+local_order_repos | awk -F/ '{print $(NF)}'
