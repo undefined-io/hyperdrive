@@ -69,11 +69,11 @@ if [ -f "${HYPERDRIVE_ROOT}/.system" ]; then
   warn "base apt packages already installed. delete ${HYPERDRIVE_ROOT}/.system to force reinstall"
 else
   info "starting install of hyperdrive dependencies"
-  apt-get -y install software-properties-common python-software-properties
-  add-apt-repository -y ppa:nginx/stable
-  apt-get -y update
-  apt-get -y upgrade
-  apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages")
+  apt-get -y install software-properties-common python-software-properties | timestampit
+  add-apt-repository -y ppa:nginx/stable | timestampit
+  apt-get -y update | timestampit
+  apt-get -y upgrade | timestampit
+  apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages") | timestampit
 
   # stop nginx, because apt-get package installs it turned on.
   /etc/init.d/nginx stop
