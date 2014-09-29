@@ -1,8 +1,5 @@
 # toying with the idea of using this in the future
 have hd &&
-_hyperdrive_ship_status() {
-  find /tmp -type f -printf "%P "
-} &&
 _hyperdrive_ship_list() {
   lxc-ls | grep -e "^hyperdrive-" | grep -v "hyperdrive-basic-hull"
 } &&
@@ -35,10 +32,6 @@ _hyperdrive()
       ;;
       assemble)
         COMPREPLY=( $(compgen -W "$(_hyperdrive_order_list)" -- "${COMP_WORDS[2]}") )
-        return 0
-      ;;
-      status)
-        COMPREPLY=( $(compgen -W "$(_hyperdrive_ship_status)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
     esac
