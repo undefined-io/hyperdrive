@@ -6,18 +6,19 @@ _hyperdrive_ship_list() {
 _hyperdrive_order_list() {
   find "/data/hyperdrive/headquarters/" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n" | awk -F/ '{print $(NF-1)}'
 } &&
-_hyperdrive_ship() {
-  # keeping this around as a sample
-  if [[ "${COMP_CWORD}" -eq 3 ]]; then
-    case "${COMP_WORDS[2]}" in
-      status)
-        compgen -W "$(_hyperdrive_ship_status)" -- "${COMP_WORDS[3]}"
-      ;;
-    esac
-  elif [[ "${COMP_CWORD}" -eq 2 ]]; then
-    compgen -W "status upgrade start stop" -- "${cur}"
+_hyperdrive_headquarters() {
+#  if [[ "${COMP_CWORD}" -eq 3 ]]; then
+#    case "${COMP_WORDS[2]}" in
+#      set)
+#        compgen -W "$(_hyperdrive_ship_status)" -- "${COMP_WORDS[3]}"
+#        return 0
+#      ;;
+#    esac
+#  elif [[ "${COMP_CWORD}" -eq 2 ]]; then
+  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+    compgen -W "set" -- "${cur}"
+    return 0
   fi
-  return 0
 } &&
 _hyperdrive()
 {
@@ -34,10 +35,13 @@ _hyperdrive()
         COMPREPLY=( $(compgen -W "$(_hyperdrive_order_list)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
+      headquarters)
+        COMPREPLY=( $(compgen -W "$(_hyperdrive_headquarters)" -- "${COMP_WORDS[2]}") )
+        return 0
+      ;;
     esac
-  fi
-  if [[ "${COMP_CWORD}" -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "assemble decommission engage launch pilot status" -- ${cur}) )
+  elif [[ "${COMP_CWORD}" -eq 1 ]]; then
+    COMPREPLY=( $(compgen -W "assemble decommission engage headquarters launch pilot status" -- ${cur}) )
     return 0
   fi
   return 0
