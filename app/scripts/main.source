@@ -8,38 +8,10 @@ if [[ "$(ps --no-headers -p $$ | awk '{print $(NF)}')" != "bash" ]]; then
   echo "hyperdrive scripts need to run in bash"
 fi
 
-export HYPERDRIVE_VERSION="0.1.0"
-
-# import main config file
-export HYPERDRIVE_CONFIG_ROOT="/etc/hyperdrive"
-export HYPERDRIVE_CONFIG="${HYPERDRIVE_CONFIG_ROOT}/main.conf"
-source "${HYPERDRIVE_CONFIG}"
-
-# TODO: This might be adjustable or moved later if user upstart jobs are used
-export HYPERDRIVE_UPSTART_ROOT="/etc/init"
-
-# hyperdrive global application variables
-export HYPERDRIVE_LXC_ROOT="${HYPERDRIVE_DATA_ROOT}/lxc"
-export HYPERDRIVE_PRIVATE_KEYS="${HYPERDRIVE_ROOT}/private_keys"
-export HYPERDRIVE_PUBLIC_KEYS="${HYPERDRIVE_ROOT}/public_keys"
-export HYPERDRIVE_ADMIRAL="admiral"
-export HYPERDRIVE_DEBUG="true"
-export HYPERDRIVE_SOURCE="${HYPERDRIVE_DATA_ROOT}/git"
-export HYPERDRIVE_RECORDS="${HYPERDRIVE_DATA_ROOT}/records"
-export HYPERDRIVE_SCRIPTS="${HYPERDRIVE_ROOT}/scripts"
-export HYPERDRIVE_HQ_ROOT="${HYPERDRIVE_DATA_ROOT}/headquarters"
-export HYPERDRIVE_INCLUDES="${HYPERDRIVE_DATA_ROOT}/includes"
-export HYPERDRIVE_BUILDPACK_MANIFEST="${HYPERDRIVE_SCRIPTS}/buildpacks"
-export HYPERDRIVE_BUILDPACK_ROOT="${HYPERDRIVE_DATA_ROOT}/buildpacks"
-export HYPERDRIVE_LOCKS="${HYPERDRIVE_ROOT}/locks"
-export HYPERDRIVE_ORDER_REPOS="${HYPERDRIVE_DATA_ROOT}/order_repos"
-export HYPERDRIVE_NGINX="${HYPERDRIVE_ROOT}/nginx"
-
 HYPERDRIVE_SUDO=("install" "test" "ship-build")
 HYPERDRIVE_NO_PARALLEL=("install" "test" "ship-build")
 
-# import any config overrides for this machine
-[[ -f "${HYPERDRIVE_CONFIG_ROOT}/override.conf" ]] && source "${HYPERDRIVE_CONFIG_ROOT}/override.conf"
+source "${SCRIPT_DIR}/env.source"
 
 # source support scripts
 source "${SCRIPT_DIR}/lib/logging.source"
