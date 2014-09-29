@@ -105,6 +105,7 @@ fi
 function stop_services() {
   local SERVICE
   while read SERVICE; do
+    echo "TEST'$SERVICE'"
     stop "${SERVICE}" 2>&1 | timestampit || true
   done < <(initctl list | awk '/^hyperdrive-/ {print $1}' | egrep -v "hyperdrive-(nginx|engage-ship)")
 }
