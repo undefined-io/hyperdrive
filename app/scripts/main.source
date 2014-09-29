@@ -2,10 +2,10 @@
 set -o nounset; set -o errexit; set -o pipefail;
 
 if [[ "${0}" == "${BASH_SOURCE}" ]]; then
-  fatal "${BASH_SOURCE} should be sourced, not executed"
+  echo "${BASH_SOURCE} should be sourced, not executed"
 fi
 if [[ "$(ps --no-headers -p $$ | awk '{print $(NF)}')" != "bash" ]]; then
-  fatal "hyperdrive scripts need to run in bash"
+  echo "hyperdrive scripts need to run in bash"
 fi
 
 export HYPERDRIVE_VERSION="0.1.0"
