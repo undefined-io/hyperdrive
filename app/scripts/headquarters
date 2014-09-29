@@ -47,4 +47,9 @@ if [[ "${sync}" == "true" ]]; then
     "${SCRIPT_DIR}/git-sync" "${REMOTE_ORDER_REPO}" "${LOCAL_ORDER_REPO}" || true
   done
   # clean up orders that no longer exist
+  for STALE_ORDER_REPO in $(stale_order_repos); do
+    if [[ -z ${STALE_ORDER_REPO} ]]; then continue; fi
+    warn "Deleting stale order repo '${STALE_ORDER_REPO}'"
+    rm -rf "${HYPERDRIVE_ORDER_REPOS}/${STALE_ORDER_REPO}"
+  done
 fi

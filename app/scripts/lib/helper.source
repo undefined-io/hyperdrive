@@ -29,6 +29,13 @@ function local_order_repos () {
 find "${HYPERDRIVE_ORDER_REPOS}" -mindepth 1 -maxdepth 1 -type d -printf "%p\n";
 }
 
+function stale_order_repos () {
+local ACTIVE_ORDERS="$(orders_list | awk -F/ '{print $(NF-1)}')"
+local ORDER_REPOS="$(local_order_repos | awk -F/ '{print $(NF)}')"
+
+grep -Fvxf <(echo -n "${ACTIVE_ORDERS}") <(echo -n "${ORDER_REPOS}")
+}
+
 function ship_ip () {
 # TODO: Is there a better way to trim strings?
 local HULL_NAME="${1}"
