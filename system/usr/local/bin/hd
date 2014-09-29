@@ -22,10 +22,14 @@ case "${COMMAND}" in
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-launch" "${1}"
     ;;
   assemble)
+    # TODO: Need to add an option here for this to not require params so hull-build can execute
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-build" name "${1}" --running
     ;;
   status)
     "${SCRIPT_DIR}/status"
+    ;;
+  headquarters)
+    "${SCRIPT_DIR}/headquarters" $@
     ;;
   *)
     echo "hd: ERROR" || false
