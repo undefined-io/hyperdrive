@@ -49,7 +49,8 @@ TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
 SHORT_SHA="$(order_sha "${TMP_REPO}")"
 COMMIT_MSG="$(commit_msg "${TMP_REPO}")"
-HULL_NAME="${HULL_NAME}-${SHORT_SHA}"
+ORDERS_SHA="$(sha256sum orders ${ORDERS} | sha256sum | awk '{print substr($1, 0, 8)}')"
+HULL_NAME="${HULL_NAME}-${ORDERS_SHA}-${SHORT_SHA}"
 HULL_BASE="hyperdrive-basic-hull"
 HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"

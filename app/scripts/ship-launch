@@ -71,4 +71,9 @@ server {
 }
 EOF
 
+else
+
+warn "'${hull_name}' is not a valid hull name"
+
 fi # hull_exists
+
