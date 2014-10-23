@@ -13,6 +13,8 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
+# TODO: Fix this script, or turn it into a makefile, seems like kind of a disaster right now to me
+
 function make_admiral() {
 local ADMIRAL="${1}"
 local ADMIRAL_HOME="/home/${ADMIRAL}"
@@ -116,7 +118,15 @@ function start_services() {
   :
 }
 
+function setup_ssh() {
+mkdir -p ~/.ssh
+ssh-keyscan -H github.com > ~/.ssh/known_hosts 2> /dev/null
+chmod 700 ~/.ssh 
+chmod 600 ~/.ssh/*
+}
+
 make_admiral "${HYPERDRIVE_ADMIRAL}"
+setup_ssh
 clone_hyperdrive_repo
 create_hyperdrive_directories
 stop_services
