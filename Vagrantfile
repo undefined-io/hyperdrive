@@ -24,8 +24,7 @@ Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
 
   config.vm.provider :virtualbox do |f, override|
     override.vm.network "public_network"
-    override.vm.box = ENV['BOX_NAME'] || 'saucy-virtualbox'
-    override.vm.box_url = "https://s3.amazonaws.com/glg_starphleet/saucy-13.10-vbox-4.3.6.box"
+    override.vm.box = ENV['BOX_NAME'] || 'ubuntu/trusty64'
     f.name = SQUADRON_NAME
     f.customize ["modifyvm", :id, "--memory", VAGRANT_MEMSIZE]
   end
