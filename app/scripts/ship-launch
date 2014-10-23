@@ -71,6 +71,8 @@ server {
 }
 EOF
 
+info "ship '${hull_name}' launched, ready to engage"
+
 else
 
 warn "'${hull_name}' is not a valid hull name"
