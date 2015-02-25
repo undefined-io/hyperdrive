@@ -6,3 +6,4 @@
 /public_keys/
 provision/ship.img.gz
 *.pyc
+/tmp/

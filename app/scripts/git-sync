@@ -30,11 +30,13 @@ function repo_change_count () {
 if [[ -d "${local}" && -d "${local}/.git" ]]; then
   GIT_FLAGS="--git-dir=${local}/.git --work-tree=${local}"
   ORIGIN_URL="$(git ${GIT_FLAGS} config remote.origin.url)"
+  # URL change
   if [ "${ORIGIN_URL}" != "${REMOTE_REPO}" ]; then
     warn "repository url differs, reclone needed"
     "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
     exit 0
   fi
+  # Repo has modifications
   if [[ "$(repo_change_count)" != "0" ]]; then
     warn "repository has modifications, reclone needed"
     "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
@@ -43,11 +45,13 @@ if [[ -d "${local}" && -d "${local}/.git" ]]; then
   if ! git ${GIT_FLAGS} fetch --all | timestampit; then
     fatal "fetch error"
   fi
+  # Branch change
   LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
   if [[ -n "${REMOTE_BRANCH}" && "${REMOTE_BRANCH}" != "${LOCAL_BRANCH}" ]]; then
     warn "specified branch changed, checking out ${REMOTE_BRANCH}"
     git ${GIT_FLAGS} checkout "${REMOTE_BRANCH}"
   fi
+  # Found changes
   LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
   HAS_CHANGES="$(git ${GIT_FLAGS} diff HEAD...origin/${LOCAL_BRANCH} --raw)"
   if [ "${HAS_CHANGES}x" != "x" ]; then

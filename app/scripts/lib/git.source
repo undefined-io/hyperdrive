@@ -16,6 +16,7 @@ REMOTE_BRANCH="$(echo "${REMOTE//$'\r'/}" | awk -F '#' '{print $2;}')"
 
 # if the repo is local, prefix file:/// to treat it the same as a remote
 # (local repo clones would include non-commited changes and are undesired)
+# TODO: This check needs massive improvement (check for http: or git@ or something like that and also check local file system for dir)
 if [[ ! "${REMOTE_REPO}" =~ ':' ]]; then
   if [[ "${REMOTE_REPO[0]}" == "/" ]]; then
     REMOTE_REPO="${REMOTE_REPO#*/}"
@@ -30,7 +31,17 @@ then
   error "repo '${REMOTE_REPO}' is unreachable or requires different credentials"
   return 1
 fi
-# TODO: Add SSH check
+
+# SSH validation
+if [[ "${REMOTE_REPO:0:4}" == "git@" ]] 
+then
+  local GIT_ERROR="$(git ls-remote "${REMOTE_REPO}" 2>&1 1>/dev/null)"
+  if [[ -n "${GIT_ERROR}" ]]
+  then
+    error "${GIT_ERROR}"
+  fi
+fi
+
 # TODO: Add local check
 # TODO: Make sure that at this point user/pass prompt will not hold up the script
 if ! git ls-remote "${REMOTE_REPO}" > /dev/null 2>&1; then
@@ -55,12 +66,16 @@ trace "REMOTE_REPO: ${REMOTE_REPO}, REMOTE_BRANCH: ${REMOTE_BRANCH}"
 return 0
 }
 
+## order_sha ###################################################################
+
 function order_sha () {
   local DIRECTORY="${1}"
   local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
   local SHORT_SHA="$(git ${GIT_FLAGS} rev-parse --short HEAD)"
   echo "${SHORT_SHA}"
 }
+
+## commit_msg ##################################################################
 
 function commit_msg () {
   local DIRECTORY="${1}"
