@@ -38,7 +38,9 @@ then
   local GIT_ERROR="$(git ls-remote "${REMOTE_REPO}" 2>&1 1>/dev/null)"
   if [[ -n "${GIT_ERROR}" ]]
   then
+    error "could not connect to remote repo '${REMOTE_REPO}'"
     error "${GIT_ERROR}"
+    return 1
   fi
 fi
 
