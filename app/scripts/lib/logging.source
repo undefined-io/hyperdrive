@@ -4,9 +4,9 @@
 
 # NOTE: to capture all GIT output, use --progress flag with git
 function timestamped () { 
-local LABEL="$1"
+local LABEL="${1:-}"
 # TODO: This color stuff can be improved upon
-local COLOR="${2}"
+local COLOR="${2:-}"
 local RESET="$(echo -e "\033[0m")"
 [[ -n "${LABEL}" ]] && LABEL+=": "
 [[ -n "${COLOR}" ]] && COLOR="$(echo -e "\E[${COLOR}m\033[1m")"
