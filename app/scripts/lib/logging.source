@@ -14,7 +14,7 @@ local COLOR="${2}"
 local RESET="$(echo -e "\033[0m")"
 [[ -n "${LABEL}" ]] && LABEL+=": "
 [[ -n "${COLOR}" ]] && COLOR="$(echo -e "\E[${COLOR}m\033[1m")"
-sed 's/[\n\r]/\n/g' | sed "s/^/$(date +"%y-%m-%d %H:%M:%S") ${COLOR}${LABEL}/g" | sed "s/$/${RESET}/g"; 
+sed 's/[\n\r]/\n/g' | sed "s/^/$(date +"%y-%m-%d %H:%M:%S") ${COLOR}${LABEL}/g" | sed "s/$/${RESET}/g" | tee -a "${HYPERDRIVE_LOG_ROOT:-/var/log/hyperdrive}/main.log"; 
 }
 
 function fatal() { echo -e "$*" | timestamped "${SCRIPT_NAME}" 31; exit 255; }
