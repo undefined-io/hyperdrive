@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 # TODO: tput setaf?
-# TODO: central log master
 # Library of colorized logging functions
 
 # NOTE: to capture all GIT output, use --progress flag with git
-#function timestampit () { while IFS='' read -r line; do echo "$(date +"%y-%m-%d %H:%M:%S") $line"; done }
-function timestampit () { sed 's/[\n\r]/\n/g' | sed "s/^/$(date +"%y-%m-%d %H:%M:%S") [.] /g"; }
-
 function timestamped () { 
 local LABEL="$1"
 # TODO: This color stuff can be improved upon

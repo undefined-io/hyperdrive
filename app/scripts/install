@@ -71,11 +71,11 @@ if [ -f "${HYPERDRIVE_ROOT}/.system" ]; then
   warn "base apt packages already installed. delete ${HYPERDRIVE_ROOT}/.system to force reinstall"
 else
   info "starting install of hyperdrive dependencies"
-  apt-get -y install software-properties-common python-software-properties 2>&1 | timestampit
-  add-apt-repository -y ppa:nginx/stable 2>&1 | timestampit
-  apt-get -y update 2>&1 | timestampit
-  apt-get -y upgrade 2>&1 | timestampit
-  apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages") 2>&1 | timestampit
+  apt-get -y install software-properties-common python-software-properties 2>&1 | timestamped "${SCRIPT_NAME}"
+  add-apt-repository -y ppa:nginx/stable 2>&1 | timestamped "${SCRIPT_NAME}"
+  apt-get -y update 2>&1 | timestamped "${SCRIPT_NAME}"
+  apt-get -y upgrade 2>&1 | timestamped "${SCRIPT_NAME}"
+  apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages") 2>&1 | timestamped "${SCRIPT_NAME}"
 
   # stop nginx, because apt-get package installs it turned on.
   /etc/init.d/nginx stop
@@ -108,13 +108,13 @@ function stop_services() {
   local SERVICE
   while read SERVICE; do
     if ! pgrep "${SERVICE}"; then continue; fi
-    stop "${SERVICE}" 2>&1 | timestampit || true
+    stop "${SERVICE}" 2>&1 | timestamped "${SCRIPT_NAME}" || true
   done < <(initctl list | awk '/^hyperdrive-/ {print $1}' | egrep -v "hyperdrive-(nginx|engage-ship)")
 }
 
 function start_services() {
   # TODO: make start optional
-  #start hyperdrive-captain-obtain-orders | timestampit
+  #start hyperdrive-captain-obtain-orders | timestamped "${SCRIPT_NAME}"
   :
 }
 
