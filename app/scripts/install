@@ -133,6 +133,7 @@ stop_services
 apply_hyperdrive_overlay
 install_required_packages
 configure_permissions
+set_base_container_name
 "${SCRIPT_DIR}/buildpack-sync"
 start_services
 
@@ -141,4 +142,6 @@ start_services
 touch "${HYPERDRIVE_ROOT}/.system"
 
 echo ""
-announce "*Welcome to Hyperdrive*"
+announce "* Welcome to Hyperdrive *"
+echo ""
+hd status

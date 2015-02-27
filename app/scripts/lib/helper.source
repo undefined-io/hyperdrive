@@ -57,3 +57,10 @@ local REPO="${1}"
 awk -F'[/]' '{print $(NF-1) ".." $(NF)}' <<< "${REPO}" | sed 's/#/../g'
 }
 
+function set_base_container_name {
+if [[ ! -f "${HYPERDRIVE_BASE_HULL_NAME}" ]];
+then
+  echo -n "hyperdrive-base-$(date +%s)" > "${HYPERDRIVE_BASE_HULL_NAME}"
+fi
+}
+
