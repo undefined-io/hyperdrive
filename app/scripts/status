@@ -20,18 +20,19 @@ while IFS=$'\n' read ROW; do
   fi
   read NAME STATE IP <<< "${ROW}"
 
-  case "${STATE}" in
-    RUNNING)
-      apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/orders"
-      echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT:-} ==> ${PUBLISH_PORT:-}'"
-      ;;
-    STOPPED)
-      echo "lxc  : ${C_RED}${NAME}${C_RESET} [${STATE}] (${IP})"
-      ;;
-  esac
   case "${NAME}" in
     hyperdrive|hyperdrive-base-*|hyperdrive-basic-hull)
+      case "${STATE}" in
+        RUNNING) COLOR="${C_RED}" ;;
+              *) COLOR="${C_GREEN}" ;;
+      esac
+      echo "lxc  : ${COLOR}${NAME}${C_RESET} [${STATE}] (${IP})"
       continue
+  esac
+  apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/orders"
+  case "${STATE}" in
+    RUNNING) echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT:-} ==> ${PUBLISH_PORT:-}'" ;;
+    STOPPED) echo "lxc  : ${C_RED}${NAME}${C_RESET} [${STATE}] (${IP})" ;;
   esac
   MSG="$(< "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/.msg")"
   echo "       ${C_BBLACK}- ${MSG}${C_RESET}"
