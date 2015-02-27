@@ -5,14 +5,14 @@ function log() {
 echo "$(date +"%y-%m-%d %H:%M:%S") : ${1}"
 }
 
-export HYPERDRIVE_ROOT="${1:-/var/hyperdrive}"
-export HYPERDRIVE_DATA_ROOT="${2:-/data/hyperdrive}"
-export HYPERDRIVE_GIT="${3:-https://github.com/undefined-io/hyperdrive}"
-export HYPERDRIVE_BRANCH="${4:-master}"
-export HYPERDRIVE_LOCAL="${HYPERDRIVE_DATA_ROOT}/git"
-export HYPERDRIVE_CONFIG_ROOT="/etc/hyperdrive"
-export HYPERDRIVE_LOG_ROOT="/var/log/hyperdrive"
-export HYPERDRIVE_BOOTSTRAP_LOG="${HYPERDRIVE_DATA_ROOT}/bootstrap.log"
+HYPERDRIVE_ROOT="${1:-/var/hyperdrive}"
+HYPERDRIVE_DATA_ROOT="${2:-/data/hyperdrive}"
+HYPERDRIVE_GIT="${3:-https://github.com/undefined-io/hyperdrive}"
+HYPERDRIVE_BRANCH="${4:-master}"
+HYPERDRIVE_LOCAL="${HYPERDRIVE_DATA_ROOT}/git"
+HYPERDRIVE_CONFIG_ROOT="/etc/hyperdrive"
+HYPERDRIVE_LOG_ROOT="/var/log/hyperdrive"
+HYPERDRIVE_BOOTSTRAP_LOG="${HYPERDRIVE_DATA_ROOT}/bootstrap.log"
 
 mkdir -p "${HYPERDRIVE_DATA_ROOT}"
 mkdir -p "${HYPERDRIVE_CONFIG_ROOT}"

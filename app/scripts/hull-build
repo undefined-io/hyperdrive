@@ -35,7 +35,7 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 #-- BASE HULL ------------------------------------------------------------------
 
 HULL_BASE="${HULL_NAME}"
-HULL_NAME="hyperdrive-basic-hull"
+HULL_NAME="$(< "${HYPERDRIVE_BASE_HULL_NAME}" )"
 if ! hull_exists "${HULL_NAME}"; then
   info "hull '${HULL_NAME}' is missing and will now be created..."
   HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
