@@ -30,7 +30,7 @@ while IFS=$'\n' read ROW; do
       ;;
   esac
   case "${NAME}" in
-    hyperdrive|"$(< ${HYPERDRIVE_BASE_HULL_NAME})")
+    hyperdrive|hyperdrive-base-*|hyperdrive-basic-hull)
       continue
   esac
   MSG="$(< "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/.msg")"
