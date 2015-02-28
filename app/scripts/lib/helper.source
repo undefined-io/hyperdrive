@@ -61,6 +61,7 @@ function set_base_container_name {
 if [[ ! -f "${HYPERDRIVE_BASE_HULL_NAME}" ]];
 then
   echo -n "hyperdrive-base-$(date +%s)" > "${HYPERDRIVE_BASE_HULL_NAME}"
+  info "base hull outdated, new base hull will be '$(<"${HYPERDRIVE_BASE_HULL_NAME}")'"
 fi
 }
 

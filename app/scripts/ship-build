@@ -44,7 +44,7 @@ fi
 # load primary setup variables and validate presence of required ones
 apply_order_exports "${ORDERS}"
 
-info "pulling specs for new '${HULL_NAME}' ship"
+info "'${HULL_NAME}' analyzing need for ship upgrade"
 TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
 SHORT_SHA="$(order_sha "${TMP_REPO}")"
@@ -57,8 +57,7 @@ HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 HULL_APP_DIR="${HULL_SHARE_DIR}/app"
 
 if ! hull_exists "${HULL_NAME}"; then
-  info "ship '${HULL_NAME}' is missing and will now be created..."
-  info "setup '${HULL_NAME}' starting"
+  info "'${HULL_NAME}' setup starting"
   hull_open
   cp "${HYPERDRIVE_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
   cp "${HYPERDRIVE_HQ_ROOT}/${order_name}/orders" "${HULL_SHARE_DIR}/"
@@ -70,15 +69,15 @@ if ! hull_exists "${HULL_NAME}"; then
   trace "log available at ${HULL_ROOT_DIR}/setup.log"
   lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
-    info "setup '${HULL_NAME}' completed... build starting"
+    info "'${HULL_NAME}' setup completed... build starting"
   else
-    fatal "setup '${HULL_NAME}' failed"
+    fatal "'${HULL_NAME}' setup failed"
   fi
   lxc-attach --name "${HULL_NAME}" -- sudo -H -u ubuntu -i bash -c "./build.sh" >> "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/build.completed" ]]; then
-    info "build '${HULL_NAME}' completed"
+    info "'${HULL_NAME}' build completed"
   else
-    fatal "build '${HULL_NAME}' failed"
+    fatal "'${HULL_NAME}' build failed"
   fi
   if [[ "${running}" != "true" ]]; then
     hull_close
@@ -88,4 +87,4 @@ if [[ -n "${TMP_REPO}" && -d "${TMP_REPO}" ]]; then
   trace "cleaning up '${TMP_REPO}'"
   rm -rf "${TMP_REPO}"
 fi
-info "ship '${HULL_NAME}' ready"
+info "'${HULL_NAME}' ship ready"
