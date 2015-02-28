@@ -11,12 +11,12 @@ markedDocs:
 Hyperdrive is a toolkit for turning a virtual or physical machine infrastructure into a continuous
 deployment stack.
 
-This is a fork of `wballard/starphleet`, and uses many of the original ideas, but a different
-approach to the implementation.
+This project started off as a fork of `wballard/starphleet`. It still used many of the original ideas,
+but has since changed significantly in approach and implementation.
 
 # Requirements / OS Support
 
-Currently Hyperdrive is only supported on Ubuntu 14.04.
+Currently Hyperdrive is only supported on Ubuntu 13.10 and higher.
 
 # Overview
 
@@ -27,7 +27,7 @@ Installation is really only recommended to see the limited working features in a
 
 ## Installation
 
-### Saucy
+### Ubuntu
 
 ```bash
 # On most systems, the following will suffice to install Hyperdrive
@@ -161,10 +161,15 @@ Hyperdrive related stuff.
 ## /etc/hyperdrive
 
 ```
+|-- base_hull_name.info
 `-- main.conf
 ```
 
+- **/base_hull_name.info** - name of the hull that is used as the base for all new ships
 - **/main.conf** - Master settings for Hyperdrive intall
+
+If the `base_hull_name.info` file is missing, a new base hull will be created, and used
+going forward.
 
 # Orders
 
@@ -205,6 +210,7 @@ start hyperdrive-captain-obtain-orders
 
 # To see logs
 tail -F /var/log/upstart/hyperdrive*
+tail -F /var/log/hyperdrive/main.log
 ```
 
 ### Setup the Base Hulls

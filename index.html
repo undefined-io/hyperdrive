@@ -40,7 +40,7 @@
 					
 					<h2><a href="#toc-2">Installation</a></h2>
 					
-					<h3><a href="#toc-3">Saucy</a></h3>
+					<h3><a href="#toc-3">Ubuntu</a></h3>
 					
 					<h3><a href="#toc-4">Vagrant</a></h3>
 					
@@ -88,16 +88,16 @@
 		
 			<p>Hyperdrive is a toolkit for turning a virtual or physical machine infrastructure into a continuous
 deployment stack.</p>
-<p>This is a fork of <code>wballard/starphleet</code>, and uses many of the original ideas, but a different
-approach to the implementation.</p>
+<p>This project started off as a fork of <code>wballard/starphleet</code>. It still used many of the original ideas,
+but has since changed significantly in approach and implementation.</p>
 <h1 class="anchor" id="toc-0">Requirements / OS Support</h1>
-<p>Currently Hyperdrive is only supported on Ubuntu 14.04.</p>
+<p>Currently Hyperdrive is only supported on Ubuntu 13.10 and higher.</p>
 <h1 class="anchor" id="toc-1">Overview</h1>
 <p>This version of hyperdrive is still under heavy development, and many critical pieces are missing.
 It is not meant for a production install anywhere.</p>
 <p>Installation is really only recommended to see the limited working features in action.</p>
 <h2 class="anchor" id="toc-2">Installation</h2>
-<h3 class="anchor" id="toc-3">Saucy</h3>
+<h3 class="anchor" id="toc-3">Ubuntu</h3>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># On most systems, the following will suffice to install Hyperdrive</span>
 bash &lt;(curl https://raw.githubusercontent.com/undefined-io/hyperdrive/master/bootstrap)
 </code></pre>
@@ -198,10 +198,14 @@ Hyperdrive related stuff.</p>
 <li><strong>/scripts/lib/</strong> - Support files for the main hyperdrive scripts</li>
 </ul>
 <h2 class="anchor" id="toc-13">/etc/hyperdrive</h2>
-<pre><code class="hljs">`<span class="hljs-comment">-- main.conf</span>
+<pre><code class="hljs">|<span class="hljs-comment">-- base_hull_name.info</span>
+`<span class="hljs-comment">-- main.conf</span>
 </code></pre><ul>
+<li><strong>/base_hull_name.info</strong> - name of the hull that is used as the base for all new ships</li>
 <li><strong>/main.conf</strong> - Master settings for Hyperdrive intall</li>
 </ul>
+<p>If the <code>base_hull_name.info</code> file is missing, a new base hull will be created, and used
+going forward.</p>
 <h1 class="anchor" id="toc-14">Orders</h1>
 <p>The <code>orders</code> file is used to configure environment variables specific to the app and Hyperdrive.</p>
 <table class="table table-condensed table-hover">
@@ -252,6 +256,7 @@ start hyperdrive-captain-obtain-orders
 
 <span class="hljs-comment"># To see logs</span>
 <span class="hljs-built_in">tail</span> -F /var/log/upstart/hyperdrive*
+<span class="hljs-built_in">tail</span> -F /var/log/hyperdrive/main.log
 </code></pre>
 <h3 class="anchor" id="toc-19">Setup the Base Hulls</h3>
 <p>All Ships use some standard Hulls, which need to be assembled once, when a Hyperdrive
