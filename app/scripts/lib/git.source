@@ -54,15 +54,18 @@ fi
 if [[ -z "${REMOTE_BRANCH}" ]]; then
   trace "no branch provided, so looking up the default branch in the repo"
   # extract the SHA of the HEAD tag
-  local REMOTE_HEAD_SHA="$(git ls-remote "${REMOTE_REPO}" | gitLsRemoteHeadSha.awk)"
+  local REMOTE_OUTPUT="$(git ls-remote "${REMOTE_REPO}")"
+  local REMOTE_HEAD_SHA="$(gitLsRemoteHeadSha.awk <<< "${REMOTE_OUTPUT}")"
+  export REMOTE_HEAD_SHA
   # find a branch/tag of the HEAD SHA
-  local REMOTE_HEAD_BRANCH="$(git ls-remote "${REMOTE_REPO}" \
-    | awk -v SHA="${REMOTE_HEAD_SHA}" '$1 ~ SHA && $2 != "HEAD" {print $2}' | head -n 1)"
-  # strip the refs/heads or refs/tags
+  local REMOTE_HEAD_BRANCH="$(gitLsRemoteBranchBySha.gawk <<< "${REMOTE_OUTPUT}")"
   # TODO: Need to fix and make this work with branches that have / in the name.  ie: feature/go-111
-  REMOTE_HEAD_BRANCH="${REMOTE_HEAD_BRANCH##*/}"
   REMOTE_BRANCH="${REMOTE_HEAD_BRANCH}"
   trace "REMOTE_HEAD_SHA: ${REMOTE_HEAD_SHA}, REMOTE_HEAD_BRANCH: ${REMOTE_HEAD_BRANCH}"
+  if [[ -z "${REMOTE_BRANCH}" ]]; then
+    error "could not determine default branch"
+    return 1
+  fi
 fi
 trace "REMOTE_REPO: ${REMOTE_REPO}, REMOTE_BRANCH: ${REMOTE_BRANCH}"
 return 0

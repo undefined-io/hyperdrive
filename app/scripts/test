@@ -13,5 +13,6 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-initctl list | nonCritialUpstartJobs.awk
-
+export REMOTE_HEAD_SHA=ff71e95489d111f3d30f296e9b4fd8e4f378a955
+TEST="$(git ls-remote "https://github.com/undefined-io/hyperdrive")"
+gitLsRemoteBranchBySha.gawk <<< "${TEST}"
