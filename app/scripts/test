@@ -13,5 +13,5 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-apply_order_exports /data/hyperdrive/headquarters/codevariety/orders
-env | sort | grep -i publish
+initctl list | nonCritialUpstartJobs.awk
+

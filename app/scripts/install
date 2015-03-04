@@ -109,7 +109,7 @@ function stop_services() {
   while read SERVICE; do
     if ! pgrep "${SERVICE}"; then continue; fi
     stop "${SERVICE}" 2>&1 | timestamped "${SCRIPT_NAME}" || true
-  done < <(initctl list | awk '/^hyperdrive-/ {print $1}' | egrep -v "hyperdrive-(nginx|engage-ship)")
+  done < <(initctl list | nonCritialUpstartJobs.awk)
 }
 
 function start_services() {
