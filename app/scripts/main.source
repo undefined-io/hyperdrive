@@ -59,7 +59,7 @@ function set_app_environment_vars() {
 [[ -d "${HYPERDRIVE_INCLUDES}" ]] || mkdir -p "${HYPERDRIVE_INCLUDES}"
 local IFS=$'\n'; local FILE
 for FILE in $(find "${HYPERDRIVE_INCLUDES}" -type f); do
-  eval $(awk '/^[ \t]*export[ \t]+/ {print $0}' "${FILE}")
+  eval $(exportStatements.awk "${FILE}")
 done
 }
 set_app_environment_vars

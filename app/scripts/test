@@ -13,6 +13,5 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-ORDER=codevariety
-REPO="${HYPERDRIVE_ORDER_REPOS}/$(orderFromHqPath.awk <<< "${ORDER}")"
-echo "REPO:$REPO"
+apply_order_exports /data/hyperdrive/headquarters/codevariety/orders
+env | sort | grep -i publish
