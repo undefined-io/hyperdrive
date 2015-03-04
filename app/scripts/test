@@ -13,7 +13,6 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-ACTIVE_ORDERS="$(orders_list | awk -F/ '{print $(NF-1)}')"
-ORDER_REPOS="$(local_order_repos | awk -F/ '{print $(NF)}')"
-
-grep -Fvxf <(echo -n "${ACTIVE_ORDERS}") <(echo -n "${ORDER_REPOS}") | sed -e "s/^/${HYPERDRIVE_ORDER_REPOS//\//\\\/}\//g"
+ORDER=codevariety
+REPO="${HYPERDRIVE_ORDER_REPOS}/$(orderFromHqPath.awk <<< "${ORDER}")"
+echo "REPO:$REPO"

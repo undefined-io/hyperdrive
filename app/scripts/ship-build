@@ -36,7 +36,7 @@ HULL_NAME="hyperdrive-${order_name}"
 
 # assert that autodeploy was provided
 ORDERS="${HYPERDRIVE_HQ_ROOT}/${order_name}/orders"
-REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${ORDERS}" | tail -1)"
+REPO="$(orderAutodeploy.awk "${ORDERS}")"
 if [[ -z "${REPO:-}" ]]; then
   fatal "missing 'autodeploy' for order '${order_name}'"
 fi

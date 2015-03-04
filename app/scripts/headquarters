@@ -39,8 +39,8 @@ if [[ "${sync}" == "true" ]]; then
 
   # pull new and existing order details
   for ORDER in $(orders_list); do
-    LOCAL_ORDER_REPO="${HYPERDRIVE_ORDER_REPOS}/$(awk -F/ '{print $(NF-1)}' <<< "${ORDER}")"
-    REMOTE_ORDER_REPO="$(awk '/^autodeploy[ \t]*/ {print $2}' "${ORDER}" | tail -1)"
+    LOCAL_ORDER_REPO="${HYPERDRIVE_ORDER_REPOS}/$(orderFromHqPath.awk <<< "${ORDER}")"
+    REMOTE_ORDER_REPO="$(orderAutodeploy.awk "${ORDER}")"
     # TODO: Need error checking here for empty vars
     # TODO: Error check to handle invalid service repos, probably skip the update, but need to log it somehow
     info "synching '${LOCAL_ORDER_REPO}'..."

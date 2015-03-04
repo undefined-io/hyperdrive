@@ -13,6 +13,10 @@ HYPERDRIVE_NO_PARALLEL=("install" "test" "ship-build")
 
 source "${SCRIPT_DIR}/env.source"
 
+# add the awk scripts to the path
+# TODO: should other hyperdrive scripts be in the path as well, if so, do we need to rename them?
+PATH+=":${SCRIPT_DIR}/awk:"
+
 # source support scripts
 source "${SCRIPT_DIR}/lib/logging.source"
 source "${SCRIPT_DIR}/lib/git.source"
