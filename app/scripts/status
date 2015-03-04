@@ -34,6 +34,7 @@ while IFS=$'\n' read ROW; do
     RUNNING) echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT:-} ==> ${PUBLISH_PORT:-}'" ;;
     STOPPED) echo "lxc  : ${C_RED}${NAME}${C_RESET} [${STATE}] (${IP})" ;;
   esac
+  echo "       ${C_BBLACK}- hosts/root: ${PUBLISH_HOST} - ${PUBLISH_ROOT}${C_RESET}"
   MSG="$(< "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/.msg")"
   echo "       ${C_BBLACK}- ${MSG}${C_RESET}"
 done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^hyperdrive" | tail -n +3)"
