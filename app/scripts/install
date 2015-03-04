@@ -78,10 +78,12 @@ else
   apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages") 2>&1 | timestamped "${SCRIPT_NAME}"
 
   # stop nginx, because apt-get package installs it turned on.
+  # TODO: needs to be fixed
   /etc/init.d/nginx stop
   find /etc/rc*/ -iname "*nginx" | xargs -I {} rm "{}"
 
   # hyperdrive is using bash for everything
+  # TODO: is this still needed now that upstart job logic is all in bash files?
   ln -f /bin/bash /bin/sh
 fi
 }

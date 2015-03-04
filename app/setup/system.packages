@@ -1,6 +1,7 @@
 apt-transport-https
 curl
 g++
+gawk
 git
 lxc
 make

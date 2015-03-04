@@ -54,7 +54,7 @@ fi
 if [[ -z "${REMOTE_BRANCH}" ]]; then
   trace "no branch provided, so looking up the default branch in the repo"
   # extract the SHA of the HEAD tag
-  local REMOTE_HEAD_SHA="$(git ls-remote "${REMOTE_REPO}" | awk '$2 == "HEAD" {print $1}')"
+  local REMOTE_HEAD_SHA="$(git ls-remote "${REMOTE_REPO}" | gitLsRemoteHeadSha.awk)"
   # find a branch/tag of the HEAD SHA
   local REMOTE_HEAD_BRANCH="$(git ls-remote "${REMOTE_REPO}" \
     | awk -v SHA="${REMOTE_HEAD_SHA}" '$1 ~ SHA && $2 != "HEAD" {print $2}' | head -n 1)"
