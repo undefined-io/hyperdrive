@@ -42,6 +42,5 @@ initctl list | grep -e "^hyperdrive" | awk '{print "job  :",$0}'
 
 if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
   find "${HYPERDRIVE_HQ_ROOT}" -name "orders" -printf "%P " -exec \
-    bash -c 'grep -e '^autodeploy' {} | tail -1 | awk '"'"'{print "order:",$2}'"'" \; \
-    | awk '{gsub(/\/orders$/, "", $1); print $2,"["$1"]",$3}'
+    bash -c 'grep -e '^autodeploy' {} | tail -1 | awk '"'"'{print "order:",$2}'"'" \; | statusFormatOrders.awk
 fi

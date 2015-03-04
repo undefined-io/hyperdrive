@@ -13,6 +13,9 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-export REMOTE_HEAD_SHA=ff71e95489d111f3d30f296e9b4fd8e4f378a955
-TEST="$(git ls-remote "https://github.com/undefined-io/hyperdrive")"
-gitLsRemoteBranchBySha.gawk <<< "${TEST}"
+echo 
+find "${HYPERDRIVE_HQ_ROOT}" -name "orders" -printf "%P " -exec bash -c 'grep -e '^autodeploy' {} | tail -1 | awk '"'"'{print "order:",$2}'"'" \; 
+echo
+find "${HYPERDRIVE_HQ_ROOT}" -name "orders" -printf "%P " -exec bash -c 'grep -e '^autodeploy' {} | tail -1 | awk '"'"'{print "order:",$2}'"'" \; | awk '{gsub(/\/orders$/, "", $1); print $2,"["$1"]",$3}'
+echo
+find "${HYPERDRIVE_HQ_ROOT}" -name "orders" -printf "%P " -exec bash -c 'grep -e '^autodeploy' {} | tail -1 | awk '"'"'{print "order:",$2}'"'" \; | statusFormatOrders.awk 
