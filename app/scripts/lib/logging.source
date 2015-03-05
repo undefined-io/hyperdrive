@@ -2,6 +2,10 @@
 # TODO: tput setaf?
 # Library of colorized logging functions
 
+function stripColors () {
+  sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
+}
+
 # NOTE: to capture all GIT output, use --progress flag with git
 function timestamped () { 
 local LABEL="${1:-}"
@@ -10,7 +14,9 @@ local COLOR="${2:-}"
 local RESET="$(echo -e "\033[0m")"
 [[ -n "${LABEL}" ]] && LABEL+=": "
 [[ -n "${COLOR}" ]] && COLOR="$(echo -e "\E[${COLOR}m\033[1m")"
-sed 's/[\n\r]/\n/g' | sed "s/^/$(date +"%y-%m-%d %H:%M:%S") ${COLOR}${LABEL}/g" | sed "s/$/${RESET}/g" | tee -a "${HYPERDRIVE_LOG_ROOT:-/var/log/hyperdrive}/main.log"; 
+# note: tee is using bash's ability to use shell commands as files
+sed -e 's/[\n\r]/\n/g' -e "s/^/$(date +"%y-%m-%d %H:%M:%S") ${COLOR}${LABEL}/g" -e "s/$/${RESET}/g" \
+  | tee >(stripColors >> "${HYPERDRIVE_LOG_ROOT:-/var/log/hyperdrive}/main.log"); 
 }
 
 function fatal() { echo -e "$*" | timestamped "${SCRIPT_NAME}" 31 1>&2; exit 255; }
