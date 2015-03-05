@@ -70,12 +70,12 @@ function install_required_packages() {
 if [ -f "${HYPERDRIVE_ROOT}/.system" ]; then
   warn "base apt packages already installed. delete ${HYPERDRIVE_ROOT}/.system to force reinstall"
 else
-  info "starting install of hyperdrive dependencies"
-  apt-get -y install software-properties-common python-software-properties 2>&1 | timestamped "${SCRIPT_NAME}"
-  add-apt-repository -y ppa:nginx/stable 2>&1 | timestamped "${SCRIPT_NAME}"
-  apt-get -y update 2>&1 | timestamped "${SCRIPT_NAME}"
-  apt-get -y upgrade 2>&1 | timestamped "${SCRIPT_NAME}"
-  apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages") 2>&1 | timestamped "${SCRIPT_NAME}"
+  info "starting install of hyperdrive dependencies (this might take a few minutes)"
+  apt-get -y install software-properties-common python-software-properties 2>&1 | timestamped "${SCRIPT_NAME}" > /dev/null
+  add-apt-repository -y ppa:nginx/stable 2>&1 | timestamped "${SCRIPT_NAME}" > /dev/null
+  apt-get -y update 2>&1 | timestamped "${SCRIPT_NAME}" > /dev/null
+  apt-get -y upgrade 2>&1 | timestamped "${SCRIPT_NAME}" > /dev/null
+  apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages") 2>&1 | timestamped "${SCRIPT_NAME}" > /dev/null
 
   # stop nginx, because apt-get package installs it turned on.
   # TODO: needs to be fixed
