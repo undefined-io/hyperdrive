@@ -28,7 +28,7 @@ if ! hull_exists "${HULL_NAME}"; then
     lxc-create --name="hyperdrive" --template="ubuntu" > "${HYPERDRIVE_DATA_ROOT}/lxc-hyperdrive-create.log" 2>&1
   ) 200>"${HYPERDRIVE_LOCKS}/lxc"
 fi
-info "'${HULL_NAME}' hull ready"
+trace "'${HULL_NAME}' hull ready"
 
 source "${SCRIPT_DIR}/lib/hull.kit"
 
@@ -54,4 +54,4 @@ if ! hull_exists "${HULL_NAME}"; then
   set +o xtrace
   hull_close
 fi
-info "'${HULL_NAME}' hull ready"
+trace "'${HULL_NAME}' hull ready"

@@ -4,7 +4,7 @@ function hull_open () {
 rm -rf "${HULL_ROOT_DIR}"
 (
   flock -x 200
-  lxc-clone --snapshot -B overlayfs -o "${HULL_BASE}" -n "${HULL_NAME}"
+  lxc-clone --snapshot -B overlayfs -o "${HULL_BASE}" -n "${HULL_NAME}" | timestamped "${SCRIPT_NAME}" 
 ) 200>"${HYPERDRIVE_LOCKS}/lxc"
 local LXC_FS="/var/lib/lxc/${HULL_NAME}"
 local HULL_FS="${HULL_ROOT_DIR}/filesystem"
