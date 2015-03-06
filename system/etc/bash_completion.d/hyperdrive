@@ -16,13 +16,13 @@ _hyperdrive_headquarters() {
 _hyperdrive_assignment() {
   if [[ "${cword}" -eq 3 ]]; then
     case "${COMP_WORDS[2]}" in
-      start|stop)
+      commence|stop)
         compgen -W "$(_hyperdrive_ship_list)" -- "${cur}"
         return 0
       ;;
     esac
   elif [[ "${COMP_CWORD}" -eq 2 ]]; then
-    compgen -W "start stop" -- "${cur}"
+    compgen -W "commence stop" -- "${cur}"
     return 0
   fi
 } &&

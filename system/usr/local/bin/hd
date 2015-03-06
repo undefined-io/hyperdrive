@@ -19,7 +19,7 @@ case "${COMMAND}" in
     COMMAND="${1}"
     shift
     case "${COMMAND}" in
-      start)
+      commence)
         [[ -n "${1}" ]] && start hyperdrive-assignment name="${1}"
         ;;
       stop)
