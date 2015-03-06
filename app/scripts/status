@@ -42,6 +42,5 @@ done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^hyperdrive" | tail -
 initctl list | statusHyperdriveJobs.awk
 
 if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
-  find "${HYPERDRIVE_HQ_ROOT}" -name "orders" -printf "%P " -exec \
-    bash -c 'grep -e '^autodeploy' {} | tail -1 | awk '"'"'{print "order:",$2}'"'" \; | statusFormatOrders.awk
+  find "${HYPERDRIVE_HQ_ROOT}" -name "orders" -printf "%P " -exec bash -c 'orderAutodeploy.awk {}' \; | statusFormatOrders.awk
 fi
