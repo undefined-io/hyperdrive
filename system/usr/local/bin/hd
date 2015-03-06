@@ -15,14 +15,20 @@ case "${COMMAND}" in
   decommission)
     [[ -n "${1}" ]] && lxc-destroy -f --name="${1}"
     ;;
-  start-assignment)
-    [[ -n "${1}" ]] && start hyperdrive-assignment name="${1}"
+  assignment)
+    COMMAND="${1}"
+    shift
+    case "${COMMAND}" in
+      start)
+        [[ -n "${1}" ]] && start hyperdrive-assignment name="${1}"
+        ;;
+      stop)
+        [[ -n "${1}" ]] && stop hyperdrive-assignment name="${1}"
+        ;;
+    esac
     ;;
-  stop-assignment)
-    [[ -n "${1}" ]] && stop hyperdrive-assignment name="${1}"
-    ;;
-  launch)
-    [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-launch" "${1}"
+  join-formation)
+    [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-join-formation" "${1}"
     ;;
   assemble)
     # TODO: Need to add an option here for this to not require params so hull-build can execute

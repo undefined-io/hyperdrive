@@ -21,6 +21,12 @@ _hyperdrive_headquarters() {
     return 0
   fi
 } &&
+_hyperdrive_assignment() {
+  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+    compgen -W "start stop" -- "${cur}"
+    return 0
+  fi
+} &&
 _hyperdrive()
 {
   COMPREPLY=()
@@ -28,7 +34,11 @@ _hyperdrive()
 
   if [[ "${COMP_CWORD}" -eq 2 ]]; then
     case "${COMP_WORDS[1]}" in
-      *-assignment|pilot|decommission|launch)
+      assignment)
+        COMPREPLY=( $(compgen -W "$(_hyperdrive_assignment)" -- "${COMP_WORDS[2]}") )
+        return 0
+      ;;
+      pilot|decommission|join-formation)
         COMPREPLY=( $(compgen -W "$(_hyperdrive_ship_list)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
@@ -42,7 +52,7 @@ _hyperdrive()
       ;;
     esac
   elif [[ "${COMP_CWORD}" -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "assemble decommission headquarters launch pilot start-assignment status stop-assignment" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "assemble assignment decommission headquarters join-formation pilot status" -- ${cur}) )
     return 0
   fi
   return 0

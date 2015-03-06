@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ### Usage:
-###   ship-launch <hull_name> 
+###   ship-join-formation <hull_name> 
 ### Options:
 ###   --help
 
@@ -71,7 +71,7 @@ server {
 }
 EOF
 
-info "ship '${hull_name}' launched"
+info "ship '${hull_name}' joined formation"
 
 else
 
