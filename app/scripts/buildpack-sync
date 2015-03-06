@@ -14,9 +14,8 @@ source "${SCRIPT_DIR}/main.source"
 
 # NOTE: The assumption here for now is that the buildpacks are in GIT repos on GitHub
 while read REPO; do
-  # TODO: Need to make sure github does not use double byte chars and if they do
-  # create a safe filename from the repo
-  BUILDPACK="$(safe_repo_name "${REPO}")"
+  # TODO: Need to make sure github does not use double byte chars and if they do create a safe filename from the repo
+  BUILDPACK="$(makeSafeRepoPath <<< "${REPO}")"
   BUILDPACK_PATH="${HYPERDRIVE_BUILDPACK_ROOT}/${BUILDPACK}"
   if [[ "${force}" == "true" || ! -d "${BUILDPACK_PATH}" ]]; then
     "${SCRIPT_DIR}/git-sync" "${REPO}" "${BUILDPACK_PATH}" || true

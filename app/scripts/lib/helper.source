@@ -50,12 +50,6 @@ function apply_order_exports () {
   export PUBLISH_PORT="${PUBLISH_PORT:-${PORT}}"
 }
 
-function safe_repo_name () {
-# https://github.com/undefined-io/hyperdrive#master > undefined-io..hyperdrive
-local REPO="${1}"
-awk -F'[/]' '{print $(NF-1) ".." $(NF)}' <<< "${REPO}" | sed 's/#/../g'
-}
-
 function set_base_container_name {
 if [[ ! -f "${HYPERDRIVE_BASE_HULL_NAME}" ]];
 then
