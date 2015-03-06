@@ -71,7 +71,7 @@ server {
 }
 EOF
 
-info "ship '${hull_name}' launched, ready to engage"
+info "ship '${hull_name}' launched"
 
 else
 

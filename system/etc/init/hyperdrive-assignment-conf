@@ -1,7 +1,7 @@
 # vi: set ft=upstart ts=2 et sw=2 sts=2 :
 description "Start up a ships system and keep them running"
 
-env SCRIPT_NAME="hyperdrive-engage-ship.conf"
+env SCRIPT_NAME="hyperdrive-assignment.conf"
 
 instance "${name}"
 
@@ -34,5 +34,5 @@ script
   SLEEP="$(find /tmp -iname "${PATTERN}_*" -cmin -1 -printf a | wc -c)"
   sleep ${SLEEP}
 
-  exec "${HYPERDRIVE_SCRIPTS}/ship-engage" "${name}"
+  exec "${HYPERDRIVE_SCRIPTS}/ship-commence-assignment" "${name}"
 end script

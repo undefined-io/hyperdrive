@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ### Usage:
-###   ship-engage <hull_name>
+###   ship-commence-assignment <hull_name>
 ### Options:
 ###   --help
 ###   <hull_name>    name of the ship

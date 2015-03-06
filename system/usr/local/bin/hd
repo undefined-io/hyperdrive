@@ -15,8 +15,11 @@ case "${COMMAND}" in
   decommission)
     [[ -n "${1}" ]] && lxc-destroy -f --name="${1}"
     ;;
-  engage)
-    [[ -n "${1}" ]] && start hyperdrive-engage-ship name="${1}"
+  start-assignment)
+    [[ -n "${1}" ]] && start hyperdrive-assignment name="${1}"
+    ;;
+  stop-assignment)
+    [[ -n "${1}" ]] && stop hyperdrive-assignment name="${1}"
     ;;
   launch)
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-launch" "${1}"
