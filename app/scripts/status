@@ -39,7 +39,7 @@ while IFS=$'\n' read ROW; do
   echo "       ${C_BBLACK}- ${MSG}${C_RESET}"
 done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^hyperdrive" | tail -n +3)"
 
-initctl list | grep -e "^hyperdrive" | awk '{print "job  :",$0}'
+initctl list | statusHyperdriveJobs.awk
 
 if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
   find "${HYPERDRIVE_HQ_ROOT}" -name "orders" -printf "%P " -exec \
