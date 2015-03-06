@@ -30,8 +30,8 @@ find "${HYPERDRIVE_ORDER_REPOS}" -mindepth 1 -maxdepth 1 -type d -printf "%p\n";
 }
 
 function stale_order_repos () {
-local ACTIVE_ORDERS="$(orders_list | awk -F/ '{print $(NF-1)}')"
-local ORDER_REPOS="$(local_order_repos | awk -F/ '{print $(NF)}')"
+local ACTIVE_ORDERS="$(orders_list | orderFromHqPath.awk)"
+local ORDER_REPOS="$(local_order_repos | orderFromRepoPath.awk)"
 
 grep -Fvxf <(echo -n "${ACTIVE_ORDERS}") <(echo -n "${ORDER_REPOS}")
 }
