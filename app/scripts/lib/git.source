@@ -11,8 +11,7 @@ if [[ "${remote%#*}" != "${remote%%#*}" ]]; then
   return 1
 fi
 
-REMOTE_REPO="$(echo "${REMOTE//$'\r'/}" | awk -F '#' '{print $1;}')"
-REMOTE_BRANCH="$(echo "${REMOTE//$'\r'/}" | awk -F '#' '{print $2;}')"
+read REMOTE_REPO REMOTE_BRANCH <<< $(parseRepoAndBranch.awk <<< "$REMOTE")
 
 # if the repo is local, prefix file:/// to treat it the same as a remote
 # (local repo clones would include non-commited changes and are undesired)
