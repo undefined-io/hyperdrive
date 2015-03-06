@@ -30,7 +30,7 @@ case "${COMMAND}" in
   join-formation)
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-join-formation" "${1}"
     ;;
-  assemble)
+  build)
     # TODO: Need to add an option here for this to not require params so hull-build can execute
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-build" name "${1}" --running
     ;;

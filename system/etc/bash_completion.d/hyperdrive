@@ -44,7 +44,7 @@ _hyperdrive()
         COMPREPLY=( $(compgen -W "$(_hyperdrive_ship_list)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
-      assemble)
+      build)
         COMPREPLY=( $(compgen -W "$(_hyperdrive_order_list)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
@@ -55,7 +55,7 @@ _hyperdrive()
     esac
   fi
   if [[ "${COMP_CWORD}" -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "assemble assignment decommission headquarters join-formation pilot status" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "assignment build decommission headquarters join-formation pilot status" -- ${cur}) )
     return 0
   fi
   return 0
