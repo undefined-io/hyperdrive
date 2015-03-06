@@ -16,7 +16,7 @@ but has since changed significantly in approach and implementation.
 
 # Requirements / OS Support
 
-Currently Hyperdrive is only supported on Ubuntu 13.10 and higher.
+Currently Hyperdrive is only supported on Ubuntu 13.10 or higher.
 
 # Overview
 
@@ -108,6 +108,35 @@ start hyperdrive-captain-obtain-orders
 This will make the captain check with the configured HQ every minute, to see if any updates or new
 orders are available.
 
+## Build a Ship
+
+Once the squadron has synced up with the HQ and the latest orders have been pulled, you can start
+building ships.  Each set of orders comes with an assignment which determines the type of ship that
+is built.
+
+```bash
+# to build a ship, provide the name of the orders that will be used as a blueprint
+hd build <order-name>
+```
+
+## Start the Ship's Assignment
+
+Now that you have a ship, it's time to start the ship's assignment.
+
+```bash
+# Note: hd allows tab completion, for all commands and ship names
+hd assignment start hyperdrive-<order-name>-xxxxxxxx-xxxxxxxx
+```
+
+## The Ship Joins The Squadron Active Formation
+
+Now that the ship has started its assignment, it's time to join the main squadron's formation
+so that the ship can participate as part of our fleet.
+
+```bash
+hd join-formation hyperdrive-<order-name>-xxxxxxxx-xxxxxxxx
+```
+
 # Where Hyperdrive Lives
 
 These are the default locations. **NOTE** Many of these locations are still changing during the
@@ -170,6 +199,14 @@ Hyperdrive related stuff.
 
 If the `base_hull_name.info` file is missing, a new base hull will be created, and used
 going forward.
+
+## /var/log/hyperdrive
+
+```
+`-- main.log
+```
+
+- **/main.log** - The master log file, that captures all hyperdrive related messages
 
 # Orders
 

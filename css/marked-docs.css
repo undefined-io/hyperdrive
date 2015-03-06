@@ -9,6 +9,50 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   color: currentcolor;
   border-bottom-color: currentcolor;
 }
+.content {
+  counter-reset: main-h1 main-h2 main-h3 main-h4 main-h5 main-h6;
+  padding: 10px 10px 0 0;
+  border-right: 1px solid #ddd;
+}
+.content h1 {
+  counter-reset: main-h2 main-h3 main-h4 main-h5 main-h6;
+}
+.content h1:before {
+  counter-increment: main-h1;
+  content: counter(main-h1) ") ";
+}
+.content h2 {
+  counter-reset: main-h3 main-h4 main-h5 main-h6;
+}
+.content h2:before {
+  counter-increment: main-h2;
+  content: counter(main-h1) "." counter(main-h2) ") ";
+}
+.content h3 {
+  counter-reset: main-h4 main-h5 main-h6;
+}
+.content h3:before {
+  counter-increment: main-h3;
+  content: counter(main-h1) "." counter(main-h2) "." counter(main-h3)  ") ";
+}
+.content h4 {
+  counter-reset: main-h5 main-h6;
+}
+.content h4:before {
+  counter-increment: main-h4;
+  content: counter(main-h1) "." counter(main-h2) "." counter(main-h3) "." counter(main-h4) ") ";
+}
+.content h5 {
+  counter-reset: main-h6;
+}
+.content h5:before {
+  counter-increment: main-h5;
+  content: counter(main-h1) "." counter(main-h2) "." counter(main-h3) "." counter(main-h4) "." counter(main-h5) ") ";
+}
+.content h6:before {
+  counter-increment: main-h6;
+  content: counter(main-h1) "." counter(main-h2) "." counter(main-h3) "." counter(main-h4) "." counter(main-h5) "." counter(main-h6) ") ";
+}
 .toc {
   counter-reset: h1 h2 h3 h4 h5 h6;
   padding: 10px 10px 0 0;
