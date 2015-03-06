@@ -8,21 +8,20 @@ _hyperdrive_order_list() {
   find "/data/hyperdrive/headquarters/" -mindepth 2 -maxdepth 2 -type f -iname "orders" -printf "%p\n" | awk -F/ '{print $(NF-1)}'
 } &&
 _hyperdrive_headquarters() {
-#  if [[ "${COMP_CWORD}" -eq 3 ]]; then
-#    case "${COMP_WORDS[2]}" in
-#      set)
-#        compgen -W "$(_hyperdrive_ship_status)" -- "${COMP_WORDS[3]}"
-#        return 0
-#      ;;
-#    esac
-#  elif [[ "${COMP_CWORD}" -eq 2 ]]; then
   if [[ "${COMP_CWORD}" -eq 2 ]]; then
     compgen -W "set" -- "${cur}"
     return 0
   fi
 } &&
 _hyperdrive_assignment() {
-  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+  if [[ "${cword}" -eq 3 ]]; then
+    case "${COMP_WORDS[2]}" in
+      start|stop)
+        compgen -W "$(_hyperdrive_ship_list)" -- "${cur}"
+        return 0
+      ;;
+    esac
+  elif [[ "${COMP_CWORD}" -eq 2 ]]; then
     compgen -W "start stop" -- "${cur}"
     return 0
   fi
@@ -30,14 +29,17 @@ _hyperdrive_assignment() {
 _hyperdrive()
 {
   COMPREPLY=()
-  _get_comp_words_by_ref cur prev
-
-  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+  _get_comp_words_by_ref cur prev words cword
+  if [[ "${COMP_CWORD}" -ge 2 ]]; then
     case "${COMP_WORDS[1]}" in
       assignment)
-        COMPREPLY=( $(compgen -W "$(_hyperdrive_assignment)" -- "${COMP_WORDS[2]}") )
+        COMPREPLY=( $(compgen -W "$(_hyperdrive_assignment)" -- "${cur}") )
         return 0
       ;;
+    esac
+  fi 
+  if [[ "${COMP_CWORD}" -eq 2 ]]; then
+    case "${COMP_WORDS[1]}" in
       pilot|decommission|join-formation)
         COMPREPLY=( $(compgen -W "$(_hyperdrive_ship_list)" -- "${COMP_WORDS[2]}") )
         return 0
@@ -51,7 +53,8 @@ _hyperdrive()
         return 0
       ;;
     esac
-  elif [[ "${COMP_CWORD}" -eq 1 ]]; then
+  fi
+  if [[ "${COMP_CWORD}" -eq 1 ]]; then
     COMPREPLY=( $(compgen -W "assemble assignment decommission headquarters join-formation pilot status" -- ${cur}) )
     return 0
   fi
