@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+### Usage:
+###   assignment-commence <order>
+### Options:
+###   --help
+###
+### ship commences with operation based on specified order
+
+#--HEAD--
+SCRIPT="$(readlink -e -- "${0}")"
+SCRIPT_NAME="$(basename "${SCRIPT}")"
+SCRIPT_DIR="$(dirname "${SCRIPT}")"
+source "${SCRIPT_DIR}/main.source"
+#--/HEAD--
+
+start hyperdrive-assignment name="${order}"

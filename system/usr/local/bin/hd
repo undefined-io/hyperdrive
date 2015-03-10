@@ -20,10 +20,10 @@ case "${COMMAND}" in
     shift
     case "${COMMAND}" in
       commence)
-        [[ -n "${1}" ]] && start hyperdrive-assignment name="${1}"
+        [[ -n "${1}" ]] && "${SCRIPT_DIR}/assignment-commence" "${1}"
         ;;
       stop)
-        [[ -n "${1}" ]] && stop hyperdrive-assignment name="${1}"
+        [[ -n "${1}" ]] && "${SCRIPT_DIR}/assignment-stop" "${1}"
         ;;
     esac
     ;;
