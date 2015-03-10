@@ -4,6 +4,7 @@
 ### Options:
 ###   --help
 ###
+### ship stops current assignment and goes idle
 
 #--HEAD--
 SCRIPT="$(readlink -e -- "${0}")"
@@ -12,4 +13,4 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-stop hyperdrive-assignment name="${order}"
+stop hyperdrive-assignment name="${order}" 2>&1 | timestamped "${SCRIPT_NAME}"

@@ -13,4 +13,4 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-start hyperdrive-assignment name="${order}"
+start hyperdrive-assignment name="${order}" 2>&1 | timestamped "${SCRIPT_NAME}"
