@@ -5,10 +5,11 @@ function log() {
 echo "$(date +"%y-%m-%d %H:%M:%S") : ${1}"
 }
 
-HYPERDRIVE_ROOT="${1:-/var/hyperdrive}"
-HYPERDRIVE_DATA_ROOT="${2:-/data/hyperdrive}"
-HYPERDRIVE_GIT="${3:-https://github.com/undefined-io/hyperdrive}"
-HYPERDRIVE_BRANCH="${4:-master}"
+HYPERDRIVE_DATA_ROOT="${1:-/data/hyperdrive}"
+# TODO: can we use the fancy git parsing stuff here already?
+HYPERDRIVE_GIT="${2:-https://github.com/undefined-io/hyperdrive}"
+HYPERDRIVE_BRANCH="${3:-master}"
+HYPERDRIVE_ROOT="/var/hyperdrive"
 HYPERDRIVE_LOCAL="${HYPERDRIVE_DATA_ROOT}/git"
 HYPERDRIVE_CONFIG_ROOT="/etc/hyperdrive"
 HYPERDRIVE_LOG_ROOT="/var/log/hyperdrive"
