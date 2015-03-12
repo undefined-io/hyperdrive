@@ -13,4 +13,4 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-lxc-attach --name="${ship_name}" -- sudo -H -u ubuntu -i bash
+lxc-attach --name="${ship_name}" -- su - ubuntu
