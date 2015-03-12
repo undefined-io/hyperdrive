@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ### Usage:
-###   ship-pilot <ship_name>
+###   ship-pilot [<ship_name>]
 ### Options:
 ###   --help
 ###
@@ -13,4 +13,12 @@ SCRIPT_DIR="$(dirname "${SCRIPT}")"
 source "${SCRIPT_DIR}/main.source"
 #--/HEAD--
 
-lxc-attach --name="${ship_name}" -- su - ubuntu
+
+if [[ -z "${ship_name}" ]]; then
+  SELECTION="$(lxc-ls --running -1 "^hyperdrive-.+-[\w]{8}-[\w]{7}$" | percol)"
+  if [[ -n "${SELECTION}" ]]; then
+    lxc-attach --name="${SELECTION}" -- su - ubuntu
+  fi
+else
+  lxc-attach --name="${ship_name}" -- su - ubuntu
+fi

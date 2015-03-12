@@ -9,8 +9,7 @@ source "/etc/hyperdrive/main.conf" || exit 0
 SCRIPT_DIR="${HYPERDRIVE_ROOT}/scripts"
 case "${COMMAND}" in
   pilot)
-    # attaches to lxc logged in as user ubuntu
-    [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-pilot" "${1}"
+    "${SCRIPT_DIR}/ship-pilot" "${1}"
     ;;
   decommission)
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-dismantle" "${1}"
