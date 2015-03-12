@@ -76,6 +76,7 @@ else
   apt-get -y update 2>&1 | timestamped "${SCRIPT_NAME}" > /dev/null
   apt-get -y upgrade 2>&1 | timestamped "${SCRIPT_NAME}" > /dev/null
   apt-get -y install --force-yes $(< "${HYPERDRIVE_ROOT}/setup/system.packages") 2>&1 | timestamped "${SCRIPT_NAME}" > /dev/null
+  pip install percol | timestamped "${SCRIPT_NAME}" > /dev/null
 
   # stop nginx, because apt-get package installs it turned on.
   # TODO: needs to be fixed
