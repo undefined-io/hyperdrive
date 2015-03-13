@@ -1,10 +1,10 @@
 #!/var/hyperdrive/scripts/overseer
 # vim: set ft=sh :
 ### Usage:
-###   assignment-commence <order>
+###   assignment-commence <ship_name>
 ### Options:
 ###   --help
 ###
-### ship commences with operation based on specified order
+### ship commences with operation
 
-start hyperdrive-assignment name="${order}" 2>&1 | timestamped "${SCRIPT_NAME}"
+start hyperdrive-assignment name="${ship_name}" 2>&1 | timestamped "${SCRIPT_NAME}"

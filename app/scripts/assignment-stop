@@ -1,10 +1,10 @@
 #!/var/hyperdrive/scripts/overseer
 # vim: set ft=sh :
 ### Usage:
-###   assignment-stop <order>
+###   assignment-stop <ship_name>
 ### Options:
 ###   --help
 ###
 ### ship stops current assignment and goes idle
 
-stop hyperdrive-assignment name="${order}" 2>&1 | timestamped "${SCRIPT_NAME}"
+stop hyperdrive-assignment name="${ship_name}" 2>&1 | timestamped "${SCRIPT_NAME}"
