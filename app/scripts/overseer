@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+OVERSEER_SCRIPT="$(readlink -e -- "${0}")"
+if [[ "$(basename ${OVERSEER_SCRIPT})" == 'overseer' && -z "${1}" ]]; then
+  echo "cannot call overseer directly"
+  exit
+fi
+
+set -o allexport
+SCRIPT_NAME="$(basename ${1})"
+
+shift
+
+# actual directory of the overseer
+SCRIPT_DIR="$(dirname "${OVERSEER_SCRIPT}")"
+SCRIPT_FULL_PATH="${SCRIPT_DIR}/${SCRIPT_NAME}"
+
+source "${SCRIPT_DIR}/main.source"
+set +o allexport
+
+bash "${SCRIPT_FULL_PATH}" $@

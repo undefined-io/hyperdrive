@@ -1,16 +1,10 @@
-#!/usr/bin/env bash
+#!/var/hyperdrive/scripts/overseer
+# vim: set ft=sh :
 ### Usage:
 ###   buildpack-sync [--force]
 ### Options:
 ###   --help
 ###   --force   force a sync, even if there is a local buildpack
-
-#--HEAD--
-SCRIPT="$(readlink -e -- "${0}")"
-SCRIPT_NAME="$(basename "${SCRIPT}")"
-SCRIPT_DIR="$(dirname "${SCRIPT}")"
-source "${SCRIPT_DIR}/main.source"
-#--/HEAD--
 
 # NOTE: The assumption here for now is that the buildpacks are in GIT repos on GitHub
 while read REPO; do

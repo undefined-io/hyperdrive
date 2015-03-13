@@ -72,6 +72,7 @@ return 0
 
 ## order_sha ###################################################################
 
+# TODO: this name is incredible confusing the way it is used
 function order_sha () {
   local DIRECTORY="${1}"
   local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"

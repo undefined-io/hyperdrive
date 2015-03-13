@@ -51,8 +51,8 @@ fi
 # TODO: need to address this, could be lower than current
 ulimit -n 4096
 
-if [[ "${#BASH_SOURCE[@]}" -gt "0" && -f "${BASH_SOURCE[1]}" ]]; then
-  eval "$(${SCRIPT_DIR}/docopts -h "$(grep "^### " "${BASH_SOURCE[1]}" | cut -c 5-)" -V "${HYPERDRIVE_VERSION}" : "$@")"
+if [[ "${#BASH_SOURCE[@]}" -gt "0" && -f "${SCRIPT_FULL_PATH}" ]]; then
+  eval "$(${SCRIPT_DIR}/docopts -h "$(grep "^### " "${SCRIPT_FULL_PATH}" | cut -c 5-)" -V "${HYPERDRIVE_VERSION}" : "$@")"
 fi
 
 function set_app_environment_vars() {

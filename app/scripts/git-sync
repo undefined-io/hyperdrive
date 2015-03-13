@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/var/hyperdrive/scripts/overseer
+# vim: set ft=sh :
 ### Usage:
 ###    git-sync <remote> <local>
 ### --help
@@ -10,13 +11,6 @@
 ###
 ### NOTE: When using this script w/o checking for these error codes, make sure to postfix it with || true
 ###       to prevent the script not detecting a change to be considered script failure
-
-#--HEAD--
-SCRIPT="$(readlink -e -- "${0}")"
-SCRIPT_NAME="$(basename "${SCRIPT}")"
-SCRIPT_DIR="$(dirname "${SCRIPT}")"
-source "${SCRIPT_DIR}/main.source"
-#--/HEAD--
 
 if ! parse_git_locator "${remote}"; then exit 1; fi
 if [[ -L "${local}" || -f "${local}" ]]; then

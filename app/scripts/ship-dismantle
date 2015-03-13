@@ -1,0 +1,13 @@
+#!/var/hyperdrive/scripts/overseer
+# vim: set ft=sh :
+### Usage:
+###   ship-decommission <ship_name>
+### Options:
+###   --help
+###
+### dismantle a ship completely
+
+if hull_exists "${ship_name}"; then
+  info "dismantling '${ship_name}'"
+  lxc-destroy -f --name="${ship_name}"
+fi

@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/var/hyperdrive/scripts/overseer
+# vim: set ft=sh :
 ### Usage:
 ###   ship-build
 ###   ship-build name <order_name> [--running]
@@ -9,13 +10,6 @@
 ###     <order_name>   name of the orders
 ###
 ### Creates a ship for a specfic assignment in the provided orders
-
-#--HEAD--
-SCRIPT="$(readlink -e -- "${0}")"
-SCRIPT_NAME="$(basename "${SCRIPT}")"
-SCRIPT_DIR="$(dirname "${SCRIPT}")"
-source "${SCRIPT_DIR}/main.source"
-#--/HEAD--
 
 # TODO: figure out which log file the clone messages should go into
 # TODO: lxc-attach failures are not sending out any messages
@@ -55,6 +49,10 @@ HULL_BASE="$(< "${HYPERDRIVE_BASE_HULL_NAME}" )"
 HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 HULL_APP_DIR="${HULL_SHARE_DIR}/app"
+
+if [[ -z "${ORDERS_SHA}" ]]; then
+  fatal "something went wrong, unable to compute order sha"
+fi
 
 if ! hull_exists "${HULL_NAME}"; then
   info "'${HULL_NAME}' setup starting"

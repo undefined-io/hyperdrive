@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/var/hyperdrive/scripts/overseer
+# vim: set ft=sh :
 ### Usage:
 ###   git-clone <remote> <local> [--shallow] [--force]
 ### Options:
@@ -7,13 +8,6 @@
 ###   --force     required in order to re-clone over an existing repo
 ###
 ### Clone a GIT repo based on the repo#branch syntax for <remote>
-
-#--HEAD--
-SCRIPT="$(readlink -e -- "${0}")"
-SCRIPT_NAME="$(basename "${SCRIPT}")"
-SCRIPT_DIR="$(dirname "${SCRIPT}")"
-source "${SCRIPT_DIR}/main.source"
-#--/HEAD--
 
 if ! parse_git_locator "${remote}"; then exit 255; fi
 if [[ "${shallow}" == "true" ]]; then
