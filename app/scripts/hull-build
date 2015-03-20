@@ -16,10 +16,10 @@
 HULL_NAME="hyperdrive"
 if ! hull_exists "${HULL_NAME}"; then
   info "'${HULL_NAME}' hull will now be created..."
-  trace "log available at ${HYPERDRIVE_DATA_ROOT}/lxc-hyperdrive-create.log"
+  trace "log available at ${HYPERDRIVE_LOG_ROOT}/lxc-create_${HULL_NAME}.log"
   (
     flock -x 200
-    lxc-create --name="hyperdrive" --template="ubuntu" > "${HYPERDRIVE_DATA_ROOT}/lxc-hyperdrive-create.log" 2>&1
+    lxc-create --name="${HULL_NAME}" --template="ubuntu" > "${HYPERDRIVE_LOG_ROOT}/lxc-create_${HULL_NAME}.log" 2>&1
   ) 200>"${HYPERDRIVE_LOCKS}/lxc"
 fi
 trace "'${HULL_NAME}' hull ready"

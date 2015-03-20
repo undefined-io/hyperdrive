@@ -10,3 +10,5 @@
 info "test"
 echo SCRIPT_DIR: $SCRIPT_DIR
 echo SCRIPT_NAME: $SCRIPT_NAME
+
+declare -x -F

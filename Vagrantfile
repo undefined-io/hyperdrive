@@ -6,7 +6,7 @@ SQUADRON_NAME = ENV['HYPERDRIVE_SQUADRON_NAME'] || 'test.squadron'
 
 Vagrant::Config.run do |config|
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-  config.vm.provision :shell, :path => "bootstrap", :args => \"#{ENV['HYPERDRIVE_DATA_ROOT']}\" \"#{ENV['HYPERDRIVE_GIT']}\" \"#{ENV['HYPERDRIVE_BRANCH']}\""
+  config.vm.provision :shell, :path => "bootstrap", :args => "\"#{ENV['HYPERDRIVE_DATA_ROOT']}\" \"#{ENV['HYPERDRIVE_GIT']}\" \"#{ENV['HYPERDRIVE_BRANCH']}\""
 end
 
 Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
