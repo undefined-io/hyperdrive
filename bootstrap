@@ -10,10 +10,13 @@ HYPERDRIVE_DATA_ROOT="${1:-/data/hyperdrive}"
 HYPERDRIVE_GIT="${2:-https://github.com/undefined-io/hyperdrive}"
 HYPERDRIVE_BRANCH="${3:-master}"
 HYPERDRIVE_ROOT="/var/hyperdrive"
-HYPERDRIVE_LOCAL="${HYPERDRIVE_DATA_ROOT}/git"
 HYPERDRIVE_CONFIG_ROOT="/etc/hyperdrive"
 HYPERDRIVE_LOG_ROOT="/var/log/hyperdrive"
-HYPERDRIVE_BOOTSTRAP_LOG="${HYPERDRIVE_DATA_ROOT}/bootstrap.log"
+BOOTSTRAP_ROOT="${HYPERDRIVE_DATA_ROOT}/git"
+BOOTSTRAP_SCRIPTS="${BOOTSTRAP_ROOT}/app/scripts"
+BOOTSTRAP_LOG="${HYPERDRIVE_DATA_ROOT}/bootstrap.log"
+HYPERDRIVE_SCRIPTS="${HYPERDRIVE_ROOT}/scripts"
+BOOTSTRAP_INSTALL="/tmp/hyperdrive-install"
 
 mkdir -p "${HYPERDRIVE_DATA_ROOT}"
 mkdir -p "${HYPERDRIVE_CONFIG_ROOT}"
@@ -30,11 +33,11 @@ fi
 mkdir -p "${HYPERDRIVE_LOG_ROOT}"
 # install and update packages before installing hyperdrive
 log "updating apt-get repositories..."
-apt-get update -y > "${HYPERDRIVE_BOOTSTRAP_LOG}" 2>&1
+apt-get update -y > "${BOOTSTRAP_LOG}" 2>&1
 log "upgrading apt-get packages..."
-apt-get upgrade -y >> "${HYPERDRIVE_BOOTSTRAP_LOG}" 2>&1
+apt-get upgrade -y >> "${BOOTSTRAP_LOG}" 2>&1
 log "installing minimum hyperdrive required packages..."
-apt-get install -y git >> "${HYPERDRIVE_BOOTSTRAP_LOG}" 2>&1
+apt-get install -y git >> "${BOOTSTRAP_LOG}" 2>&1
 
 # create initial hyperdrive config file
 cat << EOF > "${HYPERDRIVE_CONFIG_ROOT}/main.conf"
@@ -47,9 +50,23 @@ export HYPERDRIVE_UPSTART_SCRIPTS="${HYPERDRIVE_ROOT}/scripts/upstart"
 :
 EOF
 
-rm -rf "${HYPERDRIVE_LOCAL}"
+rm -rf "${BOOTSTRAP_ROOT}"
 log "cloning hyperdrive repository..."
-git clone --branch "${HYPERDRIVE_BRANCH}" --depth 1 "${HYPERDRIVE_GIT}" "${HYPERDRIVE_LOCAL}" >> "${HYPERDRIVE_BOOTSTRAP_LOG}" 2>&1
+git clone --branch "${HYPERDRIVE_BRANCH}" --depth 1 "${HYPERDRIVE_GIT}" "${BOOTSTRAP_ROOT}" >> "${BOOTSTRAP_LOG}" 2>&1
 
 log "installing hyperdrive..."
-"${HYPERDRIVE_LOCAL}/app/scripts/install" 2>&1 | tee -a "${HYPERDRIVE_BOOTSTRAP_LOG}"
+
+
+function cleanup () {
+log "cleaning up temporary installation files"
+rm -f "${BOOTSTRAP_INSTALL}"
+}
+trap cleanup EXIT
+
+# NOTE: sed allows most single byte characters for substitution, so using | here instead of /
+#       because the path contains slashes that will cause problems
+sed "1 s|^.*$|#!${BOOTSTRAP_SCRIPTS}/overseer|g" "${BOOTSTRAP_SCRIPTS}/install" > "${BOOTSTRAP_INSTALL}"
+chmod 755 "${BOOTSTRAP_INSTALL}"
+"${BOOTSTRAP_INSTALL}"
+
+log "bootstrap complete"
