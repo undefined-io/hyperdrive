@@ -61,6 +61,7 @@ if ! hull_exists "${HULL_NAME}"; then
   cp "${HYPERDRIVE_HQ_ROOT}/${order_name}/orders" "${HULL_SHARE_DIR}/"
   echo "${SHORT_SHA}" > "${HULL_SHARE_DIR}/.sha"
   echo "${COMMIT_MSG}" > "${HULL_SHARE_DIR}/.msg"
+  echo "hyperdrive-${order_name}" > "${HULL_SHARE_DIR}/.name"
   mv "${TMP_REPO}" "${HULL_APP_DIR}"
   mkdir "${HULL_APP_DIR}/.profile.d"
   echo "export PORT=${PORT}" > "${HULL_APP_DIR}/.profile.d/hyperdrive.env"

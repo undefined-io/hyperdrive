@@ -9,6 +9,7 @@ if hull_exists "${hull_name}"; then
 
 IP_ADDRESS="$(ship_ip "${hull_name}")"
 apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/orders"
+NAME="$(< "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/.name")"
 
 # create the upstream for the ship
 trace "creating '${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf'"
@@ -32,6 +33,9 @@ else
   trace "removing '${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf'"
   rm -f "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
 fi
+
+trace "cleaning up previous '${NAME}' host configs"
+rm -f "${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf"
 
 trace "creating '${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf'"
 cat << EOF > "${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
