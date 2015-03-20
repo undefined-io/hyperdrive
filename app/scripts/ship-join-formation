@@ -34,7 +34,7 @@ else
   rm -f "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
 fi
 
-trace "cleaning up previous '${NAME}' host configs"
+trace "deleting '${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf'"
 rm -f "${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf"
 
 trace "creating '${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf'"
