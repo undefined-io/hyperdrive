@@ -1,0 +1,9 @@
+#!/var/hyperdrive/scripts/overseer
+### Usage:
+###   test
+### Options:
+###   --help
+###
+### hyperdrive test script for playing with bash stuff
+
+echo "hello"
