@@ -7,6 +7,10 @@
 ###   --verbose   list more detailed output
 
 echo "hq   : ${HYPERDRIVE_HQ:-${C_RED}<not set>${C_RESET}}"
+if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
+  MSG="$(commit_msg "${HYPERDRIVE_HQ_ROOT}")"
+  echo "       ${C_BBLACK}- ${MSG}${C_RESET}"
+fi
 
 while IFS=$'\n' read ROW; do
   if [[ -z "${ROW}" ]]; then
