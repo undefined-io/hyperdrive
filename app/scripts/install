@@ -142,3 +142,6 @@ echo ""
 announce "* Welcome to Hyperdrive *"
 echo ""
 hd status
+
+LOCK="/var/run/${SCRIPT_NAME}.pid"
+rm -f "${LOCK}"
