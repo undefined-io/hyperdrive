@@ -28,5 +28,5 @@ elif [[ -d "${local}" && ! "${force}" == "true" ]]; then
 elif [[ -d "${local}" && "${force}" == "true" ]]; then
   trace "replacing clone '${local}' from '${REMOTE_REPO}#${REMOTE_BRANCH}'"
   rm -rf "${local}"
-  git clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
+  git clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}" 2>&1 | timestamped "${SCRIPT_NAME}AA" 30
 fi
