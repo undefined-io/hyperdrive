@@ -74,9 +74,9 @@ else
 
   # stop nginx, because apt-get package installs it turned on.
   # TODO: needs to be fixed
-  stop nginx
-  update-rc.d nginx disable
-  find /etc/rc*/ -iname "*nginx" | xargs -I {} rm "{}"
+  update-rc.d nginx defaults
+  invoke-rc.d nginx stop
+  update-rc.d -f nginx remove
 
   # hyperdrive is using bash for everything
   # TODO: is this still needed now that upstart job logic is all in bash files?
