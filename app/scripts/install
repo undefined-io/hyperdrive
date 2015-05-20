@@ -74,7 +74,8 @@ else
 
   # stop nginx, because apt-get package installs it turned on.
   # TODO: needs to be fixed
-  /etc/init.d/nginx stop
+  stop nginx
+  update-rc.d nginx disable
   find /etc/rc*/ -iname "*nginx" | xargs -I {} rm "{}"
 
   # hyperdrive is using bash for everything
