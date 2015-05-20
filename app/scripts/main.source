@@ -18,10 +18,10 @@ source "${SCRIPT_DIR}/env.source"
 PATH+=":${SCRIPT_DIR}/awk:"
 
 # source support scripts
+source "${SCRIPT_DIR}/lib/color.source"
 source "${SCRIPT_DIR}/lib/logging.source"
 source "${SCRIPT_DIR}/lib/git.source"
 source "${SCRIPT_DIR}/lib/helper.source"
-source "${SCRIPT_DIR}/lib/color.source"
 
 # check if the script only allows sudo to run it
 if [[ -n "${SCRIPT_NAME}" ]]; then

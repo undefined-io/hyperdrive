@@ -36,7 +36,7 @@ if [[ -d "${local}" && -d "${local}/.git" ]]; then
     "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
     exit 0
   fi
-  if ! git ${GIT_FLAGS} fetch --all | timestamped "${SCRIPT_NAME}"; then
+  if ! git ${GIT_FLAGS} fetch --all | timestamped "${SCRIPT_NAME}" 30; then
     fatal "fetch error"
   fi
   # Branch change
