@@ -49,6 +49,7 @@ HULL_BASE="$(< "${HYPERDRIVE_BASE_HULL_NAME}" )"
 HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 HULL_APP_DIR="${HULL_SHARE_DIR}/app"
+HULL_BUILD_LOG="${HYPERDRIVE_SHIP_BUILD_LOGS}/${HULL_NAME}_setup.log"
 
 if [[ -z "${ORDERS_SHA}" ]]; then
   fatal "something went wrong, unable to compute order sha"
@@ -65,14 +66,14 @@ if ! hull_exists "${HULL_NAME}"; then
   mv "${TMP_REPO}" "${HULL_APP_DIR}"
   mkdir "${HULL_APP_DIR}/.profile.d"
   echo "export PORT=${PORT}" > "${HULL_APP_DIR}/.profile.d/hyperdrive.env"
-  trace "log available at ${HULL_ROOT_DIR}/setup.log"
-  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
+  trace "log available at ${HULL_BUILD_LOG}"
+  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_BUILD_LOG}" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
     info "'${HULL_NAME}' setup completed... build starting"
   else
     fatal "'${HULL_NAME}' setup failed"
   fi
-  lxc-attach --name "${HULL_NAME}" -- sudo -H -u ubuntu -i bash -c "./build.sh" >> "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
+  lxc-attach --name "${HULL_NAME}" -- sudo -H -u ubuntu -i bash -c "./build.sh" >> "${HULL_BUILD_LOG}" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/build.completed" ]]; then
     info "'${HULL_NAME}' build completed"
   else

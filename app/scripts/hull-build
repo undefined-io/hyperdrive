@@ -14,12 +14,13 @@
 #-- DEFAULT HULL ---------------------------------------------------------------
 
 HULL_NAME="hyperdrive"
+HULL_BUILD_LOG="${HYPERDRIVE_SHIP_BUILD_LOGS}/${HULL_NAME}_setup.log"
 if ! hull_exists "${HULL_NAME}"; then
   info "'${HULL_NAME}' hull will now be created..."
-  trace "log available at ${HYPERDRIVE_LOG_ROOT}/lxc-create_${HULL_NAME}.log"
+  trace "log available at ${HULL_BUILD_LOG}"
   (
     flock -x 200
-    lxc-create --name="${HULL_NAME}" --template="ubuntu" > "${HYPERDRIVE_LOG_ROOT}/lxc-create_${HULL_NAME}.log" 2>&1
+    lxc-create --name="${HULL_NAME}" --template="ubuntu" > "${HULL_BUILD_LOG}" 2>&1
   ) 200>"${HYPERDRIVE_LOCKS}/lxc"
 fi
 trace "'${HULL_NAME}' hull ready"
@@ -31,6 +32,7 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 HULL_BASE="${HULL_NAME}"
 set_base_container_name
 HULL_NAME="$(<"${HYPERDRIVE_BASE_HULL_NAME}")"
+HULL_BUILD_LOG="${HYPERDRIVE_SHIP_BUILD_LOGS}/${HULL_NAME}_setup.log"
 if ! hull_exists "${HULL_NAME}"; then
   info "'${HULL_NAME}' hull will now be created..."
   HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
@@ -40,10 +42,10 @@ if ! hull_exists "${HULL_NAME}"; then
   cp "${HYPERDRIVE_ROOT}/setup/hull-setup.sh" "${HULL_SHARE_DIR}/setup.sh"
   cp "${HYPERDRIVE_ROOT}/setup/hyperdrive-basic-hull.packages" "${HULL_SHARE_DIR}/hull.packages"
   # TODO: Add a check here to see if the mount is properly setup
-  trace "log available at ${HULL_ROOT_DIR}/setup.log"
-  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_ROOT_DIR}/setup.log" 2>&1 || true
+  trace "log available at ${HULL_BUILD_LOG}"
+  lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_BUILD_LOG}" 2>&1 || true
   if [[ ! -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
-    fatal "error during setup.  please check ${HULL_ROOT_DIR}/setup.log for more information."
+    fatal "error during setup.  please check ${HULL_BUILD_LOG} for more information."
   fi
   set +o xtrace
   hull_close
