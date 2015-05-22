@@ -58,7 +58,7 @@ __NESTED
     esac
   fi
   if [[ "${COMP_CWORD}" -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "assignment build dismantle headquarters join-formation pilot status" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "commence-assignment stop-assignment build dismantle headquarters join-formation pilot status" -- ${cur}) )
     return 0
   fi
   return 0
