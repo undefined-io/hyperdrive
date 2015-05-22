@@ -26,6 +26,7 @@ fi
 
 APP_HOME="/home/ubuntu"
 APP_ROOT="${APP_HOME}/app"
+BUILDPACK_ROOT="${APP_HOME}/buildpack"
 
 # create the build script
 cat << BUILDEOF > "${APP_HOME}/build.sh"
@@ -33,13 +34,14 @@ cat << BUILDEOF > "${APP_HOME}/build.sh"
 set -o nounset; set -o errexit
 cd
 sudo rm -rf ${APP_ROOT}
-sudo rsync -az --exclude '.git' "/var/hyperdrive/share/app/" ${APP_ROOT}
-sudo chown -R ubuntu:ubuntu ${APP_ROOT}
+sudo rsync -az --exclude '.git' "/var/hyperdrive/share/app/" "${APP_ROOT}"
+sudo rsync -az --exclude '.git' "${SELECTED_BUILDPACK}/" "${BUILDPACK_ROOT}"
+sudo chown -R ubuntu:ubuntu ${APP_HOME}
 
 # compile the buildpack for the application
 export REQUEST_ID=$(openssl rand -base64 32)
-"${SELECTED_BUILDPACK}/bin/compile" "${APP_ROOT}" "/tmp/donotcache"
-"${SELECTED_BUILDPACK}/bin/release" "${APP_ROOT}" > "${APP_ROOT}/.release"
+"${BUILDPACK_ROOT}/bin/compile" "${APP_ROOT}" "/tmp/donotcache"
+"${BUILDPACK_ROOT}/bin/release" "${APP_ROOT}" > "${APP_ROOT}/.release"
 
 cat << STARTEOF > "${APP_HOME}/start.sh"
 #!/usr/bin/env bash
