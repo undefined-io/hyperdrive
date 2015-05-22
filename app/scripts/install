@@ -77,6 +77,8 @@ else
   update-rc.d nginx defaults
   invoke-rc.d nginx stop
   update-rc.d -f nginx remove
+  rm -f /etc/init/nginx.conf
+  rm -f /etc/init.d/nginx
 
   # hyperdrive is using bash for everything
   # TODO: is this still needed now that upstart job logic is all in bash files?
