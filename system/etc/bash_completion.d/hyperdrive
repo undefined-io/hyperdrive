@@ -1,3 +1,4 @@
+# vi: set ft=sh :
 # TODO: Need to figure out how to get the environment variables in here
 # toying with the idea of using this in the future
 have hd &&
@@ -30,6 +31,7 @@ _hyperdrive()
 {
   COMPREPLY=()
   _get_comp_words_by_ref cur prev words cword
+<<##NESTED
   if [[ "${COMP_CWORD}" -ge 2 ]]; then
     case "${COMP_WORDS[1]}" in
       assignment)
@@ -38,9 +40,10 @@ _hyperdrive()
       ;;
     esac
   fi 
+##NESTED
   if [[ "${COMP_CWORD}" -eq 2 ]]; then
     case "${COMP_WORDS[1]}" in
-      pilot|decommission|join-formation)
+      pilot|dismantle|join-formation|commence-assignment|stop-assignment)
         COMPREPLY=( $(compgen -W "$(_hyperdrive_ship_list)" -- "${COMP_WORDS[2]}") )
         return 0
       ;;
@@ -55,7 +58,7 @@ _hyperdrive()
     esac
   fi
   if [[ "${COMP_CWORD}" -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "assignment build decommission headquarters join-formation pilot status" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "assignment build dismantle headquarters join-formation pilot status" -- ${cur}) )
     return 0
   fi
   return 0

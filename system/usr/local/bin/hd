@@ -11,20 +11,8 @@ case "${COMMAND}" in
   pilot)
     "${SCRIPT_DIR}/ship-pilot" "${1}"
     ;;
-  decommission)
+  dismantle)
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-dismantle" "${1}"
-    ;;
-  assignment)
-    COMMAND="${1}"
-    shift
-    case "${COMMAND}" in
-      commence)
-        [[ -n "${1}" ]] && "${SCRIPT_DIR}/assignment-commence" "${1}"
-        ;;
-      stop)
-        [[ -n "${1}" ]] && "${SCRIPT_DIR}/assignment-stop" "${1}"
-        ;;
-    esac
     ;;
   join-formation)
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-join-formation" "${1}"
@@ -39,9 +27,29 @@ case "${COMMAND}" in
   headquarters)
     "${SCRIPT_DIR}/headquarters" $@
     ;;
+  commence-assignment)
+    [[ -n "${1}" ]] && "${SCRIPT_DIR}/assignment-commence" "${1}"
+    ;;
+  stop-assignment)
+    [[ -n "${1}" ]] && "${SCRIPT_DIR}/assignment-stop" "${1}"
+    ;;
   *)
     echo "hd: ERROR" || false
     ;;
 esac
 
 #"${SCRIPT_DIR}/${SCRIPT_NAME}" $@
+<<##NESTED
+  assignment)
+    COMMAND="${1}"
+    shift
+    case "${COMMAND}" in
+      commence)
+        [[ -n "${1}" ]] && "${SCRIPT_DIR}/assignment-commence" "${1}"
+        ;;
+      stop)
+        [[ -n "${1}" ]] && "${SCRIPT_DIR}/assignment-stop" "${1}"
+        ;;
+    esac
+    ;;
+##NESTED

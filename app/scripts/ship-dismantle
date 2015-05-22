@@ -1,7 +1,7 @@
 #!/var/hyperdrive/scripts/overseer
 # vim: set ft=sh :
 ### Usage:
-###   ship-decommission <ship_name>
+###   ship-dismantle <ship_name>
 ### Options:
 ###   --help
 ###
