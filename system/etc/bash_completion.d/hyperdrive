@@ -31,7 +31,7 @@ _hyperdrive()
 {
   COMPREPLY=()
   _get_comp_words_by_ref cur prev words cword
-<<##NESTED
+<<__NESTED
   if [[ "${COMP_CWORD}" -ge 2 ]]; then
     case "${COMP_WORDS[1]}" in
       assignment)
@@ -40,7 +40,7 @@ _hyperdrive()
       ;;
     esac
   fi 
-##NESTED
+__NESTED
   if [[ "${COMP_CWORD}" -eq 2 ]]; then
     case "${COMP_WORDS[1]}" in
       pilot|dismantle|join-formation|commence-assignment|stop-assignment)

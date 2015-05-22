@@ -39,7 +39,7 @@ case "${COMMAND}" in
 esac
 
 #"${SCRIPT_DIR}/${SCRIPT_NAME}" $@
-<<##NESTED
+<<__NESTED
   assignment)
     COMMAND="${1}"
     shift
@@ -52,4 +52,4 @@ esac
         ;;
     esac
     ;;
-##NESTED
+__NESTED
