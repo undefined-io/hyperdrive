@@ -55,7 +55,9 @@ if [[ -z "${ORDERS_SHA}" ]]; then
   fatal "something went wrong, unable to compute order sha"
 fi
 
-if ! hull_exists "${HULL_NAME}"; then
+if hull_exists "${HULL_NAME}"; then
+  info "'${HULL_NAME}' does not not require an upgrade"
+else
   info "'${HULL_NAME}' setup starting"
   hull_open
   cp "${HYPERDRIVE_ROOT}/setup/ship-setup.sh" "${HULL_SHARE_DIR}/setup.sh"

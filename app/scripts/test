@@ -1,14 +1,13 @@
 #!/var/hyperdrive/scripts/overseer
 # vim: set ft=sh :
 ### Usage:
-###   test
+###   test [<something>...]
 ### Options:
 ###   --help
 ###
 ### hyperdrive test script for playing with bash stuff
 
-info "test"
-echo SCRIPT_DIR: $SCRIPT_DIR
-echo SCRIPT_NAME: $SCRIPT_NAME
+$@
 
-declare -x -F
+#TODO: what was this all about?
+#declare -x -F

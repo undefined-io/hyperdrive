@@ -1,0 +1,18 @@
+#!/var/hyperdrive/scripts/overseer
+# vim: set ft=sh :
+### Usage:
+###   resume-operations
+### Options:
+###   --help
+###
+### after the system comes back up, re-enable a running hyperdrive environment
+
+find "${HYPERDRIVE_NGINX}/upstream" -type f -iname 'hyperdrive-*.conf' -printf '%P\n'
+
+if status hyperdrive-nginx | fgrep -e 'stop/waiting'; then
+  info 'starting hyperdrive-nginx'
+  start hyperdrive-nginx 2>&1 | timestamped "${SCRIPT_NAME}" 30
+else
+  info 'reloading hyperdrive-nginx configs'
+  reload hyperdrive-nginx 2>&1 | timestamped "${SCRIPT_NAME}" 30
+fi
