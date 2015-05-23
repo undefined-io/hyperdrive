@@ -16,6 +16,10 @@ lxc.mount.entry = ${HULL_SHARE_DIR} var/hyperdrive/share none defaults,bind 0 0
 lxc.mount.entry = ${HYPERDRIVE_BUILDPACK_ROOT} var/hyperdrive/buildpacks none bind,rw 0 0
 EOF
 
+hull_start
+}
+
+function hull_start () {
 lxc-start --name="${HULL_NAME}" -d
 lxc-wait --name="${HULL_NAME}" --state="RUNNING" --timeout="60"
 }

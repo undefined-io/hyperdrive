@@ -7,4 +7,11 @@
 ###
 ### ship commences with operation
 
-start hyperdrive-assignment name="${ship_name}" 2>&1 | timestamped "${SCRIPT_NAME}"
+source "${SCRIPT_DIR}/lib/hull.kit"
+
+HULL_NAME="${ship_name}"
+info "'${HULL_NAME}' will commence assignment"
+if ! list_of_active_ships | fgrep -q -e "${HULL_NAME}"; then
+  hull_start 2>&1 | timestamped "${SCRIPT_NAME}" 30
+fi
+start hyperdrive-assignment name="${ship_name}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
