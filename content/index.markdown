@@ -148,36 +148,61 @@ The Hyperdrive data directory. The GIT repo lives here, and other files related 
 Hyperdrive related stuff.
 
 ```
-|-- git
-|-- includes
+|-- buildpacks/
+|-- git/
+|-- headquarters
+|-- includes/
 |-- bootstrap.log
-|-- lxc
-`-- records
+|-- lxc/
+    `-- <ship-name>/
+        |-- filesystem -> /var/lib/lxc/<ship-name>
+        `-- share/
+            |-- app/
+            |-- build.completed
+            |-- orders
+            |-- setup.completed
+            `-- setup.sh
+|-- order_repos
+`-- records/
     `-- system.files
 ```
 
 - **/git/** - The Hyperdrive GIT repo
 - **/includes/** - Environment files that will be used as hyperdrive runs (after install, this is empty)
 - **/bootstrap.log** - Inital setup log from when the system was bootstrapped
-- **/lxc/** - The root of the container file system
+- **/lxc/** - The root of all the ship related files
+- **/lxc/<ship-name>/** - The root a specific ship's files
 - **/records/system.files** - A list of files that were installed in system folders (/etc/ /usr/bin/ ...)
+
+#### `.../<ship-name>`
+
+- **/filesystem/** - a symlink to the lxc filesystem of this ship
+- **/share/** - directory with most of the build critical files shared on the ship
+- **/share/app/** - the files related to the assignment (application)
+- **/share/build.completed** - file created after the assignment was built
+- **/share/orders** - copy of the orders file used at the time of setup
+- **/share/setup.completed** - file created after ship setup
+- **/share/setup.sh** - script to setup ship and create build script
 
 ## /var/hyperdrive
 
 ```
-|-- containers
-|-- nginx
-|   |-- hosts
-|   |-- proxies
-|   |-- overrides
-|   `-- upstream
-|-- private_keys
-|-- public_keys
-`-- scripts
-    `-- lib
+|-- locks/
+|-- nginx/
+|   |-- hosts/
+|   |-- proxies/
+|   |-- overrides/
+|   `-- upstream/
+|-- private_keys/
+|-- public_keys/
+|-- scripts/
+|   |-- awk/|
+|   |-- lib/
+|   `-- upstart/
+`-- setup/`
 ```
 
-- **/containers/** - The actual images of the running LXC are stored here
+- **/locks/** - System lock files
 - **/nginx/hosts/** -
 - **/nginx/proxies/** -
 - **/nginx/overrides/** -
@@ -185,7 +210,10 @@ Hyperdrive related stuff.
 - **/private_keys/** - Private keys used to access remote GIT repos
 - **/public_keys/** - Public keys for admiral access
 - **/scripts/** - The main hyperdrive scripts
+- **/scripts/awk/** - awk scripts used in other hyperdrive scripts
 - **/scripts/lib/** - Support files for the main hyperdrive scripts
+- **/scripts/upstart/** - the upstart specific support scripts
+- **/setup/** - Scripts and package lists related to ship/hull builds
 
 ## /etc/hyperdrive
 
@@ -204,6 +232,7 @@ going forward.
 
 ```
 `-- main.log
+`-- ship_builds/
 ```
 
 - **/main.log** - The master log file, that captures all hyperdrive related messages
@@ -234,7 +263,7 @@ doing atm while developing.
 
 ```bash
 # This sets up the basics
-/vagrant/bootstrap "" "" "file:///vagrant" ""
+/vagrant/bootstrap "" "file:///vagrant" ""
 ```
 
 ### Setting up HQ

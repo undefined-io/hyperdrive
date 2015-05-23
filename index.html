@@ -64,31 +64,33 @@
 					
 					<h2><a href="#toc-14">/data/hyperdrive</a></h2>
 					
-					<h2><a href="#toc-15">/var/hyperdrive</a></h2>
+					<h4><a href="#toc-15"><code>.../&lt;ship-name&gt;</code></a></h4>
 					
-					<h2><a href="#toc-16">/etc/hyperdrive</a></h2>
+					<h2><a href="#toc-16">/var/hyperdrive</a></h2>
 					
-					<h2><a href="#toc-17">/var/log/hyperdrive</a></h2>
+					<h2><a href="#toc-17">/etc/hyperdrive</a></h2>
 					
-					<h1><a href="#toc-18">Orders</a></h1>
+					<h2><a href="#toc-18">/var/log/hyperdrive</a></h2>
 					
-					<h1><a href="#toc-19">Developer Notes</a></h1>
+					<h1><a href="#toc-19">Orders</a></h1>
 					
-					<h2><a href="#toc-20">Step By Step (Just Notes)</a></h2>
+					<h1><a href="#toc-20">Developer Notes</a></h1>
 					
-					<h3><a href="#toc-21">Bootstrap</a></h3>
+					<h2><a href="#toc-21">Step By Step (Just Notes)</a></h2>
 					
-					<h3><a href="#toc-22">Setting up HQ</a></h3>
+					<h3><a href="#toc-22">Bootstrap</a></h3>
 					
-					<h3><a href="#toc-23">Setup the Base Hulls</a></h3>
+					<h3><a href="#toc-23">Setting up HQ</a></h3>
 					
-					<h3><a href="#toc-24">Launch a Ship</a></h3>
+					<h3><a href="#toc-24">Setup the Base Hulls</a></h3>
 					
-					<h2><a href="#toc-25">Hacking on Hyperdrive with Vagrant</a></h2>
+					<h3><a href="#toc-25">Launch a Ship</a></h3>
 					
-					<h3><a href="#toc-26">Symlink Approach</a></h3>
+					<h2><a href="#toc-26">Hacking on Hyperdrive with Vagrant</a></h2>
 					
-					<h3><a href="#toc-27">Github Approach</a></h3>
+					<h3><a href="#toc-27">Symlink Approach</a></h3>
+					
+					<h3><a href="#toc-28">Github Approach</a></h3>
 					
 			</div>
 		</div>
@@ -187,32 +189,57 @@ refactor.</p>
 <h2 class="anchor" id="toc-14">/data/hyperdrive</h2>
 <p>The Hyperdrive data directory. The GIT repo lives here, and other files related to keeping track of
 Hyperdrive related stuff.</p>
-<pre><code class="hljs">|<span class="hljs-comment">-- git</span>
-|<span class="hljs-comment">-- includes</span>
+<pre><code class="hljs">|<span class="hljs-comment">-- buildpacks/</span>
+|<span class="hljs-comment">-- git/</span>
+|<span class="hljs-comment">-- headquarters</span>
+|<span class="hljs-comment">-- includes/</span>
 |<span class="hljs-comment">-- bootstrap.log</span>
-|<span class="hljs-comment">-- lxc</span>
-`<span class="hljs-comment">-- records</span>
+|<span class="hljs-comment">-- lxc/</span>
+    `<span class="hljs-comment">-- &lt;ship-name&gt;/</span>
+        |<span class="hljs-comment">-- filesystem -&gt; /var/lib/lxc/&lt;ship-name&gt;</span>
+        `<span class="hljs-comment">-- share/</span>
+            |<span class="hljs-comment">-- app/</span>
+            |<span class="hljs-comment">-- build.completed</span>
+            |<span class="hljs-comment">-- orders</span>
+            |<span class="hljs-comment">-- setup.completed</span>
+            `<span class="hljs-comment">-- setup.sh</span>
+|<span class="hljs-comment">-- order_repos</span>
+`<span class="hljs-comment">-- records/</span>
     `<span class="hljs-comment">-- system.files</span>
 </code></pre><ul>
 <li><strong>/git/</strong> - The Hyperdrive GIT repo</li>
 <li><strong>/includes/</strong> - Environment files that will be used as hyperdrive runs (after install, this is empty)</li>
 <li><strong>/bootstrap.log</strong> - Inital setup log from when the system was bootstrapped</li>
-<li><strong>/lxc/</strong> - The root of the container file system</li>
+<li><strong>/lxc/</strong> - The root of all the ship related files</li>
+<li><strong>/lxc/<ship-name>/</strong> - The root a specific ship&#39;s files</li>
 <li><strong>/records/system.files</strong> - A list of files that were installed in system folders (/etc/ /usr/bin/ ...)</li>
 </ul>
-<h2 class="anchor" id="toc-15">/var/hyperdrive</h2>
-<pre><code class="hljs">|<span class="hljs-comment">-- containers</span>
-|<span class="hljs-comment">-- nginx</span>
-|   |<span class="hljs-comment">-- hosts</span>
-|   |<span class="hljs-comment">-- proxies</span>
-|   |<span class="hljs-comment">-- overrides</span>
-|   `<span class="hljs-comment">-- upstream</span>
-|<span class="hljs-comment">-- private_keys</span>
-|<span class="hljs-comment">-- public_keys</span>
-`<span class="hljs-comment">-- scripts</span>
-    `<span class="hljs-comment">-- lib</span>
+<h4 class="anchor" id="toc-15"><code>.../&lt;ship-name&gt;</code></h4>
+<ul>
+<li><strong>/filesystem/</strong> - a symlink to the lxc filesystem of this ship</li>
+<li><strong>/share/</strong> - directory with most of the build critical files shared on the ship</li>
+<li><strong>/share/app/</strong> - the files related to the assignment (application)</li>
+<li><strong>/share/build.completed</strong> - file created after the assignment was built</li>
+<li><strong>/share/orders</strong> - copy of the orders file used at the time of setup</li>
+<li><strong>/share/setup.completed</strong> - file created after ship setup</li>
+<li><strong>/share/setup.sh</strong> - script to setup ship and create build script</li>
+</ul>
+<h2 class="anchor" id="toc-16">/var/hyperdrive</h2>
+<pre><code class="hljs">|<span class="hljs-comment">-- locks/</span>
+|<span class="hljs-comment">-- nginx/</span>
+|   |<span class="hljs-comment">-- hosts/</span>
+|   |<span class="hljs-comment">-- proxies/</span>
+|   |<span class="hljs-comment">-- overrides/</span>
+|   `<span class="hljs-comment">-- upstream/</span>
+|<span class="hljs-comment">-- private_keys/</span>
+|<span class="hljs-comment">-- public_keys/</span>
+|<span class="hljs-comment">-- scripts/</span>
+|   |<span class="hljs-comment">-- awk/|</span>
+|   |<span class="hljs-comment">-- lib/</span>
+|   `<span class="hljs-comment">-- upstart/</span>
+`<span class="hljs-comment">-- setup/`</span>
 </code></pre><ul>
-<li><strong>/containers/</strong> - The actual images of the running LXC are stored here</li>
+<li><strong>/locks/</strong> - System lock files</li>
 <li><strong>/nginx/hosts/</strong> -</li>
 <li><strong>/nginx/proxies/</strong> -</li>
 <li><strong>/nginx/overrides/</strong> -</li>
@@ -220,9 +247,12 @@ Hyperdrive related stuff.</p>
 <li><strong>/private_keys/</strong> - Private keys used to access remote GIT repos</li>
 <li><strong>/public_keys/</strong> - Public keys for admiral access</li>
 <li><strong>/scripts/</strong> - The main hyperdrive scripts</li>
+<li><strong>/scripts/awk/</strong> - awk scripts used in other hyperdrive scripts</li>
 <li><strong>/scripts/lib/</strong> - Support files for the main hyperdrive scripts</li>
+<li><strong>/scripts/upstart/</strong> - the upstart specific support scripts</li>
+<li><strong>/setup/</strong> - Scripts and package lists related to ship/hull builds</li>
 </ul>
-<h2 class="anchor" id="toc-16">/etc/hyperdrive</h2>
+<h2 class="anchor" id="toc-17">/etc/hyperdrive</h2>
 <pre><code class="hljs">|<span class="hljs-comment">-- base_hull_name.info</span>
 `<span class="hljs-comment">-- main.conf</span>
 </code></pre><ul>
@@ -231,12 +261,13 @@ Hyperdrive related stuff.</p>
 </ul>
 <p>If the <code>base_hull_name.info</code> file is missing, a new base hull will be created, and used
 going forward.</p>
-<h2 class="anchor" id="toc-17">/var/log/hyperdrive</h2>
+<h2 class="anchor" id="toc-18">/var/log/hyperdrive</h2>
 <pre><code class="hljs">`<span class="hljs-comment">-- main.log</span>
+`<span class="hljs-comment">-- ship_builds/</span>
 </code></pre><ul>
 <li><strong>/main.log</strong> - The master log file, that captures all hyperdrive related messages</li>
 </ul>
-<h1 class="anchor" id="toc-18">Orders</h1>
+<h1 class="anchor" id="toc-19">Orders</h1>
 <p>The <code>orders</code> file is used to configure environment variables specific to the app and Hyperdrive.</p>
 <table class="table table-condensed table-hover">
 <thead>
@@ -268,27 +299,27 @@ going forward.</p>
 </tr>
 </tbody>
 </table>
-<h1 class="anchor" id="toc-19">Developer Notes</h1>
+<h1 class="anchor" id="toc-20">Developer Notes</h1>
 <p>If you are using the provided <code>Vagrantfile</code>, your box will have the working copy of hyperdrive
 located at <code>/vagrant</code> on your VM. This comes in handy, for testing changes prior to them being installed.</p>
-<h2 class="anchor" id="toc-20">Step By Step (Just Notes)</h2>
+<h2 class="anchor" id="toc-21">Step By Step (Just Notes)</h2>
 <p>Much of this will be improved during the dev cycle, but trying to allow devs to understand what I&#39;m
 doing atm while developing.</p>
-<h3 class="anchor" id="toc-21">Bootstrap</h3>
+<h3 class="anchor" id="toc-22">Bootstrap</h3>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># This sets up the basics</span>
-/vagrant/bootstrap <span class="hljs-string">""</span> <span class="hljs-string">""</span> <span class="hljs-string">"file:///vagrant"</span> <span class="hljs-string">""</span>
+/vagrant/bootstrap <span class="hljs-string">""</span> <span class="hljs-string">"file:///vagrant"</span> <span class="hljs-string">""</span>
 </code></pre>
-<h3 class="anchor" id="toc-22">Setting up HQ</h3>
+<h3 class="anchor" id="toc-23">Setting up HQ</h3>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># Setup HQ and monitor for updated orders</span>
 <span class="hljs-built_in">cd</span> /var/hyperdrive/scripts/
 ./headquarters <span class="hljs-keyword">set</span> https://github.com/datfinesoul/hyperdrive-hq<span class="hljs-comment">#master</span>
 start hyperdrive-captain-obtain-orders
 
 <span class="hljs-comment"># To see logs</span>
-<span class="hljs-built_in">tail</span> -F /var/log/upstart/hyperdrive*
-<span class="hljs-built_in">tail</span> -F /var/log/hyperdrive/main.log
+tail -F /var/log/upstart/hyperdrive*
+tail -F /var/log/hyperdrive/main.log
 </code></pre>
-<h3 class="anchor" id="toc-23">Setup the Base Hulls</h3>
+<h3 class="anchor" id="toc-24">Setup the Base Hulls</h3>
 <p>All Ships use some standard Hulls, which need to be assembled once, when a Hyperdrive
 Squadron is created.  This process is rather lengthy, but rarely (if ever) needs to be repeated.</p>
 <p><em>This automatically happens when <code>hd assemble</code> is used (see below), but this is how it&#39;s done
@@ -303,7 +334,7 @@ explicitly</em></p>
 <span class="hljs-comment"># hull-build: log available at /data/hyperdrive/lxc/hyperdrive-basic-hull/setup.log</span>
 <span class="hljs-comment"># hull-build: hull 'hyperdrive-basic-hull' ready</span>
 </code></pre>
-<h3 class="anchor" id="toc-24">Launch a Ship</h3>
+<h3 class="anchor" id="toc-25">Launch a Ship</h3>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># "example" is the name of an order in the HQ</span>
 hd assemble <span class="hljs-string">"example"</span>
 
@@ -331,18 +362,18 @@ hd engage <span class="hljs-string">"hyperdrive-example-9025762"</span>
 
 hd launch <span class="hljs-string">"hyperdrive-example-9025762"</span>
 </code></pre>
-<h2 class="anchor" id="toc-25">Hacking on Hyperdrive with Vagrant</h2>
-<h3 class="anchor" id="toc-26">Symlink Approach</h3>
+<h2 class="anchor" id="toc-26">Hacking on Hyperdrive with Vagrant</h2>
+<h3 class="anchor" id="toc-27">Symlink Approach</h3>
 <p>The easiest way to hack on Hyperdrive is usually to use Vagrant and then symlink the folders of files you are working on.</p>
 <pre><code class="hljs lang-bash">vagrant ssh
 <span class="hljs-built_in">sudo</span> su -
 <span class="hljs-built_in">cd</span> /var/hyperdrive
 <span class="hljs-built_in">mv</span> scripts scripts.bak
-<span class="hljs-built_in">ln</span> <span class="hljs-operator">-s</span> /vagrant/app/scripts/
+ln <span class="hljs-operator">-s</span> /vagrant/app/scripts/
 </code></pre>
 <p>Then just work on the scripts in your local directories using your favorite editors, and test out the results immediately.</p>
 <p><strong>NOTE:</strong> Running <code>install</code> will wipe out all the symlinks.</p>
-<h3 class="anchor" id="toc-27">Github Approach</h3>
+<h3 class="anchor" id="toc-28">Github Approach</h3>
 <p>If you prefer to check in all changes, use the push/install approach.</p>
 <pre><code class="hljs lang-bash"><span class="hljs-comment"># On the Hyperdrive system or VM:</span>
 <span class="hljs-built_in">cd</span> /var/hyperdrive/scripts
