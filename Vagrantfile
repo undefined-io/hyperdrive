@@ -20,6 +20,9 @@ Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
     override.vm.box_url = "http://brennovich.s3.amazonaws.com/saucy64_vmware_fusion.box"
     f.vmx["displayName"] = SQUADRON_NAME
     f.vmx["memsize"] = VAGRANT_MEMSIZE 
+    override.vm.provision "shell", run: "always" do |s|
+      s.inline = "sudo dpkg-reconfigure -f noninteractive tzdata"
+    end
   end
 
   config.vm.provider :virtualbox do |f, override|
@@ -27,11 +30,17 @@ Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
     override.vm.box = ENV['BOX_NAME'] || 'ubuntu/trusty64'
     f.name = SQUADRON_NAME
     f.customize ["modifyvm", :id, "--memory", VAGRANT_MEMSIZE]
+    override.vm.provision "shell", run: "always" do |s|
+      s.inline = "sudo dpkg-reconfigure -f noninteractive tzdata"
+    end
   end
 
   config.vm.provider :parallels do |f, override|
     override.vm.box = ENV['BOX_NAME'] || 'parallels/ubuntu-14.04'
     f.name = SQUADRON_NAME
     f.customize ["set", :id, "--memsize", VAGRANT_MEMSIZE]
+    override.vm.provision "shell", run: "always" do |s|
+      s.inline = "sudo dpkg-reconfigure -f noninteractive tzdata"
+    end
   end
 end

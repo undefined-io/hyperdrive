@@ -22,7 +22,7 @@ mkdir -p "${HYPERDRIVE_DATA_ROOT}"
 mkdir -p "${HYPERDRIVE_CONFIG_ROOT}"
 
 # set timezone to GMT
-echo "GMT" > /etc/timezone
+echo "Etc/UTC" > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata
 
 # make sure localhost is in the hostfile (this is for lxc start time improvements)
