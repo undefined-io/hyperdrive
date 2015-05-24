@@ -61,3 +61,7 @@ fi
 function list_of_active_ships () {
 lxc-ls --running -1 "^hyperdrive-.+-[\w]{8}-[\w]{7}$"
 }
+
+function list_of_ships_in_formation () {
+find "${HYPERDRIVE_NGINX}/upstream" -type f -iname 'hyperdrive-*.conf' -printf '%P\n'
+}

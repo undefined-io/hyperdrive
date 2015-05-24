@@ -9,10 +9,8 @@
 
 while IFS=$'\n' read UPSTREAM; do
   SHIP_IN_FORMATION="${UPSTREAM%.*}"
-  if list_of_active_ships | fgrep -q -e "${SHIP_IN_FORMATION}"; then
-    info "'${SHIP_IN_FORMATION}' restarting assignment"
-  fi
-done <<< "$(find "${HYPERDRIVE_NGINX}/upstream" -type f -iname 'hyperdrive-*.conf' -printf '%P\n')"
+  "${SCRIPT_DIR}/assignment-commence" "${SHIP_IN_FORMATION}"
+done <<< "$(list_of_ships_in_formation)"
 
 if status hyperdrive-nginx | fgrep -e 'stop/waiting'; then
   info 'starting hyperdrive-nginx'

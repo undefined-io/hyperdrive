@@ -29,7 +29,12 @@ while IFS=$'\n' read ROW; do
   esac
   apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/orders"
   case "${STATE}" in
-    RUNNING) echo "lxc  : ${C_GREEN}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT:-} ==> ${PUBLISH_PORT:-}'" ;;
+    RUNNING)
+      COLOR="${C_YELLOW}"
+      if list_of_ships_in_formation | fgrep -q -e "${NAME}"; then
+        COLOR="${C_GREEN}"
+      fi
+      echo "lxc  : ${COLOR}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT:-} ==> ${PUBLISH_PORT:-}'" ;;
     STOPPED) echo "lxc  : ${C_RED}${NAME}${C_RESET} [${STATE}] (${IP})" ;;
   esac
   echo "       ${C_BBLACK}- hosts/root: ${PUBLISH_HOST} - ${PUBLISH_ROOT}${C_RESET}"
