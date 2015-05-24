@@ -7,9 +7,14 @@ CURRENT_SCRIPT="$(readlink -e -- "${1}")"
 CURRENT_SCRIPT_DIR="$(dirname "${CURRENT_SCRIPT}")"
 if [[ "$(basename ${OVERSEER_SCRIPT})" == 'overseer' && -z "${1}" ]]; then
   echo "cannot call overseer directly"
-  exit
+  exit 1
 fi
 shift
+
+if [[ "$(id -u)" -ne "0" ]]; then 
+  echo "you must be root to run this this script";
+  exit 1
+fi
 
 set -o allexport
 
