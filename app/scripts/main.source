@@ -43,7 +43,9 @@ fi
 ulimit -n 4096
 
 if [[ "${#BASH_SOURCE[@]}" -gt "0" && -f "${SCRIPT_FULL_PATH}" ]]; then
-  eval "$(${SCRIPT_DIR}/docopts -h "$(grep "^### " "${SCRIPT_FULL_PATH}" | cut -c 5-)" -V "${HYPERDRIVE_VERSION}" : "$@")"
+  if grep -q -e "^### " "${SCRIPT_FULL_PATH}"; then
+    eval "$(${SCRIPT_DIR}/docopts -h "$(grep "^### " "${SCRIPT_FULL_PATH}" | cut -c 5-)" -V "${HYPERDRIVE_VERSION}" : "$@")"
+  fi
 fi
 
 function set_app_environment_vars() {

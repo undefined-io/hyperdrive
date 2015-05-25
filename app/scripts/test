@@ -7,7 +7,16 @@
 ###
 ### hyperdrive test script for playing with bash stuff
 
-$@
+# For testing functions
+#$@
 
 #TODO: what was this all about?
 #declare -x -F
+
+REMOTE_BRANCH="master"
+REMOTE_REPO="git@github.com:datfinesoul/hyperdrive-hq.git"
+LOCAL="/tmp/test-repo"
+
+"${SCRIPT_DIR}/hdgit" "__default__"
+
+"${SCRIPT_DIR}/hdgit" "__default__" clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${LOCAL}"
