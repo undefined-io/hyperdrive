@@ -90,10 +90,14 @@ echo "${COMMIT_MSG}"
 }
 
 function hdgit () {
-local PRIVATE_KEY="${1}"
+local PRIVATE_KEY="/var/hyperdrive/private_keys/${1}"
 shift
 if [[ -z "${1}" ]]; then
   fatal "missing git command"
 fi
-ssh-agent bash -c "ssh-add /var/hyperdrive/private_keys/${PRIVATE_KEY} && git $* 2>&1" 2>&1 | timestamped "${SCRIPT_NAME}" 30
+if [[ -f "${PRIVATE_KEY}" ]]; then
+  ssh-agent bash -c "ssh-add ${PRIVATE_KEY} && git $* 2>&1" 2>&1 | timestamped "${SCRIPT_NAME}" 30
+else
+  git $* 2>&1 | timestamped "${SCRIPT_NAME}" 30
+fi
 }
