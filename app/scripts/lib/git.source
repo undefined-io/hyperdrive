@@ -74,17 +74,26 @@ return 0
 
 # TODO: this name is incredible confusing the way it is used
 function order_sha () {
-  local DIRECTORY="${1}"
-  local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
-  local SHORT_SHA="$(git ${GIT_FLAGS} rev-parse --short HEAD)"
-  echo "${SHORT_SHA}"
+local DIRECTORY="${1}"
+local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
+local SHORT_SHA="$(git ${GIT_FLAGS} rev-parse --short HEAD)"
+echo "${SHORT_SHA}"
 }
 
 ## commit_msg ##################################################################
 
 function commit_msg () {
-  local DIRECTORY="${1}"
-  local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
-  local COMMIT_MSG="$(git ${GIT_FLAGS} log -1 --pretty="[%ae] %B" | head -n 1)"
-  echo "${COMMIT_MSG}"
+local DIRECTORY="${1}"
+local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
+local COMMIT_MSG="$(git ${GIT_FLAGS} log -1 --pretty="[%ae] %B" | head -n 1)"
+echo "${COMMIT_MSG}"
+}
+
+function hdgit () {
+local PRIVATE_KEY="${1}"
+shift
+if [[ -z "${1}" ]]; then
+  fatal "missing git command"
+fi
+ssh-agent bash -c "ssh-add /var/hyperdrive/private_keys/${PRIVATE_KEY} && git $* 2>&1" 2>&1 | timestamped "${SCRIPT_NAME}" 30
 }
