@@ -95,9 +95,15 @@ if [[ -z "${1}" ]]; then
   fatal "missing git command"
 fi
 if [[ -f "${PRIVATE_KEY}" ]]; then
+  # NOTE: This PARAMS mess is to deal with how $@ and $* are expanded by bash
+  local PARAMS=""
+  for PARAM in "$@"
+  do
+    PARAMS="${PARAMS} \"${PARAM}\""
+  done
   # NOTE: This will fail, if the private_keys do not have 400 permissions
-  ssh-agent bash -c "ssh-add ${PRIVATE_KEY} && git $* 2>&1" 2> /dev/null
+  ssh-agent bash -c "ssh-add ${PRIVATE_KEY} && git ${PARAMS} 2>&1" 2> /dev/null
 else
-  git $* 2>&1
+  git "$@" 2>&1
 fi
 }
