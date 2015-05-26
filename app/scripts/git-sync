@@ -18,12 +18,12 @@ if [[ -L "${local}" || -f "${local}" ]]; then
 fi
 
 function repo_change_count () {
-  git ${GIT_FLAGS} status --porcelain --untracked-files=no | wc -l
+  hdgit '' ${GIT_FLAGS} status --porcelain --untracked-files=no | wc -l
 }
 
 if [[ -d "${local}" && -d "${local}/.git" ]]; then
   GIT_FLAGS="--git-dir=${local}/.git --work-tree=${local}"
-  ORIGIN_URL="$(git ${GIT_FLAGS} config remote.origin.url)"
+  ORIGIN_URL="$(hdgit '' ${GIT_FLAGS} config remote.origin.url)"
   # URL change
   if [ "${ORIGIN_URL}" != "${REMOTE_REPO}" ]; then
     warn "repository url differs, reclone needed"
@@ -36,21 +36,21 @@ if [[ -d "${local}" && -d "${local}/.git" ]]; then
     "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
     exit 0
   fi
-  if ! git ${GIT_FLAGS} fetch --all 2>&1 | timestamped "${SCRIPT_NAME}" 30; then
+  if ! hdgit '' ${GIT_FLAGS} fetch --all 2>&1 | timestamped "${SCRIPT_NAME}" 30; then
     fatal "fetch error"
   fi
   # Branch change
-  LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
+  LOCAL_BRANCH="$(hdgit '' ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
   if [[ -n "${REMOTE_BRANCH}" && "${REMOTE_BRANCH}" != "${LOCAL_BRANCH}" ]]; then
     warn "specified branch changed, checking out ${REMOTE_BRANCH}"
-    git ${GIT_FLAGS} checkout "${REMOTE_BRANCH}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
+    hdgit '' ${GIT_FLAGS} checkout "${REMOTE_BRANCH}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
   fi
   # Found changes
-  LOCAL_BRANCH="$(git ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
-  HAS_CHANGES="$(git ${GIT_FLAGS} diff HEAD...origin/${LOCAL_BRANCH} --raw)"
+  LOCAL_BRANCH="$(hdgit '' ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
+  HAS_CHANGES="$(hdgit '' ${GIT_FLAGS} diff HEAD...origin/${LOCAL_BRANCH} --raw)"
   if [ "${HAS_CHANGES}x" != "x" ]; then
     warn "new code detected, pulling"
-    git ${GIT_FLAGS} pull 2>&1 | timestamped "${SCRIPT_NAME}" 30
+    hdgit '' ${GIT_FLAGS} pull 2>&1 | timestamped "${SCRIPT_NAME}" 30
     exit 0
   fi
 else

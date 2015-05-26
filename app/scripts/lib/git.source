@@ -34,7 +34,7 @@ fi
 # SSH validation
 if [[ "${REMOTE_REPO:0:4}" == "git@" ]] 
 then
-  local GIT_ERROR="$(git ls-remote "${REMOTE_REPO}" 2>&1 1>/dev/null)"
+  local GIT_ERROR="$(hdgit '' ls-remote "${REMOTE_REPO}" 2>&1 1>/dev/null)"
   if [[ -n "${GIT_ERROR}" ]]
   then
     error "could not connect to remote repo '${REMOTE_REPO}'"
@@ -45,7 +45,7 @@ fi
 
 # TODO: Add local check
 # TODO: Make sure that at this point user/pass prompt will not hold up the script
-if ! git ls-remote "${REMOTE_REPO}" > /dev/null 2>&1; then
+if ! hdgit '' ls-remote "${REMOTE_REPO}" > /dev/null 2>&1; then
   error "could not find valid repo at '${REMOTE_REPO}'"
   return 1
 fi
@@ -53,7 +53,7 @@ fi
 if [[ -z "${REMOTE_BRANCH}" ]]; then
   trace "no branch provided, so looking up the default branch in the repo"
   # extract the SHA of the HEAD tag
-  local REMOTE_OUTPUT="$(git ls-remote "${REMOTE_REPO}")"
+  local REMOTE_OUTPUT="$(hdgit '' ls-remote "${REMOTE_REPO}")"
   local REMOTE_HEAD_SHA="$(gitLsRemoteHeadSha.awk <<< "${REMOTE_OUTPUT}")"
   export REMOTE_HEAD_SHA
   # find a branch/tag of the HEAD SHA
@@ -76,7 +76,7 @@ return 0
 function order_sha () {
 local DIRECTORY="${1}"
 local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
-local SHORT_SHA="$(git ${GIT_FLAGS} rev-parse --short HEAD)"
+local SHORT_SHA="$(hdgit '' ${GIT_FLAGS} rev-parse --short HEAD)"
 echo "${SHORT_SHA}"
 }
 
@@ -85,7 +85,7 @@ echo "${SHORT_SHA}"
 function commit_msg () {
 local DIRECTORY="${1}"
 local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
-local COMMIT_MSG="$(git ${GIT_FLAGS} log -1 --pretty="[%ae] %B" | head -n 1)"
+local COMMIT_MSG="$(hdgit '' ${GIT_FLAGS} log -1 --pretty="[%ae] %B" | head -n 1)"
 echo "${COMMIT_MSG}"
 }
 

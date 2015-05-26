@@ -18,15 +18,15 @@ if [[ -L "${local}" || -f "${local}" ]]; then
   fatal "<local> cannot be a file or symlink or blank"
 elif [[ ! -d "${local}" ]]; then
   trace "cloning '${REMOTE_REPO}#${REMOTE_BRANCH}' for the first time to '${local}'"
-  git clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
+  hdgit '' clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
 elif [[ -d "${local}" && "$(find "${local}" -mindepth 1 -printf a | wc -c)" == 0 ]]; then
   trace "replacing empty dir '${local}' with '${REMOTE_REPO}#${REMOTE_BRANCH}'"
   rmdir "${local}"
-  git clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
+  hdgit '' clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
 elif [[ -d "${local}" && ! "${force}" == "true" ]]; then
   fatal "--force is required in order to overwrite an existing repo"
 elif [[ -d "${local}" && "${force}" == "true" ]]; then
   trace "replacing clone '${local}' from '${REMOTE_REPO}#${REMOTE_BRANCH}'"
   rm -rf "${local}"
-  git clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
+  hdgit '' clone --branch "${REMOTE_BRANCH}" ${DEPTH:-} "${REMOTE_REPO}" "${local}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
 fi
