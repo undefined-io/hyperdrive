@@ -12,7 +12,7 @@ while read REPO; do
   BUILDPACK="$(makeSafeRepoPath.awk <<< "${REPO}")"
   BUILDPACK_PATH="${HYPERDRIVE_BUILDPACK_ROOT}/${BUILDPACK}"
   if [[ "${force}" == "true" || ! -d "${BUILDPACK_PATH}" ]]; then
-    "${SCRIPT_DIR}/git-sync" "${REPO}" "${BUILDPACK_PATH}" || true
+    "${SCRIPT_DIR}/git-sync" "${REPO}" "${BUILDPACK_PATH}"
   fi
   trace "${REPO} available at ${BUILDPACK_PATH}"
 done < "${HYPERDRIVE_BUILDPACK_MANIFEST}"
