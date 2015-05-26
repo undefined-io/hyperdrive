@@ -32,7 +32,9 @@ while IFS=$'\n' read ROW; do
     RUNNING)
       COLOR="${C_YELLOW}"
       if list_of_ships_in_formation | fgrep -q -e "${NAME}"; then
-        COLOR="${C_GREEN}"
+        if list_of_ships_on_assignment | fgrep -q -e "${NAME}"; then
+          COLOR="${C_GREEN}"
+        fi
       fi
       echo "lxc  : ${COLOR}${NAME}${C_RESET} [${STATE}] (${IP}) '${PORT:-} ==> ${PUBLISH_PORT:-}'" ;;
     STOPPED) echo "lxc  : ${C_RED}${NAME}${C_RESET} [${STATE}] (${IP})" ;;

@@ -109,7 +109,7 @@ function stop_services() {
   while read SERVICE; do
     if ! pgrep "${SERVICE}"; then continue; fi
     stop "${SERVICE}" 2>&1 | timestamped "${SCRIPT_NAME}" || true
-  done < <(initctl list | nonCritialUpstartJobs.awk)
+  done < <(initctl list | nonCriticalUpstartJobs.awk)
 }
 
 function start_services() {
