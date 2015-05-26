@@ -89,8 +89,10 @@ local COMMIT_MSG="$(git ${GIT_FLAGS} log -1 --pretty="[%ae] %B" | head -n 1)"
 echo "${COMMIT_MSG}"
 }
 
+## hdgit #######################################################################
+
 function hdgit () {
-local PRIVATE_KEY="/var/hyperdrive/private_keys/${1}"
+local PRIVATE_KEY="/var/hyperdrive/private_keys/${1:-__default__}"
 shift
 if [[ -z "${1}" ]]; then
   fatal "missing git command"
