@@ -41,7 +41,7 @@ apply_order_exports "${ORDERS}"
 info "'${HULL_NAME}' analyzing need for ship upgrade"
 TMP_REPO=$(mktemp -d "/tmp/${HULL_NAME}.XXXXXXXX")
 "${SCRIPT_DIR}/git-clone" "${REPO}" "${TMP_REPO}" --shallow --force
-SHORT_SHA="$(order_sha "${TMP_REPO}")"
+SHORT_SHA="$(git_repo_sha "${TMP_REPO}")"
 COMMIT_MSG="$(commit_msg "${TMP_REPO}")"
 ORDERS_SHA="$(sha256sum ${ORDERS} | sha256sum | awk '{print substr($1, 0, 8)}')"
 HULL_NAME="${HULL_NAME}-${ORDERS_SHA}-${SHORT_SHA}"

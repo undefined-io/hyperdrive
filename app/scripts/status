@@ -19,7 +19,7 @@ while IFS=$'\n' read ROW; do
   read NAME STATE IP <<< "${ROW}"
 
   case "${NAME}" in
-    hyperdrive|hyperdrive-base-*|hyperdrive-basic-hull)
+    hyperdrive|hyperdrive-base-*)
       case "${STATE}" in
         RUNNING) COLOR="${C_RED}" ;;
               *) COLOR="${C_GREEN}" ;;
@@ -65,7 +65,7 @@ if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
     ORDER="${REPO##*/}"
     UPDATE=""
     COLOR="${C_GREEN}"
-    SHA="$(order_sha "${REPO}")"
+    SHA="$(git_repo_sha "${REPO}")"
     REMOTE="$(git_remote_repo "${REPO}")"
     if ! ship_exists "${ORDER}" "${SHA}"; then
       COLOR="${C_YELLOW}"

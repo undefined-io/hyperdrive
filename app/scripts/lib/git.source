@@ -67,10 +67,9 @@ trace "REMOTE_REPO: ${REMOTE_REPO}, REMOTE_BRANCH: ${REMOTE_BRANCH}"
 return 0
 }
 
-## order_sha ###################################################################
+## git_repo_sha ################################################################
 
-# TODO: this name is incredible confusing the way it is used
-function order_sha () {
+function git_repo_sha () {
 local DIRECTORY="${1}"
 local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
 local SHORT_SHA="$(hdgit '' ${GIT_FLAGS} rev-parse --short HEAD)"
