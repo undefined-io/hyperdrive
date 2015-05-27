@@ -86,6 +86,15 @@ local COMMIT_MSG="$(hdgit '' ${GIT_FLAGS} log -1 --pretty="[%ae] %B" | head -n 1
 echo "${COMMIT_MSG}"
 }
 
+## git_remote_repo #############################################################
+
+function git_remote_repo () {
+local DIRECTORY="${1}"
+local GIT_FLAGS="--git-dir=${DIRECTORY}/.git --work-tree=${DIRECTORY}"
+local REMOTE="$(hdgit '' ${GIT_FLAGS} remote -v | gitRemote.awk)"
+echo "${REMOTE}"
+}
+
 ## hdgit #######################################################################
 
 function hdgit () {
