@@ -47,7 +47,7 @@ server {
 
   listen ${PUBLISH_PORT};
 
-  location / {
+  location ${PUBLISH_ROOT:-/} {
     gzip on;
     gzip_types *;
     gzip_proxied any;
@@ -71,6 +71,7 @@ server {
   }
 }
 EOF
+#rewrite /invite/(.*) /$1 break;
 
 info "ship '${hull_name}' joined formation"
 
