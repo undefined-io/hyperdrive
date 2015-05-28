@@ -5,14 +5,15 @@
 ### Options:
 ###   --help
 
-if hull_exists "${hull_name}"; then
+# TODO: flock the inventory stuff
+
+if ! hull_exists "${hull_name}"; then
+  fatal "'${hull_name}' is not a valid hull name"
+fi
 
 IP_ADDRESS="$(ship_ip "${hull_name}")"
 apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/orders"
 NAME="$(< "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/.name")"
-
-trace "deleting '${HYPERDRIVE_NGINX}/upstream/${NAME}-*.conf'"
-rm -f ${HYPERDRIVE_NGINX}/upstream/${NAME}-*.conf
 
 # create the upstream for the ship
 trace "creating '${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf'"
@@ -24,21 +25,16 @@ EOF
 
 # if a specific host is requested, we need to disable the default routing in nginx for that port
 if [[ -n "${PUBLISH_HOST:-}" ]]; then
-  trace "creating '${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf'"
-cat << EOF > "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
+  PORT_OVERRIDE_FILE="${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
+  trace "creating '${PORT_OVERRIDE_FILE}'"
+cat << EOF > "${PORT_OVERRIDE_FILE}"
   server {
     listen      ${PUBLISH_PORT};
     server_name "";
     return      444;
   }
 EOF
-else
-  trace "removing '${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf'"
-  rm -f "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
 fi
-
-trace "deleting '${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf'"
-rm -f ${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf
 
 trace "creating '${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf'"
 cat << EOF > "${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
@@ -73,11 +69,15 @@ server {
 EOF
 #rewrite /invite/(.*) /$1 break;
 
+# cleanup
+trace "deleting '${HYPERDRIVE_NGINX}/upstream/${NAME}-*.conf'"
+rm -f ${HYPERDRIVE_NGINX}/upstream/${NAME}-*.conf
+
+# TODO: fix
+trace "removing '${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf'"
+rm -f "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
+trace "deleting '${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf'"
+rm -f ${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf
+
+# done
 info "ship '${hull_name}' joined formation"
-
-else
-
-warn "'${hull_name}' is not a valid hull name"
-
-fi # hull_exists
-
