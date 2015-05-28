@@ -15,9 +15,15 @@ IP_ADDRESS="$(ship_ip "${hull_name}")"
 apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/orders"
 NAME="$(< "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/.name")"
 
+# create the nginx manifest for the hull
+MANIFEST="${HYPERDRIVE_NGINX}/manifests/${hull_name}.manifest"
+touch "${MANIFEST}"
+
 # create the upstream for the ship
-trace "creating '${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf'"
-cat << EOF > "${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf"
+UPSTREAM_FILE="${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf"
+trace "creating '${UPSTREAM_FILE}'"
+echo "${UPSTREAM_FILE}" >> "${MANIFEST}"
+cat << EOF > "${UPSTREAM_FILE}"
 upstream ${hull_name} {
 server ${IP_ADDRESS}:${PORT} max_fails=0;
 }
@@ -25,9 +31,10 @@ EOF
 
 # if a specific host is requested, we need to disable the default routing in nginx for that port
 if [[ -n "${PUBLISH_HOST:-}" ]]; then
-  PORT_OVERRIDE_FILE="${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
-  trace "creating '${PORT_OVERRIDE_FILE}'"
-cat << EOF > "${PORT_OVERRIDE_FILE}"
+  OVERRIDE_FILE="${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
+  trace "creating '${OVERRIDE_FILE}'"
+  echo "${OVERRIDE_FILE}" >> "${MANIFEST}"
+cat << EOF > "${OVERRIDE_FILE}"
   server {
     listen      ${PUBLISH_PORT};
     server_name "";
@@ -36,8 +43,10 @@ cat << EOF > "${PORT_OVERRIDE_FILE}"
 EOF
 fi
 
-trace "creating '${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf'"
-cat << EOF > "${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
+HOST_FILE="${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
+trace "creating '${HOST_FILE}'"
+echo "${HOST_FILE}" >> "${MANIFEST}"
+cat << EOF > "${HOST_FILE}"
 server {
   server_name ${PUBLISH_HOST:-};
 
