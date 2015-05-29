@@ -5,18 +5,25 @@
 ### Options:
 ###   --help
 
-if hull_exists "${hull_name}"; then
+# TODO: flock the inventory stuff
+
+if ! hull_exists "${hull_name}"; then
+  fatal "'${hull_name}' is not a valid hull name"
+fi
 
 IP_ADDRESS="$(ship_ip "${hull_name}")"
 apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/orders"
 NAME="$(< "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/.name")"
 
-trace "deleting '${HYPERDRIVE_NGINX}/upstream/${NAME}-*.conf'"
-rm -f ${HYPERDRIVE_NGINX}/upstream/${NAME}-*.conf
+# create the nginx manifest for the hull
+MANIFEST="${HYPERDRIVE_NGINX}/manifests/${hull_name}.manifest"
+> "${MANIFEST}"
 
 # create the upstream for the ship
-trace "creating '${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf'"
-cat << EOF > "${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf"
+UPSTREAM_FILE="${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf"
+trace "creating '${UPSTREAM_FILE}'"
+echo "${UPSTREAM_FILE}" >> "${MANIFEST}"
+cat << EOF > "${UPSTREAM_FILE}"
 upstream ${hull_name} {
 server ${IP_ADDRESS}:${PORT} max_fails=0;
 }
@@ -24,60 +31,72 @@ EOF
 
 # if a specific host is requested, we need to disable the default routing in nginx for that port
 if [[ -n "${PUBLISH_HOST:-}" ]]; then
-  trace "creating '${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf'"
-cat << EOF > "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
+  OVERRIDE_FILE="${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
+  trace "creating '${OVERRIDE_FILE}'"
+  echo "${OVERRIDE_FILE}" >> "${MANIFEST}"
+cat << EOF > "${OVERRIDE_FILE}"
   server {
     listen      ${PUBLISH_PORT};
     server_name "";
     return      444;
   }
 EOF
-else
-  trace "removing '${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf'"
-  rm -f "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
 fi
 
-trace "deleting '${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf'"
-rm -f ${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf
-
-trace "creating '${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf'"
-cat << EOF > "${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
+HOST_FILE="${HYPERDRIVE_NGINX}/hosts/${PUBLISH_HOST}_${PUBLISH_PORT}.conf"
+trace "creating '${HOST_FILE}'"
+echo "${HOST_FILE}" >> "${MANIFEST}"
+cat << EOF > "${HOST_FILE}"
 server {
   server_name ${PUBLISH_HOST:-};
-
   listen ${PUBLISH_PORT};
 
-  location ${PUBLISH_ROOT:-/} {
-    gzip on;
-    gzip_types *;
-    gzip_proxied any;
-    gzip_comp_level 6;
-
-    include cors.conf;
-
-    proxy_set_header X-Forwarded-Host \$host;
-    proxy_set_header X-Forwarded-Server \$host;
-    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-
-    # forward host header
-    proxy_set_header Host \$http_host;
-
-    # WebSocket support (nginx 1.4)
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade \$http_upgrade;
-    proxy_set_header Connection "upgrade";
-
-    proxy_pass http://${hull_name};
-  }
+  include proxies/*_${PUBLISH_HOST}.conf;
 }
 EOF
-#rewrite /invite/(.*) /$1 break;
 
+PROXY_FILE="${HYPERDRIVE_NGINX}/proxies/${hull_name}_${PUBLISH_HOST}.conf"
+trace "creating '${PROXY_FILE}'"
+echo "${PROXY_FILE}" >> "${MANIFEST}"
+cat << EOF > "${PROXY_FILE}"
+location ${PUBLISH_ROOT:-/} {
+  gzip on;
+  gzip_types *;
+  gzip_proxied any;
+  gzip_comp_level 6;
+
+  include cors.conf;
+
+  proxy_set_header X-Forwarded-Host \$host;
+  proxy_set_header X-Forwarded-Server \$host;
+  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+
+  # forward host header
+  proxy_set_header Host \$http_host;
+
+  # WebSocket support (nginx 1.4)
+  proxy_http_version 1.1;
+  proxy_set_header Upgrade \$http_upgrade;
+  proxy_set_header Connection "upgrade";
+
+  rewrite ${PUBLISH_ROOT:-/}(.*) /\$1 break;
+  proxy_pass http://${hull_name};
+}
+EOF
+
+# delete all manifests related to this order, that are not the one related to this hull
+find "${HYPERDRIVE_NGINX}/manifests/" -type f -regextype sed -regex ".*\/${NAME}-[[:alnum:]]\{8\}-[[:alnum:]]\{7\}.*\.manifest" -not -name "${hull_name}.manifest" -delete -printf "delete nginx file: '%P'\n" | timestamped "${SCRIPT_NAME}" 30
+
+# find all current nginx files
+ALL_FILES="$(find "${HYPERDRIVE_NGINX}" -type f -wholename "*/hosts/*.conf" -o -wholename "*/proxies/*.conf" -o -wholename "*/overrides/*.conf" -o -wholename "*/upstream/*.conf")"
+# find all files in use based on manifests
+MANIFEST_FILES="$(cat "${HYPERDRIVE_NGINX}"/manifests/*.manifest | sort | uniq)"
+# delete any nginx conf files that are not in the manifest
+while IFS=$'\n' read FILE; do
+  [[ -z "${FILE}" ]] && continue
+  trace "delete nginx file: '${FILE}'"
+  rm -f "${FILE}"
+done <<< "$(comm -23 <(echo "${ALL_FILES}" | sort) <(echo "${MANIFEST_FILES}" | sort))"
+
+# done
 info "ship '${hull_name}' joined formation"
-
-else
-
-warn "'${hull_name}' is not a valid hull name"
-
-fi # hull_exists
-
