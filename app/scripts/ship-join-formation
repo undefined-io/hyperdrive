@@ -86,11 +86,18 @@ cat << EOF > "${PROXY_FILE}"
 EOF
 
 # delete all manifests related to this order, that are not the one related to this hull
-find /var/hyperdrive/nginx/manifests/ -type f -name "${NAME}-*" -not -name "${hull_name}.manifest"
+find /var/hyperdrive/nginx/manifests/ -type f -name "${NAME}-*" -not -name "${hull_name}.manifest" -delete -printf "delete nginx file: '%P'\n" | timestamped "${SCRIPT_NAME}" 30
+
 # find all current nginx files
-find "${HYPERDRIVE_NGINX}" -type f -wholename "*/hosts/*.conf" -o -wholename "*/proxies/*.conf" -o -wholename "*/overrides/*.conf" -o -wholename "*/upstream/*.conf"
+ALL_FILES="$(find "${HYPERDRIVE_NGINX}" -type f -wholename "*/hosts/*.conf" -o -wholename "*/proxies/*.conf" -o -wholename "*/overrides/*.conf" -o -wholename "*/upstream/*.conf")"
 # find all files in use based on manifests
-cat "${HYPERDRIVE_NGINX}"/*.manifest
+MANIFEST_FILES="$(cat "${HYPERDRIVE_NGINX}"/manifests/*.manifest | sort | uniq)"
+# delete any nginx conf files that are not in the manifest
+while IFS=$'\n' read FILE; do
+  [[ -z "${FILE}" ]] && continue
+  trace "delete nginx file: '${FILE}'"
+  rm -f "${FILE}"
+done <<< "$(comm -23 <(echo "${ALL_FILES}" | sort) <(echo "${MANIFEST_FILES}" | sort))"
 
 # done
 info "ship '${hull_name}' joined formation"
