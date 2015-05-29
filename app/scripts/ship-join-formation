@@ -55,6 +55,19 @@ server {
 }
 EOF
 
+if [[ -n "${REDIRECT_HOST:-}" ]]; then
+  REDIRECT_FILE="${HYPERDRIVE_NGINX}/hosts/${REDIRECT_HOST//\*/_}_${PUBLISH_PORT}.conf"
+  trace "creating '${REDIRECT_FILE}'"
+  echo "${REDIRECT_FILE}" >> "${MANIFEST}"
+cat << EOF > "${REDIRECT_FILE}"
+server {
+  server_name ${REDIRECT_HOST};
+  listen ${PUBLISH_PORT};
+  return 301 \$scheme://${PUBLISH_HOST}\$request_uri;
+}
+EOF
+fi
+
 PROXY_FILE="${HYPERDRIVE_NGINX}/proxies/${hull_name}_${PUBLISH_HOST}.conf"
 trace "creating '${PROXY_FILE}'"
 echo "${PROXY_FILE}" >> "${MANIFEST}"
@@ -85,7 +98,7 @@ location ${PUBLISH_ROOT:-/} {
 EOF
 
 # delete all manifests related to this order, that are not the one related to this hull
-find "${HYPERDRIVE_NGINX}/manifests/" -type f -regextype sed -regex ".*\/${NAME}-[[:alnum:]]\{8\}-[[:alnum:]]\{7\}.*\.manifest" -not -name "${hull_name}.manifest" -delete -printf "delete nginx file: '%P'\n" | timestamped "${SCRIPT_NAME}" 30
+find "${HYPERDRIVE_NGINX}/manifests/" -type f -regextype sed -regex ".*\/${NAME}-[[:alnum:]]\{8\}-[[:alnum:]]\{7\}.*\.manifest" -not -name "${hull_name}.manifest" -delete -printf "delete nginx file: '%p'\n" | timestamped "${SCRIPT_NAME}" 30
 
 # find all current nginx files
 ALL_FILES="$(find "${HYPERDRIVE_NGINX}" -type f -wholename "*/hosts/*.conf" -o -wholename "*/proxies/*.conf" -o -wholename "*/overrides/*.conf" -o -wholename "*/upstream/*.conf")"
