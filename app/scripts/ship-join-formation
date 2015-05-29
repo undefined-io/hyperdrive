@@ -51,7 +51,7 @@ server {
   server_name ${PUBLISH_HOST:-};
   listen ${PUBLISH_PORT};
 
-  include proxies/*_${PUBLISH_HOST}.conf
+  include proxies/*_${PUBLISH_HOST}.conf;
 }
 EOF
 
@@ -59,29 +59,28 @@ PROXY_FILE="${HYPERDRIVE_NGINX}/proxies/${hull_name}_${PUBLISH_HOST}.conf"
 trace "creating '${PROXY_FILE}'"
 echo "${PROXY_FILE}" >> "${MANIFEST}"
 cat << EOF > "${PROXY_FILE}"
-  location ${PUBLISH_ROOT:-/} {
-    gzip on;
-    gzip_types *;
-    gzip_proxied any;
-    gzip_comp_level 6;
+location ${PUBLISH_ROOT:-/} {
+  gzip on;
+  gzip_types *;
+  gzip_proxied any;
+  gzip_comp_level 6;
 
-    include cors.conf;
+  include cors.conf;
 
-    proxy_set_header X-Forwarded-Host \$host;
-    proxy_set_header X-Forwarded-Server \$host;
-    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Host \$host;
+  proxy_set_header X-Forwarded-Server \$host;
+  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
 
-    # forward host header
-    proxy_set_header Host \$http_host;
+  # forward host header
+  proxy_set_header Host \$http_host;
 
-    # WebSocket support (nginx 1.4)
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade \$http_upgrade;
-    proxy_set_header Connection "upgrade";
+  # WebSocket support (nginx 1.4)
+  proxy_http_version 1.1;
+  proxy_set_header Upgrade \$http_upgrade;
+  proxy_set_header Connection "upgrade";
 
-    rewrite ${PUBLISH_ROOT:-/}(.*) \$1 break;
-    proxy_pass http://${hull_name};
-  }
+  rewrite ${PUBLISH_ROOT:-/}(.*) \$1 break;
+  proxy_pass http://${hull_name};
 }
 EOF
 
