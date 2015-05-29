@@ -17,7 +17,7 @@ NAME="$(< "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/.name")"
 
 # create the nginx manifest for the hull
 MANIFEST="${HYPERDRIVE_NGINX}/manifests/${hull_name}.manifest"
-touch "${MANIFEST}"
+> "${MANIFEST}"
 
 # create the upstream for the ship
 UPSTREAM_FILE="${HYPERDRIVE_NGINX}/upstream/${hull_name}.conf"
@@ -43,15 +43,22 @@ cat << EOF > "${OVERRIDE_FILE}"
 EOF
 fi
 
-HOST_FILE="${HYPERDRIVE_NGINX}/hosts/${hull_name}.conf"
+HOST_FILE="${HYPERDRIVE_NGINX}/hosts/${PUBLISH_HOST}_${PUBLISH_PORT}.conf"
 trace "creating '${HOST_FILE}'"
 echo "${HOST_FILE}" >> "${MANIFEST}"
 cat << EOF > "${HOST_FILE}"
 server {
   server_name ${PUBLISH_HOST:-};
-
   listen ${PUBLISH_PORT};
 
+  include proxies/*_${PUBLISH_HOST}.conf
+}
+EOF
+
+PROXY_FILE="${HYPERDRIVE_NGINX}/proxies/${hull_name}_${PUBLISH_HOST}.conf"
+trace "creating '${PROXY_FILE}'"
+echo "${PROXY_FILE}" >> "${MANIFEST}"
+cat << EOF > "${PROXY_FILE}"
   location ${PUBLISH_ROOT:-/} {
     gzip on;
     gzip_types *;
@@ -72,21 +79,18 @@ server {
     proxy_set_header Upgrade \$http_upgrade;
     proxy_set_header Connection "upgrade";
 
+    rewrite ${PUBLISH_ROOT:-/}(.*) /$1 break;
     proxy_pass http://${hull_name};
   }
 }
 EOF
-#rewrite /invite/(.*) /$1 break;
 
-# cleanup
-trace "deleting '${HYPERDRIVE_NGINX}/upstream/${NAME}-*.conf'"
-rm -f ${HYPERDRIVE_NGINX}/upstream/${NAME}-*.conf
-
-# TODO: fix
-trace "removing '${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf'"
-rm -f "${HYPERDRIVE_NGINX}/overrides/port-${PUBLISH_PORT}.conf"
-trace "deleting '${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf'"
-rm -f ${HYPERDRIVE_NGINX}/hosts/${NAME}-*.conf
+# delete all manifests related to this order, that are not the one related to this hull
+find /var/hyperdrive/nginx/manifests/ -type f -name "${NAME}-*" -not -name "${hull_name}.manifest"
+# find all current nginx files
+find "${HYPERDRIVE_NGINX}" -type f -wholename "*/hosts/*.conf" -o -wholename "*/proxies/*.conf" -o -wholename "*/overrides/*.conf" -o -wholename "*/upstream/*.conf"
+# find all files in use based on manifests
+cat "${HYPERDRIVE_NGINX}"/*.manifest
 
 # done
 info "ship '${hull_name}' joined formation"
