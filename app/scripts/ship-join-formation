@@ -79,7 +79,7 @@ cat << EOF > "${PROXY_FILE}"
     proxy_set_header Upgrade \$http_upgrade;
     proxy_set_header Connection "upgrade";
 
-    rewrite ${PUBLISH_ROOT:-/}(.*) /$1 break;
+    rewrite ${PUBLISH_ROOT:-/}(.*) \$1 break;
     proxy_pass http://${hull_name};
   }
 }
