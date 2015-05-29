@@ -86,7 +86,7 @@ cat << EOF > "${PROXY_FILE}"
 EOF
 
 # delete all manifests related to this order, that are not the one related to this hull
-find /var/hyperdrive/nginx/manifests/ -type f -name "${NAME}-*" -not -name "${hull_name}.manifest" -delete -printf "delete nginx file: '%P'\n" | timestamped "${SCRIPT_NAME}" 30
+find "${HYPERDRIVE_NGINX}/manifests/" -type f -regextype sed -regex ".*\/${NAME}-[[:alnum:]]\{8\}-[[:alnum:]]\{7\}.*\.manifest" -not -name "${hull_name}.manifest" -delete -printf "delete nginx file: '%P'\n" | timestamped "${SCRIPT_NAME}" 30
 
 # find all current nginx files
 ALL_FILES="$(find "${HYPERDRIVE_NGINX}" -type f -wholename "*/hosts/*.conf" -o -wholename "*/proxies/*.conf" -o -wholename "*/overrides/*.conf" -o -wholename "*/upstream/*.conf")"
