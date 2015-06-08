@@ -20,18 +20,21 @@ fi
 
 ## START #######################################################################
 
+# order information
 echo "hq   : ${HYPERDRIVE_HQ:-${C_RED}<not set>${C_RESET}}"
 if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
   MSG="$(commit_msg "${HYPERDRIVE_HQ_ROOT}")"
   echo "       ${C_BBLACK}- ${MSG}${C_RESET}"
 fi
 
+# info about ships that have been created
 while IFS=$'\n' read ROW; do
   if [[ -z "${ROW}" ]]; then
     continue
   fi
   read NAME STATE IP <<< "${ROW}"
 
+  # hyperdrive base ship info
   case "${NAME}" in
     hyperdrive|hyperdrive-base-*)
       case "${STATE}" in
@@ -41,6 +44,8 @@ while IFS=$'\n' read ROW; do
       echo "lxc  : ${COLOR}${NAME}${C_RESET} [${STATE}] (${IP})"
       continue
   esac
+
+  # ships based on assignments
   apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/orders"
   case "${STATE}" in
     RUNNING)
@@ -58,8 +63,10 @@ while IFS=$'\n' read ROW; do
   echo "       ${C_BBLACK}- ${MSG}${C_RESET}"
 done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^hyperdrive" | tail -n +3)"
 
+# hyperdrive upstart job info
 initctl list | statusHyperdriveJobs.awk
 
+# most recent order information
 if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
   while IFS=$'\n' read REPO; do
     ORDER="${REPO##*/}"

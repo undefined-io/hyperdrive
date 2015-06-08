@@ -1,0 +1,36 @@
+#!/var/hyperdrive/scripts/overseer
+# vim: set ft=sh :
+### Usage:
+###   ship-leave-formation <hull_name> 
+### Options:
+###   --help
+###
+### Make a ship leave formation
+
+# TODO: flock the inventory stuff
+
+if ! hull_exists "${hull_name}"; then
+  fatal "'${hull_name}' is not a valid hull name"
+fi
+
+# remove the manifest for this ship
+MANIFEST_FILE="${HYPERDRIVE_NGINX}/manifests/${hull_name}.manifest"
+trace "delete nginx manifest file: '${MANIFEST_FILE}'"
+rm -f "${MANIFEST_FILE}"
+
+# find all current nginx files
+ALL_FILES="$(find "${HYPERDRIVE_NGINX}" -type f -wholename "*/hosts/*.conf" -o -wholename "*/proxies/*.conf" -o -wholename "*/overrides/*.conf" -o -wholename "*/upstream/*.conf")"
+# find all files in use based on manifests
+MANIFEST_FILES="$(cat "${HYPERDRIVE_NGINX}"/manifests/*.manifest | sort | uniq)"
+
+# delete any nginx conf files that are not in the manifests
+while IFS=$'\n' read FILE; do
+  [[ -z "${FILE}" ]] && continue
+  trace "delete nginx file: '${FILE}'"
+  rm -f "${FILE}"
+done <<< "$(comm -23 <(echo "${ALL_FILES}" | sort) <(echo "${MANIFEST_FILES}" | sort))"
+
+reload hyperdrive-nginx
+
+# done
+info "'${hull_name}' has left formation"

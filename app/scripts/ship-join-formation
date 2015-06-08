@@ -112,4 +112,4 @@ while IFS=$'\n' read FILE; do
 done <<< "$(comm -23 <(echo "${ALL_FILES}" | sort) <(echo "${MANIFEST_FILES}" | sort))"
 
 # done
-info "ship '${hull_name}' joined formation"
+info "'${hull_name}' has joined formation"
