@@ -6,6 +6,20 @@
 ###   --help
 ###   --verbose   list more detailed output
 
+## ship_for_assignment_exists ##################################################
+
+function ship_for_assignment_exists () {
+local ORDER="${1}"
+local ASSIGNMENT_SHA="${2}"
+if [[ $(lxc-ls -1 "^hyperdrive-${ORDER}-[\w]{8}-${ASSIGNMENT_SHA}\$" | wc -c) == 0 ]]; then
+  return 1
+else
+  return 0
+fi
+}
+
+## START #######################################################################
+
 echo "hq   : ${HYPERDRIVE_HQ:-${C_RED}<not set>${C_RESET}}"
 if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
   MSG="$(commit_msg "${HYPERDRIVE_HQ_ROOT}")"
@@ -46,20 +60,6 @@ done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^hyperdrive" | tail -
 
 initctl list | statusHyperdriveJobs.awk
 
-#if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
-#  find "${HYPERDRIVE_HQ_ROOT}" -name "orders" -printf "%P " -exec bash -c 'orderAutodeploy.awk {}' \; | statusFormatOrders.awk
-#fi
-
-function ship_exists () {
-local ORDER="${1}"
-local ASSIGNMENT_SHA="${2}"
-if [[ $(lxc-ls -1 "^hyperdrive-${ORDER}-[\w]{8}-${ASSIGNMENT_SHA}\$" | wc -c) == 0 ]]; then
-  return 1
-else
-  return 0
-fi
-}
-
 if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
   while IFS=$'\n' read REPO; do
     ORDER="${REPO##*/}"
@@ -67,10 +67,10 @@ if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
     COLOR="${C_GREEN}"
     SHA="$(git_repo_sha "${REPO}")"
     REMOTE="$(git_remote_repo "${REPO}")"
-    if ! ship_exists "${ORDER}" "${SHA}"; then
+    if ! ship_for_assignment_exists "${ORDER}" "${SHA}"; then
       COLOR="${C_YELLOW}"
       UPDATE=" ${COLOR}(update available)${C_RESET}"
     fi
-    echo "test : [${COLOR}${ORDER}${C_RESET}] ${SHA}${UPDATE} : ${REMOTE}"
+    echo "order: [${COLOR}${ORDER}${C_RESET}] ${SHA}${UPDATE} : ${REMOTE}"
   done <<< "$(local_order_repos)"
 fi
