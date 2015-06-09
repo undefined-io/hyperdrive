@@ -43,6 +43,10 @@ cat << EOF > "${OVERRIDE_FILE}"
 EOF
 fi
 
+# TODO: Need to make sure that PUBLISH_HOST and REDIRECT_HOST don't step on each others toes
+# TODO: ... when there is a conflict
+
+# host config for a domain
 HOST_FILE="${HYPERDRIVE_NGINX}/hosts/${PUBLISH_HOST}_${PUBLISH_PORT}.conf"
 trace "creating '${HOST_FILE}'"
 echo "${HOST_FILE}" >> "${MANIFEST}"
@@ -55,18 +59,22 @@ server {
 }
 EOF
 
-if [[ -n "${REDIRECT_HOST:-}" ]]; then
-  REDIRECT_FILE="${HYPERDRIVE_NGINX}/hosts/${REDIRECT_HOST//\*/_}_${PUBLISH_PORT}.conf"
-  trace "creating '${REDIRECT_FILE}'"
-  echo "${REDIRECT_FILE}" >> "${MANIFEST}"
+# redirect_host configs, that point at the publish_host
+REDIRECT_HOST=(${REDIRECT_HOST}) # turn into array
+for NEXT_HOST in "${REDIRECT_HOST[@]}"; do
+  if [[ -n "${NEXT_HOST:-}" ]]; then
+    REDIRECT_FILE="${HYPERDRIVE_NGINX}/hosts/${NEXT_HOST//\*/_}_${PUBLISH_PORT}.conf"
+    trace "creating '${REDIRECT_FILE}'"
+    echo "${REDIRECT_FILE}" >> "${MANIFEST}"
 cat << EOF > "${REDIRECT_FILE}"
 server {
-  server_name ${REDIRECT_HOST};
+  server_name ${NEXT_HOST};
   listen ${PUBLISH_PORT};
   return 301 \$scheme://${PUBLISH_HOST}\$request_uri;
 }
 EOF
-fi
+  fi
+done
 
 PROXY_FILE="${HYPERDRIVE_NGINX}/proxies/${hull_name}_${PUBLISH_HOST}.conf"
 trace "creating '${PROXY_FILE}'"
