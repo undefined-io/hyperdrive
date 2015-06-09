@@ -12,4 +12,8 @@ if hull_exists "${ship_name}"; then
   "${SCRIPT_DIR}/formation-leave" "${ship_name}"
   "${SCRIPT_DIR}/assignment-stop" "${ship_name}"
   lxc-destroy -f --name="${ship_name}"
+  trace "'${ship_name}' destroyed"
+  SHIP_ROOT_DIR="${HYPERDRIVE_SHIP_ROOT}/${ship_name}"
+  rm -rf "${SHIP_ROOT_DIR}"
+  trace "removed support files '${SHIP_ROOT_DIR}'"
 fi
