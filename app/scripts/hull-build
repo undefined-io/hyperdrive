@@ -35,7 +35,7 @@ HULL_NAME="$(<"${HYPERDRIVE_BASE_HULL_NAME}")"
 HULL_BUILD_LOG="${HYPERDRIVE_SHIP_BUILD_LOGS}/${HULL_NAME}_setup.log"
 if ! hull_exists "${HULL_NAME}"; then
   info "'${HULL_NAME}' hull will now be created..."
-  HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
+  HULL_ROOT_DIR="${HYPERDRIVE_SHIP_ROOT}/${HULL_NAME}"
   HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
 
   hull_open

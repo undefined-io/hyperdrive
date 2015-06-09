@@ -46,7 +46,7 @@ while IFS=$'\n' read ROW; do
   esac
 
   # ships based on assignments
-  apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/orders"
+  apply_order_exports "${HYPERDRIVE_SHIP_ROOT}/${NAME}/share/orders"
   case "${STATE}" in
     RUNNING)
       COLOR="${C_YELLOW}"
@@ -59,7 +59,7 @@ while IFS=$'\n' read ROW; do
     STOPPED) echo "lxc  : ${C_RED}${NAME}${C_RESET} [${STATE}] (${IP})" ;;
   esac
   echo "       ${C_BBLACK}- hosts/root: ${PUBLISH_HOST} - ${PUBLISH_ROOT}${C_RESET}"
-  MSG="$(< "${HYPERDRIVE_LXC_ROOT}/${NAME}/share/.msg")"
+  MSG="$(< "${HYPERDRIVE_SHIP_ROOT}/${NAME}/share/.msg")"
   echo "       ${C_BBLACK}- ${MSG}${C_RESET}"
 done <<< "$(lxc-ls --fancy --fancy-format name,state,ipv4 "^hyperdrive" | tail -n +3)"
 

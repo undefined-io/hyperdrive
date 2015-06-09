@@ -12,8 +12,8 @@ if ! hull_exists "${hull_name}"; then
 fi
 
 IP_ADDRESS="$(ship_ip "${hull_name}")"
-apply_order_exports "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/orders"
-NAME="$(< "${HYPERDRIVE_LXC_ROOT}/${hull_name}/share/.name")"
+apply_order_exports "${HYPERDRIVE_SHIP_ROOT}/${hull_name}/share/orders"
+NAME="$(< "${HYPERDRIVE_SHIP_ROOT}/${hull_name}/share/.name")"
 
 # create the nginx manifest for the hull
 MANIFEST="${HYPERDRIVE_NGINX}/manifests/${hull_name}.manifest"

@@ -46,9 +46,9 @@ COMMIT_MSG="$(commit_msg "${TMP_REPO}")"
 ORDERS_SHA="$(sha256sum ${ORDERS} | sha256sum | awk '{print substr($1, 0, 8)}')"
 HULL_NAME="${HULL_NAME}-${ORDERS_SHA}-${SHORT_SHA}"
 HULL_BASE="$(< "${HYPERDRIVE_BASE_HULL_NAME}" )"
-HULL_ROOT_DIR="${HYPERDRIVE_LXC_ROOT}/${HULL_NAME}"
+HULL_ROOT_DIR="${HYPERDRIVE_SHIP_ROOT}/${HULL_NAME}"
 HULL_SHARE_DIR="${HULL_ROOT_DIR}/share"
-HULL_APP_DIR="${HULL_SHARE_DIR}/app"
+HULL_ASSIGNMENT_DIR="${HULL_SHARE_DIR}/assignment"
 HULL_BUILD_LOG="${HYPERDRIVE_SHIP_BUILD_LOGS}/${HULL_NAME}_setup.log"
 
 if [[ -z "${ORDERS_SHA}" ]]; then
@@ -65,9 +65,9 @@ else
   echo "${SHORT_SHA}" > "${HULL_SHARE_DIR}/.sha"
   echo "${COMMIT_MSG}" > "${HULL_SHARE_DIR}/.msg"
   echo "hyperdrive-${order_name}" > "${HULL_SHARE_DIR}/.name"
-  mv "${TMP_REPO}" "${HULL_APP_DIR}"
-  mkdir "${HULL_APP_DIR}/.profile.d"
-  echo "export PORT=${PORT}" > "${HULL_APP_DIR}/.profile.d/hyperdrive.env"
+  mv "${TMP_REPO}" "${HULL_ASSIGNMENT_DIR}"
+  mkdir "${HULL_ASSIGNMENT_DIR}/.profile.d"
+  echo "export PORT=${PORT}" > "${HULL_ASSIGNMENT_DIR}/.profile.d/hyperdrive.env"
   trace "log available at ${HULL_BUILD_LOG}"
   lxc-attach --name="${HULL_NAME}" -- bash -c '/var/hyperdrive/share/setup.sh' > "${HULL_BUILD_LOG}" 2>&1 || true
   if [[ -f "${HULL_SHARE_DIR}/setup.completed" ]]; then
