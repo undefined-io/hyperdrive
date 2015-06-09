@@ -9,7 +9,7 @@
 
 if hull_exists "${ship_name}"; then
   info "dismantling '${ship_name}'"
-  "${SCRIPT_DIR}/ship-leave-formation" "${ship_name}"
+  "${SCRIPT_DIR}/formation-leave" "${ship_name}"
   "${SCRIPT_DIR}/assignment-stop" "${ship_name}"
   lxc-destroy -f --name="${ship_name}"
 fi

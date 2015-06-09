@@ -15,7 +15,7 @@ case "${COMMAND}" in
     [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-dismantle" "${1}"
     ;;
   join-formation)
-    [[ -n "${1}" ]] && "${SCRIPT_DIR}/ship-join-formation" "${1}"
+    [[ -n "${1}" ]] && "${SCRIPT_DIR}/formation-join" "${1}"
     ;;
   build)
     # TODO: Need to add an option here for this to not require params so hull-build can execute

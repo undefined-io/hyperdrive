@@ -1,7 +1,7 @@
 #!/var/hyperdrive/scripts/overseer
 # vim: set ft=sh :
 ### Usage:
-###   ship-join-formation <hull_name> 
+###   formation-join <hull_name> 
 ### Options:
 ###   --help
 

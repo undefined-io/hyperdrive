@@ -1,7 +1,7 @@
 #!/var/hyperdrive/scripts/overseer
 # vim: set ft=sh :
 ### Usage:
-###   ship-leave-formation <hull_name> 
+###   formation-leave <hull_name> 
 ### Options:
 ###   --help
 ###
