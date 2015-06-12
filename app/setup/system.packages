@@ -14,3 +14,5 @@ ssh
 sysstat
 tree
 vim
+htop
+tmux
