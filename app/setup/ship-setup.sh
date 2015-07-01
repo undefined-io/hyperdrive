@@ -40,7 +40,15 @@ sudo chown -R ubuntu:ubuntu ${SHIP_HOME}
 
 # compile the buildpack for the assignment
 export REQUEST_ID=$(openssl rand -base64 32)
+# start: buildpack hack for python
+sudo mkdir /app
+sudo chown ubuntu:ubuntu /app
+# end: buildpack hack for python
 "${BUILDPACK_ROOT}/bin/compile" "${ASSIGNMENT_HOME}" "/tmp/donotcache"
+# start: buildpack hack for python
+sudo rm -rf "/app"
+sudo ln -s "${ASSIGNMENT_HOME}" "/app"
+# end: buildpack hack for python
 "${BUILDPACK_ROOT}/bin/release" "${ASSIGNMENT_HOME}" > "${ASSIGNMENT_HOME}/.release"
 
 cat << STARTEOF > "${SHIP_HOME}/start.sh"
