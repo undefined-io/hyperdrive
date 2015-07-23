@@ -14,8 +14,8 @@ done <<< "$(list_of_ships_in_formation)"
 
 if status hyperdrive-nginx | fgrep -e 'stop/waiting'; then
   info 'starting hyperdrive-nginx'
-  start hyperdrive-nginx 2>&1 | timestamped "${SCRIPT_NAME}" 30
+  start hyperdrive-nginx 2>&1 | timestamped "${SCRIPT_NAME}" 90
 else
   info 'reloading hyperdrive-nginx configs'
-  reload hyperdrive-nginx 2>&1 | timestamped "${SCRIPT_NAME}" 30
+  reload hyperdrive-nginx 2>&1 | timestamped "${SCRIPT_NAME}" 90
 fi

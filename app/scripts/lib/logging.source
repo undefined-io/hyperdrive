@@ -7,7 +7,7 @@ function stripColors () {
 }
 
 # NOTE: to capture all GIT output, use --progress flag with git
-function timestamped () { 
+function timestamped () {
 local LABEL="${1:-}"
 # TODO: This color stuff can be improved upon
 local COLOR="${2:-}"
@@ -16,7 +16,7 @@ local RESET="$(echo -e "\033[0m")"
 [[ -n "${COLOR}" ]] && COLOR="$(echo -e "\E[${COLOR}m\033[1m")"
 # note: tee is using bash's ability to use shell commands as files
 sed -e 's/[\n\r]/\n/g' -e "s/^/$(date +"%y-%m-%d %H:%M:%S") ${COLOR}${LABEL}/g" -e "s/$/${RESET}/g" \
-  | tee >(stripColors >> "${HYPERDRIVE_LOG_ROOT:-/var/log/hyperdrive}/main.log"); 
+  | tee >(stripColors >> "${HYPERDRIVE_LOG_ROOT:-/var/log/hyperdrive}/main.log");
 }
 
 function fatal() { echo -e "$*" | timestamped "${SCRIPT_NAME}" 31 1>&2; exit 255; }
@@ -24,6 +24,6 @@ function error() { echo -e "$*" | timestamped "${SCRIPT_NAME}" 31 1>&2;}
 function warn() { echo -e "$*" | timestamped "${SCRIPT_NAME}" 33; }
 function announce() { echo -e "$*" | timestamped "${SCRIPT_NAME}" 34; }
 function info() { echo -e "$*" | timestamped "${SCRIPT_NAME}" 32; }
-function trace() { [[ "${HYPERDRIVE_DEBUG}" == "true" ]] && echo -e "$*" | timestamped "${SCRIPT_NAME}" 30; }
+function trace() { [[ "${HYPERDRIVE_DEBUG}" == "true" ]] && echo -e "$*" | timestamped "${SCRIPT_NAME}" 90; }
 function log() { echo -e "$*" | timestamped "${SCRIPT_NAME}"; }
 function code() { echo -e "CODE $*"; exit $*; }

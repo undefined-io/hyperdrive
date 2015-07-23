@@ -39,21 +39,21 @@ if [[ -d "${local}" && -d "${local}/.git" ]]; then
     "${SCRIPT_DIR}/git-clone" "${REMOTE_REPO}#${REMOTE_BRANCH}" "${local}" --force
     exit 0
   fi
-  if ! hdgit '' ${GIT_FLAGS} fetch --all | timestamped "${SCRIPT_NAME}" 30; then
+  if ! hdgit '' ${GIT_FLAGS} fetch --all | timestamped "${SCRIPT_NAME}" 90; then
     fatal "fetch error"
   fi
   # Branch change
   LOCAL_BRANCH="$(hdgit '' ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
   if [[ -n "${REMOTE_BRANCH}" && "${REMOTE_BRANCH}" != "${LOCAL_BRANCH}" ]]; then
     warn "specified branch changed, checking out ${REMOTE_BRANCH}"
-    hdgit '' ${GIT_FLAGS} checkout "${REMOTE_BRANCH}" | timestamped "${SCRIPT_NAME}" 30
+    hdgit '' ${GIT_FLAGS} checkout "${REMOTE_BRANCH}" | timestamped "${SCRIPT_NAME}" 90
   fi
   # Found changes
   LOCAL_BRANCH="$(hdgit '' ${GIT_FLAGS} rev-parse --symbolic-full-name --abbrev-ref HEAD)"
   HAS_CHANGES="$(hdgit '' ${GIT_FLAGS} diff HEAD...origin/${LOCAL_BRANCH} --raw)"
   if [ "${HAS_CHANGES}x" != "x" ]; then
     warn "new code detected, pulling"
-    hdgit '' ${GIT_FLAGS} pull | timestamped "${SCRIPT_NAME}" 30
+    hdgit '' ${GIT_FLAGS} pull | timestamped "${SCRIPT_NAME}" 90
     exit 0
   fi
 else

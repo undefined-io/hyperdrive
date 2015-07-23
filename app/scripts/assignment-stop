@@ -11,5 +11,5 @@ source "${SCRIPT_DIR}/lib/hull.kit"
 
 HULL_NAME="${ship_name}"
 info "'${HULL_NAME}' will stop assignment"
-stop hyperdrive-assignment name="${HULL_NAME}" 2>&1 | timestamped "${SCRIPT_NAME}" 30
-hull_close 2>&1 | timestamped "${SCRIPT_NAME}" 30
+stop hyperdrive-assignment name="${HULL_NAME}" 2>&1 | timestamped "${SCRIPT_NAME}" 90
+hull_close 2>&1 | timestamped "${SCRIPT_NAME}" 90
