@@ -69,15 +69,17 @@ initctl list | statusHyperdriveJobs.awk
 # most recent order information
 if [[ -n "${HYPERDRIVE_HQ:-}" ]]; then
   while IFS=$'\n' read REPO; do
-    ORDER="${REPO##*/}"
-    UPDATE=""
-    COLOR="${C_GREEN}"
-    SHA="$(git_repo_sha "${REPO}")"
-    REMOTE="$(git_remote_repo "${REPO}")"
-    if ! ship_for_assignment_exists "${ORDER}" "${SHA}"; then
-      COLOR="${C_YELLOW}"
-      UPDATE=" ${COLOR}(update available)${C_RESET}"
+    if [[ -n "${REPO}" ]]; then
+      ORDER="${REPO##*/}"
+      UPDATE=""
+      COLOR="${C_GREEN}"
+      SHA="$(git_repo_sha "${REPO}")"
+      REMOTE="$(git_remote_repo "${REPO}")"
+      if ! ship_for_assignment_exists "${ORDER}" "${SHA}"; then
+        COLOR="${C_YELLOW}"
+        UPDATE=" ${COLOR}(update available)${C_RESET}"
+      fi
+      echo "order: [${COLOR}${ORDER}${C_RESET}] ${SHA}${UPDATE} : ${REMOTE}"
     fi
-    echo "order: [${COLOR}${ORDER}${C_RESET}] ${SHA}${UPDATE} : ${REMOTE}"
   done <<< "$(local_order_repos)"
 fi
