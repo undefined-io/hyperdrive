@@ -13,7 +13,7 @@
 ### NOTE: When using this script w/o checking for these error codes, make sure to postfix it with || true
 ###       to prevent the script not detecting a change to be considered script failure
 
-chmod 400 "${HYPERDRIVE_PRIVATE_KEYS}/*"
+test -n "$(find "${HYPERDRIVE_PRIVATE_KEYS}" -maxdepth 1 -type f -name "*" -print -quit)" && chmod 400 "${HYPERDRIVE_PRIVATE_KEYS}/*"
 
 if ! parse_git_locator "${remote}"; then exit 1; fi
 if [[ -L "${local}" || -f "${local}" ]]; then
