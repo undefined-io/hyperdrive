@@ -6,6 +6,17 @@
 ###   --help
 ###   --verbose   list more detailed output
 
+## no_ship_for_order_exists ####################################################
+
+function no_ship_for_order_exists {
+local ORDER="${1}"
+if [[ $(lxc-ls -1 "^hyperdrive-${ORDER}-[\w]{8}-${ASSIGNMENT_SHA}\$" | wc -c) == 0 ]]; then
+  return 1
+else
+  return 0
+fi
+}
+
 ## ship_for_assignment_exists ##################################################
 
 function ship_for_assignment_exists () {
