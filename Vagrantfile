@@ -16,10 +16,9 @@ Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
 
   config.vm.provider :vmware_fusion do |f, override|
     override.vm.network "public_network"
-    override.vm.box = ENV['BOX_NAME'] || 'saucy-vmware'
-    override.vm.box_url = "http://brennovich.s3.amazonaws.com/saucy64_vmware_fusion.box"
+    override.vm.box = ENV['BOX_NAME'] || 'jpease/ubuntu-trusty'
     f.vmx["displayName"] = SQUADRON_NAME
-    f.vmx["memsize"] = VAGRANT_MEMSIZE 
+    f.vmx["memsize"] = VAGRANT_MEMSIZE
     override.vm.provision "shell", run: "always" do |s|
       s.inline = "sudo dpkg-reconfigure -f noninteractive tzdata"
     end
