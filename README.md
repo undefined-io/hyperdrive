@@ -1,9 +1,7 @@
 # Hyperdrive
 
-A fully open container based continuous deployment PaaS.
+An experiment in creating a container based continuous deployment PaaS using mainly bash script
 
 [Read the documentation](http://undefined-io.github.io/hyperdrive)
 
-# Overview
-
-**NOTE:** Still in development, and by no means production ready
+**DISCONTINUED**
